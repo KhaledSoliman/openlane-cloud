@@ -42,6 +42,8 @@ Either dedicated email solution in house or third party service like firebase or
 
 Design features extraction and Design space exploration through flow parameters sweeping - combination of shell/ruby scripts
 
+Build a docker container for disposable environment
+
 ## Design Entry Repo Structure
 
 - We intend to support a default structure at first and allow custom structures throw configurable manifests

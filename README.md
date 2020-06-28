@@ -33,3 +33,7 @@ Pubnub or similar libraries with Pub/Sub system
 
 Email notifications -
 Either dedicated email solution in house or third party service like firebase or AWS SES
+
+## Design Entry Repo Structure
+
+- We intend to support a default structure at first and allow custom structures throw configurable manifests

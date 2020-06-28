@@ -50,4 +50,3 @@ Design features extraction and Design space exploration through flow parameters 
 ## Team
  - Seif Shalan
  - Khaled Soliman
- - Mohamed Shalan

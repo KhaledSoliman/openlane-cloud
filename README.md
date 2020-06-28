@@ -1,5 +1,9 @@
 # openlane-cloud
 
+## Description
+
+An open source project which endeavors to automate the flow of the openlane project <Link here>, as well as providing a full solution to monitor and modify any design entry submissions.
+
 ## Features
 + Platform independent (does not require specific cloud infrastructure)
 + User Accounts
@@ -9,6 +13,11 @@
 + Email notifications
 + Design features extraction
 + Design space exploration through flow parameters sweeping
+
+## Team
+Seif Shalan
+Khaled Soliman
+Mohamed Shalan
 
 ## Technologies planned for each requirement
 

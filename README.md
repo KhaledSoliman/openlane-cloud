@@ -14,11 +14,6 @@ An open source project which endeavors to automate the flow of the openlane proj
 + Design features extraction
 + Design space exploration through flow parameters sweeping
 
-## Team
- - Seif Shalan
- - Khaled Soliman
- - Mohamed Shalan
-
 ## Architecture
 
 ### Technologies planned for each requirement
@@ -48,3 +43,9 @@ Either dedicated email solution in house or third party service like firebase or
 ## Design Entry Repo Structure
 
 - We intend to support a default structure at first and allow custom structures throw configurable manifests
+
+
+## Team
+ - Seif Shalan
+ - Khaled Soliman
+ - Mohamed Shalan

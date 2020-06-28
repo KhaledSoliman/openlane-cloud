@@ -15,9 +15,9 @@ An open source project which endeavors to automate the flow of the openlane proj
 + Design space exploration through flow parameters sweeping
 
 ## Team
-Seif Shalan
-Khaled Soliman
-Mohamed Shalan
+ - Seif Shalan
+ - Khaled Soliman
+ - Mohamed Shalan
 
 ## Technologies planned for each requirement
 

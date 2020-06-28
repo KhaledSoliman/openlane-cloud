@@ -19,7 +19,9 @@ An open source project which endeavors to automate the flow of the openlane proj
  - Khaled Soliman
  - Mohamed Shalan
 
-## Technologies planned for each requirement
+## Architecture
+
+### Technologies planned for each requirement
 
 API backend:
 Django or Express

@@ -20,10 +20,10 @@ Platform independent infrastructure -
 Terraform, and baremetal scripts
 
 User Accounts - 
-Either third party service or in house solution
+Either third party service like firebase or AWS cognito or in house solution
 
 User Dashboard -
-React Custom Dashboard + Kibana where applicable
+React Custom Dashboard or Kibana with elasticsearch
 
 Job Submission - 
 React interface

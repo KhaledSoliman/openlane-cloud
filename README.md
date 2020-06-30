@@ -34,9 +34,10 @@ React Custom Dashboard or Kibana with elasticsearch
 Job Submission - 
 React interface
 
-Job monitoring -
+Job monitoring - Pubnub or similar libraries with Pub/Sub system
 ![Job Monitoring Sequence Diagram](https://i.imgur.com/ZlewJi1.png)
-Pubnub or similar libraries with Pub/Sub system
+
+
 
 Email notifications -
 Either dedicated email solution in house or third party service like firebase or AWS SES

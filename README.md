@@ -32,7 +32,7 @@ User Dashboard -
 React Custom Dashboard or Kibana with elasticsearch
 
 Job Submission - 
-React interface
+![Job Monitoring Sequence Diagram](https://github.com/KhaledSoliman/openlane-cloud/Scheduler%20diagram.png)
 
 Job monitoring - Pubnub or similar libraries with Pub/Sub system
 ![Job Monitoring Sequence Diagram](https://i.imgur.com/ZlewJi1.png)

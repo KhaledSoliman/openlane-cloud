@@ -35,6 +35,7 @@ Job Submission -
 React interface
 
 Job monitoring -
+[Job Monitoring Sequence Diagram](https://i.imgur.com/ZlewJi1.png)
 Pubnub or similar libraries with Pub/Sub system
 
 Email notifications -

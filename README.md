@@ -22,6 +22,9 @@ API backend:
 Django or Express
 Architecture: microservices
 
+![Top View Architecture](https://github.com/KhaledSoliman/openlane-cloud/blob/master/Top%20Level%20Architecture.png)
+
+
 Platform independent infrastructure -
 Terraform, and baremetal scripts
 

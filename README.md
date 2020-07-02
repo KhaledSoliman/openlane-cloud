@@ -53,7 +53,7 @@ Build a docker container for disposable environment
 
 - We intend to support a default structure at first and allow custom structures throw configurable manifests
 
-## Sprint 1
+## Sprint 1 05/07 - 09/07
 - Backend
 Scheduling Service
 Notification Service
@@ -63,7 +63,7 @@ Dashboard Service
 Registration and Login
 Interface for job submission
 
-## Sprint 2
+## Sprint 2 12/07 - 16/07
  - Backend
  Resource Allocation Service
  Dashboard Service
@@ -74,7 +74,7 @@ Interface for job submission
  - Job Overview
  - Console view
  
- ## Sprint 3
+ ## Sprint 3 19/07 - 23/07
  - Backend
  Job monitoring done
  Dashboard Service

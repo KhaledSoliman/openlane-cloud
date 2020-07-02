@@ -53,6 +53,37 @@ Build a docker container for disposable environment
 
 - We intend to support a default structure at first and allow custom structures throw configurable manifests
 
+## Sprint 1
+- Backend
+Scheduling Service
+Notification Service
+Dashboard Service
+
+- Frontend
+Registration and Login
+Interface for job submission
+
+## Sprint 2
+ - Backend
+ Resource Allocation Service
+ Dashboard Service
+ Job Monitoring 50%
+ 
+ - Frontend
+ Job monitoring interface
+ - Job Overview
+ - Console view
+ 
+ ## Sprint 3
+ - Backend
+ Job monitoring done
+ Dashboard Service
+ Logging Service (Winston)
+ 
+ - Frontend
+Job mangement interface
+Job notification features (Email, SMS, Push notification browser)
+Kibana Subdashboard (Elasticsearch)
 
 ## Team
  - Seif Shalan

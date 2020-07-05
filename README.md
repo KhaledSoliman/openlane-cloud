@@ -22,7 +22,7 @@ API backend:
 Django or Express
 Architecture: microservices
 
-![Top View Architecture](https://github.com/KhaledSoliman/openlane-cloud/blob/master/UML/Top%20Level%20Architecture.png)
+![Top View Architecture](https://github.com/KhaledSoliman/openlane-cloud/blob/master/docs/Top%20Level%20Architecture.png)
 
 
 Platform independent infrastructure -
@@ -35,10 +35,10 @@ User Dashboard -
 React Custom Dashboard or Kibana with elasticsearch
 
 Job Submission - 
-![Scheduler Sequence Diagram](https://github.com/KhaledSoliman/openlane-cloud/blob/master/UML/Scheduler%20diagram.png)
+![Scheduler Sequence Diagram](https://github.com/KhaledSoliman/openlane-cloud/blob/master/docs/Scheduler%20diagram.png)
 
 Job monitoring - Pubnub or similar libraries with Pub/Sub system
-![Job Monitoring Sequence Diagram](https://github.com/KhaledSoliman/openlane-cloud/blob/master/UML/Job%20Monitoring%20Diagram.png)
+![Job Monitoring Sequence Diagram](https://github.com/KhaledSoliman/openlane-cloud/blob/master/docs/Job%20Monitoring%20Diagram.png)
 
 
 

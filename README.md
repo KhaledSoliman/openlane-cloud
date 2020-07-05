@@ -1,4 +1,4 @@
-# openlane-cloud
+# openlane-cloud runner project
 
 # Description
 
@@ -86,6 +86,9 @@ Interface for job submission
 Job mangement interface
 Job notification features (Email, SMS, Push notification browser)
 Kibana Subdashboard (Elasticsearch)
+
+# Sponsor
+ - Efabless
 
 # Development Team
  - Seif Shalan

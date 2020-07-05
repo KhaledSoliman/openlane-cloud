@@ -55,7 +55,7 @@ Build a docker container for disposable environment
 
 # Agile Log
 
-## Sprint Week 1 05/07 - 09/07
+## Sprint Week 1 | 05/07 - 09/07
 - Backend
 Scheduling Service
 Notification Service
@@ -65,7 +65,7 @@ Dashboard Service
 Registration and Login
 Interface for job submission
 
-## Sprint Week 2 12/07 - 16/07
+## Sprint Week 2 | 12/07 - 16/07
  - Backend
  Resource Allocation Service
  Dashboard Service
@@ -76,7 +76,7 @@ Interface for job submission
  - Job Overview
  - Console view
  
- ## Sprint Week 3 19/07 - 23/07
+ ## Sprint Week 3 | 19/07 - 23/07
  - Backend
  Job monitoring done
  Dashboard Service

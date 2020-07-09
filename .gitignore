@@ -130,6 +130,9 @@ backend/.env
 .env.test
 frontend/openlane-cloud/.env
 
+#firebase
+backend/ordinal-mote-281302-firebase-adminsdk-27cvg-1d92276163.json
+
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 .parcel-cache

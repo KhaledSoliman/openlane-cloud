@@ -128,6 +128,7 @@ web_modules/
 backend/.env
 .env
 .env.test
+frontend/openlane-cloud/.env
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache

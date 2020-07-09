@@ -7,9 +7,7 @@ import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
     <FirebaseContext.Provider value={new Firebase()}>
-        <React.StrictMode>
-            <App/>
-        </React.StrictMode>
+        <App/>
     </FirebaseContext.Provider>,
     document.getElementById('root')
 );

@@ -75,7 +75,7 @@ class Home extends React.Component {
         ]
 
         const {classes} = this.props;
-        const {signInOpen} = this.state.signInOpen;
+        const {signInOpen} = this.state;
 
         return (
             <div className={classes.root}>
@@ -92,7 +92,7 @@ class Home extends React.Component {
                     </Toolbar>
                 </AppBar>
 
-                <Container maxWidth={"100%"}>
+                <Container maxWidth="100%">
                     <Carousel className="mt-5">
                         {
                             items.map(item => {

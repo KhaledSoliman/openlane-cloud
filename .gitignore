@@ -126,6 +126,7 @@ web_modules/
 
 # dotenv environment variables file
 backend/.env
+.env
 .env.test
 
 # parcel-bundler cache (https://parceljs.org/)

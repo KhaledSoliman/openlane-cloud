@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
     root: {
         background: "#1a1a1a",
 
-        height: "100%"
+        height: "100vh"
     }
 }));
 
@@ -42,28 +42,23 @@ function Home() {
                     </Grid>
                 </Toolbar>
             </AppBar>
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="75vh">
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
                 <Grid container direction="row" justify="space-evenly" alignItems="center">
                     <Grid item xs={3}>
                         <Container>
-                            <h1 className="text-white">Open Source Flow Automation</h1>
+                            <h1 className="text-white">Open Source Design Automation</h1>
                             <p className="text-white">
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
-                                dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-                                mollit anim id est laborum.
+                                Automate your design flow using OpenLANE Cloud. The open-source solution that will allow you to deploy, monitor, and modify your OpenLANE designs.
                             </p>
                         </Container>
                     </Grid>
                     <Grid item xs={3}>
                         <Paper>
-                            <h3>Username</h3>
+                            <h4>Username</h4>
                             <TextField id="outlined-search" variant="outlined" fullWidth size="small"/>
-                            <h3>Email</h3>
+                            <h4>Email</h4>
                             <TextField id="outlined-search" variant="outlined" fullWidth size="small"/>
-                            <h3>Password</h3>
+                            <h4>Password</h4>
                             <TextField id="outlined-search" variant="outlined" fullWidth size="small"/>
                             <p style={{fontSize: "12px", marginTop: "15px"}}>Make sure it's at least 15 characters OR at
                                 least 8 characters including a number and a lowercase letter.</p>

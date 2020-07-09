@@ -13,7 +13,7 @@ import Carousel from 'react-material-ui-carousel'
 
 const styles = theme => ({
     root: {
-        background: "#2d2d2d",
+        background: "#cecece",
         height: "100vh"
     },
     image: {
@@ -72,14 +72,14 @@ class Home extends React.Component {
                 name: "Random Name #2",
                 description: "Hello World!"
             }
-        ]
+        ];
 
         const {classes} = this.props;
         const {signInOpen} = this.state;
 
         return (
             <div className={classes.root}>
-                <AppBar color="default" position="static">
+                <AppBar color="secondary" position="static">
                     <Toolbar>
                         <Grid justify="space-between" alignItems="center" container spacing={24}>
                             <Grid item>OpenLANE Cloud</Grid>
@@ -107,8 +107,8 @@ class Home extends React.Component {
                             <Grid container direction="row" justify="space-evenly" alignItems="center">
                                 <Grid item xs={6}>
                                     <Container>
-                                        <h1 className="text-white">Open Source Design Automation</h1>
-                                        <p className="text-white">
+                                        <h1>Open Source Design Automation</h1>
+                                        <p>
                                             Automate your design flow using OpenLANE Cloud. The open-source solution
                                             that will
                                             allow you to deploy, monitor, and modify your OpenLANE designs.

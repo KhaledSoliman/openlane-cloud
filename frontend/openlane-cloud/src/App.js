@@ -6,19 +6,13 @@ import {NotificationContainer} from 'react-notifications';
 
 import SignInModal from "./components/SignInModal";
 import Home from "./pages/Home"
-import amber from "@material-ui/core/colors/amber";
+import {red, grey} from "@material-ui/core/colors";
 import * as ROUTES from './constants/routes';
 
 const theme = createMuiTheme({
     palette: {
-        type: 'dark',
-        primary: amber,
-        background: {
-            container: '#0a0a0a',
-            paper: '#1a1a1a',
-            default: "#0a0a0a"
-        }
-
+        primary: red,
+        secondary: grey,
     },
 });
 

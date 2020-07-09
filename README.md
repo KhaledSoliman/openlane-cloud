@@ -1,10 +1,10 @@
-# openlane-cloud
+# openlane-cloud runner project
 
-## Description
+# Description
 
 An open source project which endeavors to automate the flow of the openlane project <Link here>, as well as providing a full solution to monitor and modify any design entry submissions.
 
-## Features
+# Features
 + Platform independent (does not require specific cloud infrastructure)
 + User Accounts
 + User Dashboard
@@ -14,9 +14,9 @@ An open source project which endeavors to automate the flow of the openlane proj
 + Design features extraction
 + Design space exploration through flow parameters sweeping
 
-## Architecture
+# Architecture
 
-### Technologies planned for each requirement
+## Technologies planned for each requirement
 
 API backend:
 Django or Express
@@ -53,7 +53,9 @@ Build a docker container for disposable environment
 
 - We intend to support a default structure at first and allow custom structures throw configurable manifests
 
-## Sprint 1 05/07 - 09/07
+# Agile Log
+
+## Sprint Week 1 | 05/07 - 09/07
 - Backend
 Scheduling Service
 Notification Service
@@ -63,7 +65,7 @@ Dashboard Service
 Registration and Login
 Interface for job submission
 
-## Sprint 2 12/07 - 16/07
+## Sprint Week 2 | 12/07 - 16/07
  - Backend
  Resource Allocation Service
  Dashboard Service
@@ -74,7 +76,7 @@ Interface for job submission
  - Job Overview
  - Console view
  
- ## Sprint 3 19/07 - 23/07
+ ## Sprint Week 3 | 19/07 - 23/07
  - Backend
  Job monitoring done
  Dashboard Service
@@ -85,6 +87,6 @@ Job mangement interface
 Job notification features (Email, SMS, Push notification browser)
 Kibana Subdashboard (Elasticsearch)
 
-## Team
+# Development Team
  - Seif Shalan
  - Khaled Soliman

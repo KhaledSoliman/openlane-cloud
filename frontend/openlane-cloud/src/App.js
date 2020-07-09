@@ -7,6 +7,7 @@ import {NotificationContainer} from 'react-notifications';
 import SignInModal from "./components/SignInModal";
 import Home from "./pages/Home"
 import amber from "@material-ui/core/colors/amber";
+import * as ROUTES from './constants/routes';
 
 const theme = createMuiTheme({
     palette: {
@@ -42,7 +43,7 @@ class App extends React.Component {
                 <ThemeProvider theme={theme}>
                     <BrowserRouter>
                         <div className="App">
-                            <Route path="/" exact component={Home}/>
+                            <Route path={ROUTES.LANDING} exact component={Home}/>
                             <Route path="/signin" component={SignInModal}/>
                         </div>
                     </BrowserRouter>

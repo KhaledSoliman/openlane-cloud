@@ -1,17 +1,18 @@
 import React, {useState} from 'react';
-import {AppBar, Toolbar, Button, Grid, Container, TextField, Box, Tooltip, Typography} from '@material-ui/core'
+import {Button, Grid, Container, TextField, Box, Tooltip, Typography, Link} from '@material-ui/core'
 import {SignIn} from './components';
 import Modal from "@material-ui/core/Modal";
 import CardContent from "@material-ui/core/CardContent";
 import Card from "@material-ui/core/Card";
-import {makeStyles} from '@material-ui/styles';
-import {NavLink} from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 import withStyles from "@material-ui/core/styles/withStyles";
-import FirebaseContext from "../../services/firebase/context";
+import FirebaseContext, {withFirebase} from "../../services/firebase/context";
+import Header from "./components/Header";
+
 const styles = theme => ({
     root: {
         height: "auto",
-        backgroundColor: theme.palette.grey[100]
+        backgroundColor: 'rgb(241,244,246)'
     },
     card: {
         borderRadius: 10,
@@ -26,16 +27,28 @@ const styles = theme => ({
 
     button: {
         minHeight: 50,
+        color: 'black',
         boxShadow: 'none',
         '&:hover': {
             boxShadow: 'none'
         },
+    },
+    image: {
+        marginTop: 100,
+        textAlign: 'center',
+        display: 'inline-block',
+        maxWidth: '100%',
+        width: 700
     },
 });
 
 class Home extends React.Component {
     constructor(props) {
         super(props);
+        const self = this;
+        this.props.firebase.auth.onAuthStateChanged((user) => {
+            self.setState({user: user});
+        })
     }
 
     state = {
@@ -46,9 +59,10 @@ class Home extends React.Component {
         password: '',
         confirmPassword: '',
         error: null,
+        user: null,
     };
 
-    updateInputVal(e) {
+    updateInputVal = (e) => {
         let {name: fieldName, value} = e.target;
 
         this.setState({
@@ -56,21 +70,34 @@ class Home extends React.Component {
         });
     }
 
-    handleSignInOpen() {
+    handleSignOut = (firebase) => {
+        firebase.doSignOut().then(() => {
+            this.setState({user: null});
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+
+    handleSignInOpen = () => {
         this.setState({
             signInOpen: true
         })
     }
 
-    handleSignInClose() {
+    handleSignInClose = () => {
         this.setState({
             signInOpen: false
         })
     }
 
-    handleSignUp(e, firebase) {
+    handleDBClick = () => {
+        this.props.history.push("/dashboard");
+    }
+
+
+    handleSignUp = (e, firebase) => {
         const {password, confirmPassword, email} = this.state;
-        if(password === confirmPassword && email !== '')
+        if (password === confirmPassword && email !== '')
             firebase.doCreateUserWithEmailAndPassword(email, password).then((res) => {
                 console.log(res);
             }).catch((err) => {
@@ -87,35 +114,36 @@ class Home extends React.Component {
             confirmPassword,
             firstName,
             lastName,
+            user
         } = this.state;
         return (
             <div className={classes.root}>
-                <AppBar color="secondary" position="static">
-                    <Toolbar>
-                        <Grid justify="space-between" alignItems="center" container>
-                            <Grid item><Typography color="primary">OpenLANE Cloud</Typography></Grid>
-                            <Grid item>
-                                <Button color="primary" onClick={() => this.handleSignInOpen()}>
-                                    Login
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </Toolbar>
-                </AppBar>
-
+                <FirebaseContext.Consumer>
+                    {firebase => {
+                        return <Header firebase={firebase} user={user} handleSignOut={this.handleSignOut}
+                                       handleSignInOpen={this.handleSignInOpen} handleDBClick={this.handleDBClick}/>
+                    }}
+                </FirebaseContext.Consumer>
                 <Container maxWidth="xl">
                     <div className="row">
-                        <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+                        <Box display="flex" justifyContent="center" alignItems="center" minHeight="90vh">
                             <Grid container direction="row" justify="space-evenly" alignItems="flex-start">
                                 <Grid item xs={6}>
                                     <Container>
                                         <Typography variant="h1">Open Source Design Automation</Typography>
 
-                                        <Typography variant="body1" className={classes.typography}>
+                                        <Typography variant="h5" className={classes.typography}>
                                             Automate your design flow using OpenLANE Cloud. The open-source solution
                                             that will
                                             allow you to deploy, monitor, and modify your OpenLANE designs.
                                         </Typography>
+                                        <Container alignItems="center">
+                                            <img
+                                                alt="Landing Image"
+                                                className={classes.image}
+                                                src="/images/undraw_programming_2svr.svg"
+                                            />
+                                        </Container>
                                     </Container>
                                 </Grid>
                                 <Grid item xs={3}>
@@ -206,8 +234,10 @@ class Home extends React.Component {
                                                     <Box mt={4}>
                                                         <FirebaseContext.Consumer>
                                                             {firebase => {
-                                                                return <Button className={classes.button} variant="contained" fullWidth
-                                                                               color="primary" onClick={(e) => this.handleSignUp(e,firebase)}>
+                                                                return <Button className={classes.button}
+                                                                               variant="contained" fullWidth
+                                                                               color="primary"
+                                                                               onClick={(e) => this.handleSignUp(e, firebase)}>
                                                                     Sign Up Now!
                                                                 </Button>;
                                                             }}
@@ -222,6 +252,14 @@ class Home extends React.Component {
                             </Grid>
                         </Box>
                     </div>
+                    <Typography variant="body2" color="textPrimary" align="center">
+                        {'Copyright © '}
+                        <Link color="inherit" href="#">
+                            Openlane Cloud
+                        </Link>{' '}
+                        {new Date().getFullYear()}
+                        {'.'}
+                    </Typography>
                 </Container>
                 <Modal
                     open={signInOpen}
@@ -229,11 +267,13 @@ class Home extends React.Component {
                     aria-labelledby="modal-title"
                     aria-describedby="modal-description"
                 >
-                    <SignIn/>
+                    <>
+                        <SignIn handleSignInClose={this.handleSignInClose}/>
+                    </>
                 </Modal>
             </div>
         );
     }
 }
 
-export default withStyles(styles)(Home);
+export default withStyles(styles)(withFirebase(Home));

@@ -11,6 +11,7 @@ import ImageIcon from '@material-ui/icons/Image';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import SettingsIcon from '@material-ui/icons/Settings';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
+import WorkIcon from '@material-ui/icons/Work';
 
 import { Profile, SidebarNav, UpgradePlan } from './components';
 
@@ -33,7 +34,7 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(2, 0)
   },
   nav: {
-    marginBottom: theme.spacing(2)
+    marginBottom: theme.spacing(2),
   }
 }));
 
@@ -49,40 +50,10 @@ const Sidebar = props => {
       icon: <DashboardIcon />
     },
     {
-      title: 'Users',
-      href: '/users',
-      icon: <PeopleIcon />
+      title: 'Jobs',
+      href: '/jobs',
+      icon: <WorkIcon />
     },
-    {
-      title: 'Products',
-      href: '/products',
-      icon: <ShoppingBasketIcon />
-    },
-    {
-      title: 'Authentication',
-      href: '/sign-in',
-      icon: <LockOpenIcon />
-    },
-    {
-      title: 'Typography',
-      href: '/typography',
-      icon: <TextFieldsIcon />
-    },
-    {
-      title: 'Icons',
-      href: '/icons',
-      icon: <ImageIcon />
-    },
-    {
-      title: 'Account',
-      href: '/account',
-      icon: <AccountBoxIcon />
-    },
-    {
-      title: 'Settings',
-      href: '/settings',
-      icon: <SettingsIcon />
-    }
   ];
 
   return (

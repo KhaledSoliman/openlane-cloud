@@ -3,28 +3,28 @@ import palette from './palette';
 export default {
   h1: {
     color: palette.text.primary,
-    fontWeight: 500,
+    fontWeight: 600,
     fontSize: '40px',
     letterSpacing: '-0.24px',
     lineHeight: '40px'
   },
   h2: {
     color: palette.text.primary,
-    fontWeight: 500,
+    fontWeight: 600,
     fontSize: '29px',
     letterSpacing: '-0.24px',
     lineHeight: '32px'
   },
   h3: {
     color: palette.text.primary,
-    fontWeight: 500,
+    fontWeight: 600,
     fontSize: '30px',
     letterSpacing: '-0.06px',
     lineHeight: '28px'
   },
   h4: {
     color: palette.text.primary,
-    fontWeight: 500,
+    fontWeight: 600,
     fontSize: '20px',
     letterSpacing: '-0.06px',
     lineHeight: '24px'
@@ -70,6 +70,7 @@ export default {
   },
   button: {
     color: palette.text.primary,
+    fontWeight: 500,
     fontSize: '14px'
   },
   caption: {

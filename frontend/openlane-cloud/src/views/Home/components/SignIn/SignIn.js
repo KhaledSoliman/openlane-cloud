@@ -11,6 +11,9 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import {withStyles} from "@material-ui/core/styles";
 import PropTypes from "prop-types";
+import FirebaseContext from "../../../../services/firebase/context";
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import IconButton from "@material-ui/core/IconButton";
 
 
 const styles = theme => ({
@@ -21,7 +24,7 @@ const styles = theme => ({
         margin: 'auto',
         padding: theme.spacing(2, 4, 3),
         paddingTop: 20,
-        paddingBottom: 50,
+        paddingBottom: 35,
         position: 'absolute',
         width: 600,
         backgroundColor: theme.palette.background.paper,
@@ -55,14 +58,7 @@ const styles = theme => ({
         marginTop: theme.spacing(1),
     },
     submit: {
-        boxShadow: 'none',
-        marginTop: 10,
-        minHeight: 45,
-        '&:hover': {
-            boxShadow: 'none'
-        },
-    },
-    submit2: {
+        color: 'black',
         boxShadow: 'none',
         marginTop: 20,
         minHeight: 45,
@@ -70,15 +66,37 @@ const styles = theme => ({
             boxShadow: 'none'
         },
     },
+    submit2: {
+        color: 'black',
+        boxShadow: 'none',
+        marginTop: 20,
+        minHeight: 45,
+        '&:hover': {
+            boxShadow: 'none'
+        },
+    },
+    iconButton: {
+        color: 'black'
+    }
 });
 
 class SignIn extends React.Component {
     state = {
-        forgotPasswordClicked: false
+        forgotPasswordClicked: false,
+        email: '',
+        password: ''
     };
 
     constructor(props) {
         super(props);
+    }
+
+    updateInputVal(e) {
+        let {name: fieldName, value} = e.target;
+
+        this.setState({
+            [fieldName]: value
+        });
     }
 
     forgotPasswordOpen() {
@@ -93,9 +111,38 @@ class SignIn extends React.Component {
         });
     }
 
+    handleSignIn(e, firebase) {
+        e.preventDefault();
+        const {email, password} = this.state;
+        if (password !== '' && email !== '')
+            firebase.doSignInWithEmailAndPassword(email, password).then((res) => {
+                console.log(res);
+                this.props.handleSignInClose();
+            }).catch((err) => {
+                console.log(err);
+            });
+    }
+
+    handleForgetPassword(e, firebase) {
+        e.preventDefault();
+        const {email} = this.state;
+        if (email !== '')
+            firebase.doPasswordReset(email).then((res) => {
+                this.forgotPasswordClose();
+                this.props.handleSignInClose();
+            }).catch((err) => {
+                console.log(err);
+            });
+    }
+
     render() {
-        const { classes } = this.props;
-        const {forgotPasswordClicked} = this.state;
+        // console.log(firebase.auth.currentUser);
+        const {classes} = this.props;
+        const {
+            forgotPasswordClicked,
+            email,
+            password,
+        } = this.state;
 
         return (
             <>
@@ -104,7 +151,7 @@ class SignIn extends React.Component {
                         <Avatar className={classes.avatar}>
                             <LockOutlinedIcon/>
                         </Avatar>
-                        <h4>Sign in to OpenLANE Cloud</h4>
+                        <Typography variant="h4">Sign in to OpenLANE Cloud</Typography>
                         <form className={classes.form} noValidate>
                             <Grid container direction="column" justify="space-evenly">
                                 <Grid item>
@@ -117,7 +164,8 @@ class SignIn extends React.Component {
                                         label="Email Address"
                                         name="email"
                                         autoComplete="email"
-                                        autoFocus
+                                        value={email}
+                                        onChange={e => this.updateInputVal(e)}
                                     />
                                 </Grid>
                                 <Grid item>
@@ -131,6 +179,8 @@ class SignIn extends React.Component {
                                         type="password"
                                         id="password"
                                         autoComplete="current-password"
+                                        value={password}
+                                        onChange={e => this.updateInputVal(e)}
                                     />
                                 </Grid>
                                 <Grid container direction="row" justify="space-between" alignItems="center">
@@ -141,26 +191,39 @@ class SignIn extends React.Component {
                                         />
                                     </Grid>
                                     <Grid item>
-                                        <Link href="#" variant="body2" onClick={() => this.forgotPasswordOpen()}>
-                                            Forgot password?
+                                        <Link href="#" variant="body2" color="secondary" onClick={() => this.forgotPasswordOpen()}>
+                                            Forgot Password?
                                         </Link>
                                     </Grid>
                                 </Grid>
-
-                                <Button
-                                    type="submit"
-                                    variant="contained"
-                                    color="primary"
-                                    className={classes.submit}
-                                >
-                                    Sign In
-                                </Button>
+                                <FirebaseContext.Consumer>
+                                    {firebase => {
+                                        return <Button
+                                            type="submit"
+                                            variant="contained"
+                                            color="primary"
+                                            className={classes.submit}
+                                            onClick={(e) => this.handleSignIn(e, firebase)}>
+                                            Sign In
+                                        </Button>
+                                    }}
+                                </FirebaseContext.Consumer>
                             </Grid>
                         </form>
                     </Paper> :
-                    <Paper  className={classes.paper2}>
-                        <h5>Reset your password</h5>
-                        <p align="center">Enter your user account's verified email address and we will send you a password reset link.</p>
+                    <Paper className={classes.paper2}>
+                        <Grid container direction="row" alignItems="center">
+                            <Grid container item xs={3} justify="flex-start">
+                                <IconButton className={classes.iconButton} onClick={() => this.forgotPasswordClose()}>
+                                    <ArrowBackIcon/>
+                                </IconButton>
+                            </Grid>
+                            <Grid container item xs={6} justify="center">
+                                <Typography variant="h4">Reset your password</Typography>
+                            </Grid>
+                        </Grid>
+                        <Typography variant="body1" align="center">Enter your user account's verified email address and
+                            we will send you a password reset link.</Typography>
                         <TextField
                             variant="outlined"
                             margin="normal"
@@ -171,16 +234,22 @@ class SignIn extends React.Component {
                             name="email"
                             autoComplete="email"
                             autoFocus
+                            value={email}
+                            onChange={e => this.updateInputVal(e)}
                         />
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            color="primary"
-                            fullWidth
-                            className={classes.submit2}
-                        >
-                            Send password reset email
-                        </Button>
+                        <FirebaseContext.Consumer>
+                            {firebase => {
+                                return <Button
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary"
+                                    fullWidth
+                                    className={classes.submit2}
+                                    onClick={(e) => this.handleForgetPassword(e, firebase)}>
+                                    Send password reset email
+                                </Button>
+                            }}
+                        </FirebaseContext.Consumer>
                     </Paper>
                 }
             </>);
@@ -192,9 +261,4 @@ SignIn.propTypes = {
 };
 
 
-export default withStyles(styles)
-
-(
-    SignIn
-)
-;
+export default withStyles(styles)(SignIn);

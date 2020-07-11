@@ -43,14 +43,14 @@ export default {
     light: colors.red[400]
   },
   text: {
-    primary: colors.blueGrey[900],
-    secondary: colors.blueGrey[600],
-    link: colors.blue[600]
+    primary: colors.grey[900],
+    secondary: colors.grey[900],
+    link: colors.amber[600]
   },
   background: {
     default: '#F4F6F8',
     paper: white
   },
-  icon: colors.blueGrey[600],
+  icon: colors.grey[700],
   divider: colors.grey[200]
 };

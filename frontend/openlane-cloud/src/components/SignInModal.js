@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -8,8 +8,6 @@ import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import {makeStyles} from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
 import {withStyles} from "@material-ui/core/styles";
 import PropTypes from "prop-types";
@@ -17,15 +15,33 @@ import PropTypes from "prop-types";
 
 const styles = theme => ({
     paper: {
-        top: '20%',
-        left: '35%',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
         margin: 'auto',
+        padding: theme.spacing(2, 4, 3),
+        paddingTop: 20,
+        paddingBottom: 50,
         position: 'absolute',
         width: 600,
         backgroundColor: theme.palette.background.paper,
-        border: '2px solid #000',
         boxShadow: theme.shadows[5],
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    paper2: {
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        margin: 'auto',
         padding: theme.spacing(2, 4, 3),
+        paddingTop: 30,
+        paddingBottom: 30,
+        position: 'absolute',
+        width: 600,
+        backgroundColor: theme.palette.background.paper,
+        boxShadow: theme.shadows[5],
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -35,11 +51,24 @@ const styles = theme => ({
         backgroundColor: theme.palette.primary.main,
     },
     form: {
-        width: '100%', // Fix IE 11 issue.
+        width: '100%',
         marginTop: theme.spacing(1),
     },
     submit: {
-        margin: theme.spacing(3, 0, 2),
+        boxShadow: 'none',
+        marginTop: 10,
+        minHeight: 45,
+        '&:hover': {
+            boxShadow: 'none'
+        },
+    },
+    submit2: {
+        boxShadow: 'none',
+        marginTop: 20,
+        minHeight: 45,
+        '&:hover': {
+            boxShadow: 'none'
+        },
     },
 });
 
@@ -65,74 +94,96 @@ class SignInModal extends React.Component {
     }
 
     render() {
-        const classes = this.props;
+        const { classes } = this.props;
         const {forgotPasswordClicked} = this.state;
 
         return (
-            <div>
+            <>
                 {!forgotPasswordClicked ?
                     <Paper className={classes.paper}>
                         <Avatar className={classes.avatar}>
                             <LockOutlinedIcon/>
                         </Avatar>
-                        <Typography id="modal-title" component="h1" variant="h5">
-                            Sign in
-                        </Typography>
+                        <h4>Sign in to OpenLANE Cloud</h4>
                         <form className={classes.form} noValidate>
-                            <TextField
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="email"
-                                label="Email Address"
-                                name="email"
-                                autoComplete="email"
-                                autoFocus
-                            />
-                            <TextField
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                fullWidth
-                                name="password"
-                                label="Password"
-                                type="password"
-                                id="password"
-                                autoComplete="current-password"
-                            />
-                            <FormControlLabel
-                                control={<Checkbox value="remember" color="primary"/>}
-                                label="Remember me"
-                            />
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                color="primary"
-                                className={classes.submit}
-                            >
-                                Sign In
-                            </Button>
-                            <Grid container>
-                                <Grid item xs>
-                                    <Link href="#" variant="body2" onClick={() => this.forgotPasswordOpen()}>
-                                        Forgot password?
-                                    </Link>
+                            <Grid container direction="column" justify="space-evenly">
+                                <Grid item>
+                                    <TextField
+                                        variant="outlined"
+                                        margin="normal"
+                                        required
+                                        fullWidth
+                                        id="email"
+                                        label="Email Address"
+                                        name="email"
+                                        autoComplete="email"
+                                        autoFocus
+                                    />
                                 </Grid>
                                 <Grid item>
-                                    <Link href="#" variant="body2">
-                                        {"Don't have an account? Sign Up"}
-                                    </Link>
+                                    <TextField
+                                        variant="outlined"
+                                        margin="normal"
+                                        required
+                                        fullWidth
+                                        name="password"
+                                        label="Password"
+                                        type="password"
+                                        id="password"
+                                        autoComplete="current-password"
+                                    />
                                 </Grid>
+                                <Grid container direction="row" justify="space-between" alignItems="center">
+                                    <Grid item>
+                                        <FormControlLabel
+                                            control={<Checkbox value="remember" color="primary"/>}
+                                            label="Remember me"
+                                        />
+                                    </Grid>
+                                    <Grid item>
+                                        <Link href="#" variant="body2" onClick={() => this.forgotPasswordOpen()}>
+                                            Forgot password?
+                                        </Link>
+                                    </Grid>
+                                </Grid>
+
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary"
+                                    className={classes.submit}
+                                >
+                                    Sign In
+                                </Button>
                             </Grid>
                         </form>
                     </Paper> :
-                    <Paper  className={classes.paper}>
-
+                    <Paper  className={classes.paper2}>
+                        <h5>Reset your password</h5>
+                        <p align="center">Enter your user account's verified email address and we will send you a password reset link.</p>
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="email"
+                            label="Email Address"
+                            name="email"
+                            autoComplete="email"
+                            autoFocus
+                        />
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            className={classes.submit2}
+                        >
+                            Send password reset email
+                        </Button>
                     </Paper>
                 }
-            </div>);
+            </>);
     }
 }
 

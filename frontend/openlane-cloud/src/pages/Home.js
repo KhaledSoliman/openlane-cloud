@@ -1,21 +1,33 @@
 import React from 'react';
-import {AppBar, Toolbar, Button, Grid, makeStyles, Container, TextField, Box} from '@material-ui/core'
+import {AppBar, Toolbar, Button, Grid, Container, TextField, Box, Tooltip} from '@material-ui/core'
 import SignIn from '../components/SignInModal';
 import Modal from "@material-ui/core/Modal";
 import Copyright from "../components/Copyright";
-import Paper from "@material-ui/core/Paper";
 import {withStyles} from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import CardContent from "@material-ui/core/CardContent";
 import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import Carousel from 'react-material-ui-carousel'
 
 const styles = theme => ({
     root: {
-        background: "#cecece",
-        height: "100vh"
+        height: "auto",
+        backgroundColor: theme.palette.grey[100]
     },
+    card: {
+        borderRadius: 10,
+        paddingTop: 20,
+        paddingBottom: 20,
+        boxShadow: 'none'
+    },
+
+    button: {
+        minHeight: 50,
+        boxShadow: 'none',
+        '&:hover': {
+            boxShadow: 'none'
+        },
+    },
+
     image: {
         backgroundImage: 'url(https://source.unsplash.com/random?tech)',
         backgroundRepeat: 'no-repeat',
@@ -81,7 +93,7 @@ class Home extends React.Component {
             <div className={classes.root}>
                 <AppBar color="secondary" position="static">
                     <Toolbar>
-                        <Grid justify="space-between" alignItems="center" container spacing={24}>
+                        <Grid justify="space-between" alignItems="center" container>
                             <Grid item>OpenLANE Cloud</Grid>
                             <Grid item>
                                 <Button color="primary" onClick={() => this.handleSignInOpen()}>
@@ -93,18 +105,9 @@ class Home extends React.Component {
                 </AppBar>
 
                 <Container maxWidth="100%">
-                    <Carousel className="mt-5">
-                        {
-                            items.map(item => {
-                                return (<Paper>
-                                    <div className={classes.image}/>
-                                </Paper>);
-                            })
-                        }
-                    </Carousel>
                     <div className="row">
-                        <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
-                            <Grid container direction="row" justify="space-evenly" alignItems="center">
+                        <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+                            <Grid container direction="row" justify="space-evenly" alignItems="flex-start">
                                 <Grid item xs={6}>
                                     <Container>
                                         <h1>Open Source Design Automation</h1>
@@ -116,28 +119,30 @@ class Home extends React.Component {
                                     </Container>
                                 </Grid>
                                 <Grid item xs={3}>
-                                    <Card>
-                                        <CardHeader title="Get started with openlane cloud">
-                                        </CardHeader>
+                                    <Card className={classes.card}>
                                         <CardContent>
-                                            <Grid container direction="row" justify="space-evenly" alignItems="center">
+                                            <Grid container direction="row" justify="space-evenly" alignItems="flex-start">
+                                                <Grid item xs={10}>
+                                                    <h3>Get Started!</h3>
+                                                </Grid>
                                                 <Grid item xs={10}>
                                                     <TextField
                                                         autoComplete="fname"
                                                         name="fname"
-                                                        variant="filled"
+                                                        margin="normal"
+                                                        variant="outlined"
                                                         required
                                                         fullWidth
                                                         id="fname"
                                                         label="First Name"
-                                                        autoFocus
                                                         value={this.state.fname}
                                                         onChange={e => this.updateInputVal(e)}
                                                     />
                                                 </Grid>
                                                 <Grid item xs={10}>
                                                     <TextField
-                                                        variant="filled"
+                                                        variant="outlined"
+                                                        margin="normal"
                                                         required
                                                         fullWidth
                                                         id="lname"
@@ -150,8 +155,9 @@ class Home extends React.Component {
                                                 </Grid>
                                                 <Grid item xs={10}>
                                                     <TextField
-                                                        variant="filled"
+                                                        variant="outlined"
                                                         required
+                                                        margin="normal"
                                                         fullWidth
                                                         id="email"
                                                         label="Email Address"
@@ -162,24 +168,26 @@ class Home extends React.Component {
                                                     />
                                                 </Grid>
                                                 <Grid item xs={10}>
-                                                    <TextField
-                                                        variant="filled"
-                                                        margin="normal"
-                                                        required
-                                                        fullWidth
-                                                        name="password"
-                                                        label="Password"
-                                                        type="password"
-                                                        id="password"
-                                                        autoComplete="current-password"
-                                                        helperText="Make sure it's at least 15 characters OR at least 8 characters including a number and a lowercase letter."
-                                                        value={this.state.password}
-                                                        onChange={e => this.updateInputVal(e)}
-                                                    />
+                                                    <Tooltip title="Make sure it's at least 15 characters OR at least 8 characters including a number and a lowercase letter." arrow>
+                                                        <TextField
+                                                            variant="outlined"
+                                                            margin="normal"
+                                                            required
+                                                            fullWidth
+                                                            name="password"
+                                                            label="Password"
+                                                            type="password"
+                                                            id="password"
+                                                            autoComplete="current-password"
+                                                            value={this.state.password}
+                                                            onChange={e => this.updateInputVal(e)}
+                                                        />
+                                                    </Tooltip>
                                                 </Grid>
                                                 <Grid item xs={10}>
                                                     <TextField
-                                                        variant="filled"
+                                                        variant="outlined"
+                                                        margin="normal"
                                                         required
                                                         fullWidth
                                                         name="confirmPassword"
@@ -193,7 +201,7 @@ class Home extends React.Component {
                                                 </Grid>
                                                 <Grid item xs={10}>
                                                     <Box mt={4}>
-                                                        <Button variant="contained" fullWidth color="primary">
+                                                        <Button className={classes.button} variant="contained" fullWidth color="primary">
                                                             Sign Up Now!
                                                         </Button>
                                                     </Box>

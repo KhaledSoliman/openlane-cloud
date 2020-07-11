@@ -72,7 +72,7 @@ const styles = theme => ({
     },
 });
 
-class SignInModal extends React.Component {
+class SignIn extends React.Component {
     state = {
         forgotPasswordClicked: false
     };
@@ -187,7 +187,7 @@ class SignInModal extends React.Component {
     }
 }
 
-SignInModal.propTypes = {
+SignIn.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
@@ -195,6 +195,6 @@ SignInModal.propTypes = {
 export default withStyles(styles)
 
 (
-    SignInModal
+    SignIn
 )
 ;

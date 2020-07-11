@@ -1,13 +1,13 @@
-import React from 'react';
-import {AppBar, Toolbar, Button, Grid, Container, TextField, Box, Tooltip} from '@material-ui/core'
-import SignIn from '../components/SignInModal';
+import React, {useState} from 'react';
+import {AppBar, Toolbar, Button, Grid, Container, TextField, Box, Tooltip, Typography} from '@material-ui/core'
+import {SignIn} from './components';
 import Modal from "@material-ui/core/Modal";
-import Copyright from "../components/Copyright";
-import {withStyles} from '@material-ui/core/styles';
-import PropTypes from 'prop-types';
 import CardContent from "@material-ui/core/CardContent";
 import Card from "@material-ui/core/Card";
-
+import {makeStyles} from '@material-ui/styles';
+import {NavLink} from 'react-router-dom';
+import withStyles from "@material-ui/core/styles/withStyles";
+import FirebaseContext from "../../services/firebase/context";
 const styles = theme => ({
     root: {
         height: "auto",
@@ -20,6 +20,10 @@ const styles = theme => ({
         boxShadow: 'none'
     },
 
+    typography: {
+        marginTop: 25,
+    },
+
     button: {
         minHeight: 50,
         boxShadow: 'none',
@@ -27,32 +31,22 @@ const styles = theme => ({
             boxShadow: 'none'
         },
     },
-
-    image: {
-        backgroundImage: 'url(https://source.unsplash.com/random?tech)',
-        backgroundRepeat: 'no-repeat',
-        backgroundColor:
-            theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        height:"200px"
-    },
 });
 
-
 class Home extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
     state = {
         signInOpen: false,
-        username: '',
+        firstName: '',
+        lastName: '',
         email: '',
-        passwordOne: '',
-        passwordTwo: '',
+        password: '',
+        confirmPassword: '',
         error: null,
     };
-
-    constructor(props) {
-        super(props)
-    }
 
     updateInputVal(e) {
         let {name: fieldName, value} = e.target;
@@ -74,27 +68,32 @@ class Home extends React.Component {
         })
     }
 
+    handleSignUp(e, firebase) {
+        const {password, confirmPassword, email} = this.state;
+        if(password === confirmPassword && email !== '')
+            firebase.doCreateUserWithEmailAndPassword(email, password).then((res) => {
+                console.log(res);
+            }).catch((err) => {
+                console.log(err);
+            });
+    }
+
     render() {
-        const items = [
-            {
-                name: "Random Name #1",
-                description: "Probably the most random thing you have ever seen!"
-            },
-            {
-                name: "Random Name #2",
-                description: "Hello World!"
-            }
-        ];
-
         const {classes} = this.props;
-        const {signInOpen} = this.state;
-
+        const {
+            signInOpen,
+            email,
+            password,
+            confirmPassword,
+            firstName,
+            lastName,
+        } = this.state;
         return (
             <div className={classes.root}>
                 <AppBar color="secondary" position="static">
                     <Toolbar>
                         <Grid justify="space-between" alignItems="center" container>
-                            <Grid item>OpenLANE Cloud</Grid>
+                            <Grid item><Typography color="primary">OpenLANE Cloud</Typography></Grid>
                             <Grid item>
                                 <Button color="primary" onClick={() => this.handleSignInOpen()}>
                                     Login
@@ -104,38 +103,40 @@ class Home extends React.Component {
                     </Toolbar>
                 </AppBar>
 
-                <Container maxWidth="100%">
+                <Container maxWidth="xl">
                     <div className="row">
                         <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
                             <Grid container direction="row" justify="space-evenly" alignItems="flex-start">
                                 <Grid item xs={6}>
                                     <Container>
-                                        <h1>Open Source Design Automation</h1>
-                                        <p>
+                                        <Typography variant="h1">Open Source Design Automation</Typography>
+
+                                        <Typography variant="body1" className={classes.typography}>
                                             Automate your design flow using OpenLANE Cloud. The open-source solution
                                             that will
                                             allow you to deploy, monitor, and modify your OpenLANE designs.
-                                        </p>
+                                        </Typography>
                                     </Container>
                                 </Grid>
                                 <Grid item xs={3}>
                                     <Card className={classes.card}>
                                         <CardContent>
-                                            <Grid container direction="row" justify="space-evenly" alignItems="flex-start">
+                                            <Grid container direction="row" justify="space-evenly"
+                                                  alignItems="flex-start">
                                                 <Grid item xs={10}>
-                                                    <h3>Get Started!</h3>
+                                                    <Typography variant="h3">Get Started!</Typography>
                                                 </Grid>
                                                 <Grid item xs={10}>
                                                     <TextField
-                                                        autoComplete="fname"
-                                                        name="fname"
+                                                        autoComplete="firstName"
+                                                        name="firstName"
                                                         margin="normal"
                                                         variant="outlined"
                                                         required
                                                         fullWidth
-                                                        id="fname"
+                                                        id="firstName"
                                                         label="First Name"
-                                                        value={this.state.fname}
+                                                        value={firstName}
                                                         onChange={e => this.updateInputVal(e)}
                                                     />
                                                 </Grid>
@@ -145,11 +146,11 @@ class Home extends React.Component {
                                                         margin="normal"
                                                         required
                                                         fullWidth
-                                                        id="lname"
+                                                        id="lastName"
                                                         label="Last Name"
-                                                        name="lname"
-                                                        autoComplete="lname"
-                                                        value={this.state.lname}
+                                                        name="lastName"
+                                                        autoComplete="lastName"
+                                                        value={lastName}
                                                         onChange={e => this.updateInputVal(e)}
                                                     />
                                                 </Grid>
@@ -163,12 +164,14 @@ class Home extends React.Component {
                                                         label="Email Address"
                                                         name="email"
                                                         autoComplete="email"
-                                                        value={this.state.email}
+                                                        value={email}
                                                         onChange={e => this.updateInputVal(e)}
                                                     />
                                                 </Grid>
                                                 <Grid item xs={10}>
-                                                    <Tooltip title="Make sure it's at least 15 characters OR at least 8 characters including a number and a lowercase letter." arrow>
+                                                    <Tooltip
+                                                        title="Make sure it's at least 15 characters OR at least 8 characters including a number and a lowercase letter."
+                                                        arrow>
                                                         <TextField
                                                             variant="outlined"
                                                             margin="normal"
@@ -179,7 +182,7 @@ class Home extends React.Component {
                                                             type="password"
                                                             id="password"
                                                             autoComplete="current-password"
-                                                            value={this.state.password}
+                                                            value={password}
                                                             onChange={e => this.updateInputVal(e)}
                                                         />
                                                     </Tooltip>
@@ -195,15 +198,21 @@ class Home extends React.Component {
                                                         type="password"
                                                         id="confirmPassword"
                                                         autoComplete="current-password"
-                                                        value={this.state.confirmPassword}
+                                                        value={confirmPassword}
                                                         onChange={e => this.updateInputVal(e)}
                                                     />
                                                 </Grid>
                                                 <Grid item xs={10}>
                                                     <Box mt={4}>
-                                                        <Button className={classes.button} variant="contained" fullWidth color="primary">
-                                                            Sign Up Now!
-                                                        </Button>
+                                                        <FirebaseContext.Consumer>
+                                                            {firebase => {
+                                                                return <Button className={classes.button} variant="contained" fullWidth
+                                                                               color="primary" onClick={(e) => this.handleSignUp(e,firebase)}>
+                                                                    Sign Up Now!
+                                                                </Button>;
+                                                            }}
+                                                        </FirebaseContext.Consumer>
+
                                                     </Box>
                                                 </Grid>
                                             </Grid>
@@ -214,9 +223,6 @@ class Home extends React.Component {
                         </Box>
                     </div>
                 </Container>
-                <Box mt={8}>
-                    <Copyright/>
-                </Box>
                 <Modal
                     open={signInOpen}
                     onClose={() => this.handleSignInClose()}
@@ -229,9 +235,5 @@ class Home extends React.Component {
         );
     }
 }
-
-Home.propTypes = {
-    classes: PropTypes.object.isRequired,
-};
 
 export default withStyles(styles)(Home);

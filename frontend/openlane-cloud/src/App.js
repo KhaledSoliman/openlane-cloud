@@ -1,52 +1,36 @@
-import React from 'react';
-import 'react-notifications/lib/notifications.css';
-import {Route, BrowserRouter} from 'react-router-dom';
-import {ThemeProvider, createMuiTheme} from '@material-ui/core/styles';
-import {NotificationContainer} from 'react-notifications';
+import React, { Component } from 'react';
+import { Router } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
+import { Chart } from 'react-chartjs-2';
+import { ThemeProvider } from '@material-ui/styles';
+import validate from 'validate.js';
 
-import SignInModal from "./components/SignInModal";
-import Home from "./pages/Home"
-import {amber, grey} from "@material-ui/core/colors";
-import * as ROUTES from './constants/routes';
+import { chartjs } from './helpers';
+import theme from './theme';
+import 'react-perfect-scrollbar/dist/css/styles.css';
+import './assets/scss/index.scss';
+import validators from './common/validators';
+import Routes from './Routes';
 
+const browserHistory = createBrowserHistory();
 
-const theme = createMuiTheme({
-    palette: {
-        primary: amber,
-        secondary: grey
-    },
+Chart.helpers.extend(Chart.elements.Rectangle.prototype, {
+  draw: chartjs.draw
 });
 
-//todo::Carasol
-//todo::LoginModal
-//todo::firebase integration
-//todo::job submission
+validate.validators = {
+  ...validate.validators,
+  ...validators
+};
 
-class App extends React.Component {
-    state = {
-        authenticated: localStorage.getItem('isAuthenticated') === 'true'
-    };
-
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return (
-            <div>
-                <NotificationContainer/>
-                <ThemeProvider theme={theme}>
-                    <BrowserRouter>
-                        <div className="App">
-                            <Route path={ROUTES.LANDING} exact component={Home}/>
-                            <Route path="/signin" component={SignInModal}/>
-                        </div>
-                    </BrowserRouter>
-                </ThemeProvider>
-            </div>
-        );
-    }
+export default class App extends Component {
+  render() {
+    return (
+      <ThemeProvider theme={theme}>
+        <Router history={browserHistory}>
+          <Routes />
+        </Router>
+      </ThemeProvider>
+    );
+  }
 }
-
-
-export default App;

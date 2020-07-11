@@ -1,8 +1,41 @@
 {
-  "name": "openlane-cloud",
-  "version": "0.1.0",
-  "private": true,
+  "name": "ol-cloud",
+  "author": "OpenLANE",
+  "email": "shalan@aucegypt.edu",
+  "licence": "MIT",
+  "version": "0.3.0",
+  "private": false,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
   "dependencies": {
+    "@material-ui/styles": "^4.2.1",
+    "chart.js": "^2.8.0",
+    "clsx": "^1.0.4",
+    "history": "^4.9.0",
+    "moment": "^2.24.0",
+    "nodejs": "0.0.0",
+    "react-chartjs-2": "^2.7.6",
+    "react-perfect-scrollbar": "^1.5.3",
+    "recompose": "^0.30.0",
+    "underscore": "^1.9.1",
+    "uuid": "^3.3.2",
+    "validate.js": "^0.13.1",
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "@testing-library/jest-dom": "^4.2.4",
@@ -21,25 +54,7 @@
     "react-scripts": "3.4.1",
     "typescript": "^3.9.6"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "devDependencies": {
+    "typescript": "^3.5.1"
   }
 }

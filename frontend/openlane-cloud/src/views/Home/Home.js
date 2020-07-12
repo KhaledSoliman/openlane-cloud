@@ -13,6 +13,8 @@ import Snackbar from "@material-ui/core/Snackbar";
 import Collapse from "@material-ui/core/Collapse";
 import {AlertTitle} from "@material-ui/lab";
 import Footer from "./components/Footer";
+import axios from 'axios';
+
 const styles = theme => ({
     root: {
         height: "auto",
@@ -126,7 +128,7 @@ class Home extends React.Component {
                 this.setState({signUpError: true, signUpErrorMessage: err.message});
                 console.log(err);
             });
-        else{
+        else {
             if (email === '')
                 this.setState({emailEmpty: true});
             if (firstName === '')
@@ -147,6 +149,7 @@ class Home extends React.Component {
     };
 
     render() {
+
         const {classes} = this.props;
         const {
             signInOpen,
@@ -205,7 +208,8 @@ class Home extends React.Component {
                                                 </Grid>
                                                 <Grid item xs={10}>
                                                     <Collapse in={signUpError}>
-                                                        <Alert severity="error" className={classes.alert} onClose={() => this.handleSignUpErrorClose()}>
+                                                        <Alert severity="error" className={classes.alert}
+                                                               onClose={() => this.handleSignUpErrorClose()}>
                                                             <AlertTitle>Sign Up Error</AlertTitle>
                                                             {signUpErrorMessage}
                                                         </Alert>
@@ -315,7 +319,7 @@ class Home extends React.Component {
                         </Box>
                     </div>
                 </Container>
-                <Footer />
+                <Footer/>
                 <Modal
                     open={signInOpen}
                     onClose={() => this.handleSignInClose()}
@@ -323,10 +327,12 @@ class Home extends React.Component {
                     aria-describedby="modal-description"
                 >
                     <>
-                        <SignIn handleLoginSuccess={this.handleLoginSuccess} handleSignInClose={this.handleSignInClose}/>
+                        <SignIn handleLoginSuccess={this.handleLoginSuccess}
+                                handleSignInClose={this.handleSignInClose}/>
                     </>
                 </Modal>
-                <Snackbar open={loginSuccess} anchorOrigin={{horizontal: 'center', vertical: 'top'}} autoHideDuration={3000} onClose={() => this.handleLoginSuccess(false)}>
+                <Snackbar open={loginSuccess} anchorOrigin={{horizontal: 'center', vertical: 'top'}}
+                          autoHideDuration={3000} onClose={() => this.handleLoginSuccess(false)}>
                     <Alert onClose={() => this.handleLoginSuccess(false)} severity="success">
                         Login successful
                     </Alert>

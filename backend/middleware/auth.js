@@ -2,14 +2,13 @@ const admin = require('../services/firebase');
 
 const authMiddleware = (whiteList =[]) => (req, res, next) => {
     //skip whitelisted urls
-    if(whiteList.find(req.baseUrl))
-        next();
+    // if(whiteList.find(req.baseUrl))
+    //     next();
     //authenticate request
-    return admin.auth().verifyIdToken(req.idToken)
+    return admin.auth().verifyIdToken(req.body.idToken)
         .then(function(decodedToken) {
-            let uid = decodedToken.uid;
+            req.uid = decodedToken.uid;
             return next();
-            // ...
         }).catch(function(error) {
             return res.send(401, 'Failed to authenticate your request');
         });

@@ -5,6 +5,8 @@ import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
+import {withFirebase} from "../../../../services/firebase";
+import axios from "axios";
 
 const styles = theme => ({
     paper: {
@@ -56,6 +58,24 @@ class JobSubmission extends React.Component {
         });
     }
 
+    handleJobSubmission = () => {
+        this.props.firebase.auth.onAuthStateChanged((user) => {
+            user.getIdToken().then((token) => {
+                axios.post(
+                    'http://localhost:3001/jobs',
+                    {
+                        idToken: token,
+                        job: {
+                            repoURL: this.state.repo
+                        }
+                    }
+                ).then((res) => {
+                    this.props.handleAddJobClose();
+                    this.props.handleJobNotification(true);
+                }).catch(console.log);
+            }).catch(console.log);
+        })
+    };
 
     render() {
         const {classes} = this.props;
@@ -88,6 +108,7 @@ class JobSubmission extends React.Component {
                                 variant="contained"
                                 color="primary"
                                 fullWidth
+                                onClick={() => this.handleJobSubmission()}
                                 className={classes.submit}>
                                 Submit
                             </Button>
@@ -99,4 +120,4 @@ class JobSubmission extends React.Component {
     }
 }
 
-export default withStyles(styles)(JobSubmission);
+export default withStyles(styles)(withFirebase(JobSubmission));

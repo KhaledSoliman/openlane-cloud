@@ -15,7 +15,7 @@ export default class Header extends Component {
                     <Grid justify="space-between" alignItems="center" container>
                         <Grid item>
                             <Typography variant="h6" color="inherit" noWrap>
-                                OpenLANE Cloud
+                                Openlane Cloud
                             </Typography>
                         </Grid>
                         <Grid item>

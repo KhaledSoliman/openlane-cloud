@@ -3,6 +3,8 @@ import {JobsToolbar, JobsTable, JobSubmission} from './components';
 import mockData from './data';
 import withStyles from "@material-ui/core/styles/withStyles";
 import Modal from "@material-ui/core/Modal";
+import Snackbar from "@material-ui/core/Snackbar";
+import Alert from "@material-ui/lab/Alert";
 
 const styles = theme => ({
     root: {
@@ -16,31 +18,36 @@ const styles = theme => ({
 class Jobs extends React.Component {
     constructor(props) {
         super(props);
-        const self = this;
     }
 
     state = {
         addJobOpen: false,
         users: mockData,
-    }
+        jobNotification: false
+    };
 
     handleAddJobOpen = () => {
         this.setState({
             addJobOpen: true
         })
-    }
+    };
 
     handleAddJobClose = () => {
         this.setState({
             addJobOpen: false
         })
-    }
+    };
+
+    handleJobNotification = (bool) => {
+        this.setState({jobNotification: bool});
+    };
 
     render() {
         const {classes} = this.props;
         const {
             addJobOpen,
             users,
+            jobNotification
         } = this.state;
         return (
             <div className={classes.root}>
@@ -55,9 +62,15 @@ class Jobs extends React.Component {
                     aria-describedby="modal-description"
                 >
                     <>
-                        <JobSubmission/>
+                        <JobSubmission handleAddJobClose={this.handleAddJobClose} handleJobNotification={this.handleJobNotification}/>
                     </>
                 </Modal>
+                <Snackbar open={jobNotification} anchorOrigin={{horizontal: 'center', vertical: 'bottom'}}
+                          autoHideDuration={3000} onClose={() => this.handleJobNotification(false)}>
+                    <Alert onClose={() => this.handleJobNotification(false)} severity="success">
+                        Job submission successful
+                    </Alert>
+                </Snackbar>
             </div>
         );
     }

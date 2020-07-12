@@ -4,35 +4,36 @@
 const createError = require('http-errors');
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 const logger = require('morgan');
+const winstonLogger =require('./log/logger');
 const auth = require('./middleware/auth');
 const cors = require('cors');
-const Scheduler = require('./services/scheduler');
-schedulerService = new Scheduler();
 const corsOptions = {
     origin: (origin, cb) => {
         cb(null, true)
     }
 };
 const allowUrl = ['public', 'downloads'];
-
-
 const app = express();
 
 /**
  * Middleware
  */
 app.use(cors(corsOptions));
-app.use(auth(allowUrl));
+// parse application/json
+app.use(bodyParser.json());
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
+app.use(auth(allowUrl));
 
 /**
  * Routes
  */
-app.use('/users', require('./routes/users'));
+app.use('/jobs', require('./routes/jobs'));
 
 /**
  * Catch 404 and forward to error handler
@@ -46,9 +47,9 @@ app.use(function (req, res, next) {
  */
 app.use(function (err, req, res, next) {
     res.locals.message = err.message;
+    winstonLogger.error(err);
     res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-    res.send(err.status || 500);
+    res.sendStatus(err.status || 500);
 });
 
 module.exports = app;

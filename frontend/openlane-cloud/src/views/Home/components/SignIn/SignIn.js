@@ -91,6 +91,9 @@ class SignIn extends React.Component {
         loginErrorMessage: '',
         forgetError: false,
         forgetErrorMessage: '',
+        loginEmailIsEmpty: false,
+        loginPWIsEmpty: false,
+        forgetIsEmpty: false,
     };
 
     constructor(props) {
@@ -129,6 +132,12 @@ class SignIn extends React.Component {
                 this.setState({loginError: true, loginErrorMessage: err.message});
                 console.log(err);
             });
+        else{
+            if (email === '')
+                this.setState({loginEmailIsEmpty: true});
+            if (password === '')
+                this.setState({loginPWIsEmpty: true});
+        }
     }
 
     handleForgetPassword(e, firebase) {
@@ -142,6 +151,8 @@ class SignIn extends React.Component {
                 this.setState({forgetError: true, forgetErrorMessage: err.message});
                 console.log(err);
             });
+        else
+            this.setState({forgetIsEmpty: true});
     }
 
     handleLoginErrorClose = () => {
@@ -165,7 +176,10 @@ class SignIn extends React.Component {
             loginError,
             loginErrorMessage,
             forgetError,
-            forgetErrorMessage
+            forgetErrorMessage,
+            loginEmailIsEmpty,
+            loginPWIsEmpty,
+            forgetIsEmpty,
         } = this.state;
 
         return (
@@ -190,6 +204,7 @@ class SignIn extends React.Component {
                                         margin="normal"
                                         required
                                         fullWidth
+                                        error={loginEmailIsEmpty ? true : false}
                                         id="email"
                                         label="Email Address"
                                         name="email"
@@ -204,6 +219,7 @@ class SignIn extends React.Component {
                                         margin="normal"
                                         required
                                         fullWidth
+                                        error={loginPWIsEmpty ? true : false}
                                         name="password"
                                         label="Password"
                                         type="password"
@@ -270,7 +286,7 @@ class SignIn extends React.Component {
                             label="Email Address"
                             name="email"
                             autoComplete="email"
-                            autoFocus
+                            error={forgetIsEmpty ? true : false}
                             value={email}
                             onChange={e => this.updateInputVal(e)}
                         />

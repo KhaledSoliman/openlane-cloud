@@ -14,19 +14,6 @@ queue.process(function (job, done) {
     console.log(`Processing job ${job.id}`);
     return done(null, job.data.x + job.data.y);
 });
-// client.set('string key', 'string val', redis.print)
-// client.hset('hash key', 'hashtest 1', 'some value', redis.print)
-// client.hset(['hash key', 'hashtest 2', 'some other value'], redis.print)
-//
-// client.hkeys('hash key', function (err, replies) {
-//     console.log(replies.length + ' replies:');
-//
-//     replies.forEach(function (reply, i) {
-//         console.log('    ' + i + ': ' + reply)
-//     });
-//
-//     client.quit()
-// });
 
 
 class Scheduler {
@@ -52,6 +39,10 @@ class Scheduler {
         });
         logger.info('Scheduler Initialized');
         this.workQueue = new Queue();
+    }
+
+    addJob(){
+
     }
 
 }

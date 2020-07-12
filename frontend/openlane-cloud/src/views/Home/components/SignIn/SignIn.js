@@ -14,6 +14,8 @@ import PropTypes from "prop-types";
 import FirebaseContext from "../../../../services/firebase/context";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import IconButton from "@material-ui/core/IconButton";
+import {Alert, AlertTitle} from '@material-ui/lab';
+import Collapse from "@material-ui/core/Collapse";
 
 
 const styles = theme => ({
@@ -84,7 +86,9 @@ class SignIn extends React.Component {
     state = {
         forgotPasswordClicked: false,
         email: '',
-        password: ''
+        password: '',
+        loginError: false,
+        loginErrorMessage: '',
     };
 
     constructor(props) {
@@ -119,6 +123,7 @@ class SignIn extends React.Component {
                 console.log(res);
                 this.props.handleSignInClose();
             }).catch((err) => {
+                this.setState({loginError: true, loginErrorMessage: err.message});
                 console.log(err);
             });
     }
@@ -135,6 +140,12 @@ class SignIn extends React.Component {
             });
     }
 
+    handleLoginErrorClose = () => {
+        this.setState({
+            loginError: false
+        });
+    };
+
     render() {
         // console.log(firebase.auth.currentUser);
         const {classes} = this.props;
@@ -142,6 +153,8 @@ class SignIn extends React.Component {
             forgotPasswordClicked,
             email,
             password,
+            loginError,
+            loginErrorMessage
         } = this.state;
 
         return (
@@ -153,6 +166,12 @@ class SignIn extends React.Component {
                         </Avatar>
                         <Typography variant="h4">Sign in to OpenLANE Cloud</Typography>
                         <form className={classes.form} noValidate>
+                            <Collapse in={loginError}>
+                                <Alert severity="error" onClose={() => this.handleLoginErrorClose()}>
+                                    <AlertTitle>Login Error</AlertTitle>
+                                    {loginErrorMessage}
+                                </Alert>
+                            </Collapse>
                             <Grid container direction="column" justify="space-evenly">
                                 <Grid item>
                                     <TextField
@@ -191,7 +210,8 @@ class SignIn extends React.Component {
                                         />
                                     </Grid>
                                     <Grid item>
-                                        <Link href="#" variant="body2" color="secondary" onClick={() => this.forgotPasswordOpen()}>
+                                        <Link href="#" variant="body2" color="secondary"
+                                              onClick={() => this.forgotPasswordOpen()}>
                                             Forgot Password?
                                         </Link>
                                     </Grid>

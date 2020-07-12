@@ -96,9 +96,15 @@ class Home extends React.Component {
 
 
     handleSignUp = (e, firebase) => {
-        const {password, confirmPassword, email} = this.state;
+        const {firstName, lastName, password, confirmPassword, email} = this.state;
         if (password === confirmPassword && email !== '')
             firebase.doCreateUserWithEmailAndPassword(email, password).then((res) => {
+                res.user.updateProfile({
+                    displayName: firstName + " " + lastName
+                }).then(() => {
+                }).catch((err) => {
+                    console.log(err);
+                });
                 console.log(res);
             }).catch((err) => {
                 console.log(err);

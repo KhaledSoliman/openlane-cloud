@@ -13,7 +13,6 @@ import {
     Account as AccountView,
     Settings as SettingsView,
     Home as HomeView,
-    JobSubmission as JobSubmissionView,
     Jobs as JobsView,
     NotFound as NotFoundView
 } from './views';
@@ -50,12 +49,6 @@ const Routes = () => {
                 exact
                 layout={MainLayout}
                 path="/products"
-            />
-            <RouteWithLayout
-                component={JobSubmissionView}
-                exact
-                layout={MainLayout}
-                path="/submission"
             />
             <RouteWithLayout
                 component={JobsView}

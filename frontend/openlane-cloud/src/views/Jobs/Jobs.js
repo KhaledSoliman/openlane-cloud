@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
-import {UsersToolbar, UsersTable} from './components';
+import {JobsToolbar, JobsTable, JobSubmission} from './components';
 import mockData from './data';
 import withStyles from "@material-ui/core/styles/withStyles";
+import Modal from "@material-ui/core/Modal";
 
 const styles = theme => ({
     root: {
@@ -19,20 +20,44 @@ class Jobs extends React.Component {
     }
 
     state = {
+        addJobOpen: false,
         users: mockData,
+    }
+
+    handleAddJobOpen = () => {
+        this.setState({
+            addJobOpen: true
+        })
+    }
+
+    handleAddJobClose = () => {
+        this.setState({
+            addJobOpen: false
+        })
     }
 
     render() {
         const {classes} = this.props;
         const {
+            addJobOpen,
             users,
         } = this.state;
         return (
             <div className={classes.root}>
-                <UsersToolbar/>
+                <JobsToolbar handleAddJobOpen={this.handleAddJobOpen}/>
                 <div className={classes.content}>
-                    <UsersTable users={users}/>
+                    <JobsTable users={users}/>
                 </div>
+                <Modal
+                    open={addJobOpen}
+                    onClose={() => this.handleAddJobClose()}
+                    aria-labelledby="modal-title"
+                    aria-describedby="modal-description"
+                >
+                    <>
+                        <JobSubmission/>
+                    </>
+                </Modal>
             </div>
         );
     }

@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const UsersTable = props => {
+const JobsTable = props => {
   const { className, users, ...rest } = props;
 
   const classes = useStyles();
@@ -179,9 +179,9 @@ const UsersTable = props => {
   );
 };
 
-UsersTable.propTypes = {
+JobsTable.propTypes = {
   className: PropTypes.string,
   users: PropTypes.array.isRequired
 };
 
-export default UsersTable;
+export default JobsTable;

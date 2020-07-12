@@ -12,7 +12,7 @@ import Alert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
 import Collapse from "@material-ui/core/Collapse";
 import {AlertTitle} from "@material-ui/lab";
-
+import Footer from "./components/Footer";
 const styles = theme => ({
     root: {
         height: "auto",
@@ -43,10 +43,6 @@ const styles = theme => ({
         display: 'inline-block',
         maxWidth: '100%',
         width: 700
-    },
-    alert: {
-        marginTop: 20,
-        marginBottom: 20,
     },
 });
 
@@ -223,7 +219,7 @@ class Home extends React.Component {
                                                         variant="outlined"
                                                         required
                                                         fullWidth
-                                                        error={fNameEmpty ? true : false}
+                                                        error={fNameEmpty}
                                                         id="firstName"
                                                         label="First Name"
                                                         value={firstName}
@@ -236,7 +232,7 @@ class Home extends React.Component {
                                                         margin="normal"
                                                         required
                                                         fullWidth
-                                                        error={lNameEmpty ? true : false}
+                                                        error={lNameEmpty}
                                                         id="lastName"
                                                         label="Last Name"
                                                         name="lastName"
@@ -251,7 +247,7 @@ class Home extends React.Component {
                                                         required
                                                         margin="normal"
                                                         fullWidth
-                                                        error={emailEmpty ? true : false}
+                                                        error={emailEmpty}
                                                         id="email"
                                                         label="Email Address"
                                                         name="email"
@@ -269,7 +265,7 @@ class Home extends React.Component {
                                                             margin="normal"
                                                             required
                                                             fullWidth
-                                                            error={pwOneEmpty ? true : false}
+                                                            error={pwOneEmpty}
                                                             name="password"
                                                             label="Password"
                                                             type="password"
@@ -286,7 +282,7 @@ class Home extends React.Component {
                                                         margin="normal"
                                                         required
                                                         fullWidth
-                                                        error={pwTwoEmpty ? true : false}
+                                                        error={pwTwoEmpty}
                                                         name="confirmPassword"
                                                         label="Confirm Password"
                                                         type="password"
@@ -318,15 +314,8 @@ class Home extends React.Component {
                             </Grid>
                         </Box>
                     </div>
-                    <Typography variant="body2" color="textPrimary" align="center">
-                        {'Copyright © '}
-                        <Link color="inherit" href="#">
-                            Openlane Cloud
-                        </Link>{' '}
-                        {new Date().getFullYear()}
-                        {'.'}
-                    </Typography>
                 </Container>
+                <Footer />
                 <Modal
                     open={signInOpen}
                     onClose={() => this.handleSignInClose()}
@@ -334,12 +323,10 @@ class Home extends React.Component {
                     aria-describedby="modal-description"
                 >
                     <>
-                        <SignIn handleLoginSuccess={this.handleLoginSuccess}
-                                handleSignInClose={this.handleSignInClose}/>
+                        <SignIn handleLoginSuccess={this.handleLoginSuccess} handleSignInClose={this.handleSignInClose}/>
                     </>
                 </Modal>
-                <Snackbar open={loginSuccess} anchorOrigin={{horizontal: 'center', vertical: 'top'}}
-                          autoHideDuration={3000} onClose={() => this.handleLoginSuccess(false)}>
+                <Snackbar open={loginSuccess} anchorOrigin={{horizontal: 'center', vertical: 'top'}} autoHideDuration={3000} onClose={() => this.handleLoginSuccess(false)}>
                     <Alert onClose={() => this.handleLoginSuccess(false)} severity="success">
                         Login successful
                     </Alert>

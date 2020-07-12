@@ -1,39 +1,44 @@
 import React, {Component} from 'react';
 import {AppBar, Button, Grid, Toolbar, Typography} from "@material-ui/core";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import Link from "@material-ui/core/Link";
 
 
 export default class Header extends Component {
 
     render() {
-        const {handleSignInOpen,handleSignOut, handleDBClick, firebase, user} = this.props;
+        const {handleSignInOpen, handleSignOut, handleDBClick, firebase, user} = this.props;
 
         return (
-            <AppBar color="secondary" position="static">
+            <AppBar position="static" color="secondary" elevation={0}>
                 <Toolbar>
                     <Grid justify="space-between" alignItems="center" container>
-                        <Grid item><Typography color="primary">OpenLANE Cloud</Typography></Grid>
+                        <Grid item>
+                            <Typography variant="h6" color="inherit" noWrap>
+                                OpenLANE Cloud
+                            </Typography>
+                        </Grid>
                         <Grid item>
                             {user ?
                                 <Grid justify="space-between" alignItems="center" container spacing={3}>
                                     <Grid item>
-
                                         <Button color="primary" onClick={() => handleDBClick()}>
-                                            <ExitToAppIcon /> Dashboard
+                                            <ExitToAppIcon/> Dashboard
                                         </Button>
                                     </Grid>
                                     <Grid item>
-                                        <Button color="primary" onClick={() => handleSignOut(firebase)}>
+                                        <Button variant='outlined' color="primary"
+                                                onClick={() => handleSignOut(firebase)}>
                                             Sign out
                                         </Button>
                                     </Grid>
-                                </Grid>:
-                                <Button color="primary" onClick={() => handleSignInOpen()}>
+                                </Grid> :
+                                <Button variant='outlined' color="primary" onClick={() => handleSignInOpen()}>
                                     Login
                                 </Button>}
+                        </Grid>
                     </Grid>
-                </Grid>
-            </Toolbar>
-    </AppBar>);
+                </Toolbar>
+            </AppBar>);
     }
-    }
+}

@@ -10,6 +10,8 @@ import FirebaseContext, {withFirebase} from "../../services/firebase/context";
 import Header from "./components/Header";
 import Alert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
+import Collapse from "@material-ui/core/Collapse";
+import {AlertTitle} from "@material-ui/lab";
 
 const styles = theme => ({
     root: {
@@ -42,6 +44,10 @@ const styles = theme => ({
         maxWidth: '100%',
         width: 700
     },
+    alert: {
+        marginTop: 20,
+        marginBottom: 20,
+    },
 });
 
 class Home extends React.Component {
@@ -63,6 +69,13 @@ class Home extends React.Component {
         error: null,
         user: null,
         loginSuccess: false,
+        signUpError: false,
+        signUpErrorMessage: '',
+        fNameEmpty: false,
+        lNameEmpty: false,
+        emailEmpty: false,
+        pwOneEmpty: false,
+        pwTwoEmpty: false,
     };
 
     handleLoginSuccess = (bool) => {
@@ -104,7 +117,7 @@ class Home extends React.Component {
 
     handleSignUp = (e, firebase) => {
         const {firstName, lastName, password, confirmPassword, email} = this.state;
-        if (password === confirmPassword && email !== '')
+        if (password === confirmPassword && email !== '' && firstName !== '' && lastName !== '')
             firebase.doCreateUserWithEmailAndPassword(email, password).then((res) => {
                 res.user.updateProfile({
                     displayName: firstName + " " + lastName
@@ -114,8 +127,27 @@ class Home extends React.Component {
                 });
                 console.log(res);
             }).catch((err) => {
+                this.setState({signUpError: true, signUpErrorMessage: err.message});
                 console.log(err);
             });
+        else{
+            if (email === '')
+                this.setState({emailEmpty: true});
+            if (firstName === '')
+                this.setState({fNameEmpty: true});
+            if (lastName === '')
+                this.setState({lNameEmpty: true});
+            if (password === '')
+                this.setState({pwOneEmpty: true});
+            if (confirmPassword === '')
+                this.setState({pwTwoEmpty: true});
+        }
+    };
+
+    handleSignUpErrorClose = () => {
+        this.setState({
+            signUpError: false
+        });
     };
 
     render() {
@@ -128,7 +160,14 @@ class Home extends React.Component {
             firstName,
             lastName,
             user,
-            loginSuccess
+            loginSuccess,
+            signUpError,
+            signUpErrorMessage,
+            fNameEmpty,
+            lNameEmpty,
+            emailEmpty,
+            pwOneEmpty,
+            pwTwoEmpty,
         } = this.state;
         return (
             <div className={classes.root}>
@@ -169,6 +208,14 @@ class Home extends React.Component {
                                                     <Typography variant="h3">Get Started!</Typography>
                                                 </Grid>
                                                 <Grid item xs={10}>
+                                                    <Collapse in={signUpError}>
+                                                        <Alert severity="error" className={classes.alert} onClose={() => this.handleSignUpErrorClose()}>
+                                                            <AlertTitle>Sign Up Error</AlertTitle>
+                                                            {signUpErrorMessage}
+                                                        </Alert>
+                                                    </Collapse>
+                                                </Grid>
+                                                <Grid item xs={10}>
                                                     <TextField
                                                         autoComplete="firstName"
                                                         name="firstName"
@@ -176,6 +223,7 @@ class Home extends React.Component {
                                                         variant="outlined"
                                                         required
                                                         fullWidth
+                                                        error={fNameEmpty ? true : false}
                                                         id="firstName"
                                                         label="First Name"
                                                         value={firstName}
@@ -188,6 +236,7 @@ class Home extends React.Component {
                                                         margin="normal"
                                                         required
                                                         fullWidth
+                                                        error={lNameEmpty ? true : false}
                                                         id="lastName"
                                                         label="Last Name"
                                                         name="lastName"
@@ -202,6 +251,7 @@ class Home extends React.Component {
                                                         required
                                                         margin="normal"
                                                         fullWidth
+                                                        error={emailEmpty ? true : false}
                                                         id="email"
                                                         label="Email Address"
                                                         name="email"
@@ -219,6 +269,7 @@ class Home extends React.Component {
                                                             margin="normal"
                                                             required
                                                             fullWidth
+                                                            error={pwOneEmpty ? true : false}
                                                             name="password"
                                                             label="Password"
                                                             type="password"
@@ -235,6 +286,7 @@ class Home extends React.Component {
                                                         margin="normal"
                                                         required
                                                         fullWidth
+                                                        error={pwTwoEmpty ? true : false}
                                                         name="confirmPassword"
                                                         label="Confirm Password"
                                                         type="password"
@@ -282,10 +334,12 @@ class Home extends React.Component {
                     aria-describedby="modal-description"
                 >
                     <>
-                        <SignIn handleLoginSuccess={this.handleLoginSuccess} handleSignInClose={this.handleSignInClose}/>
+                        <SignIn handleLoginSuccess={this.handleLoginSuccess}
+                                handleSignInClose={this.handleSignInClose}/>
                     </>
                 </Modal>
-                <Snackbar open={loginSuccess} anchorOrigin={{horizontal: 'center', vertical: 'top'}} autoHideDuration={3000} onClose={() => this.handleLoginSuccess(false)}>
+                <Snackbar open={loginSuccess} anchorOrigin={{horizontal: 'center', vertical: 'top'}}
+                          autoHideDuration={3000} onClose={() => this.handleLoginSuccess(false)}>
                     <Alert onClose={() => this.handleLoginSuccess(false)} severity="success">
                         Login successful
                     </Alert>

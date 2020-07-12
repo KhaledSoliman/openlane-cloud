@@ -79,16 +79,18 @@ const styles = theme => ({
     },
     iconButton: {
         color: 'black'
-    }
+    },
 });
 
 class SignIn extends React.Component {
     state = {
-        forgotPasswordClicked: false,
+        forgetPasswordClicked: false,
         email: '',
         password: '',
         loginError: false,
         loginErrorMessage: '',
+        forgetError: false,
+        forgetErrorMessage: '',
     };
 
     constructor(props) {
@@ -103,13 +105,13 @@ class SignIn extends React.Component {
         });
     }
 
-    forgotPasswordOpen() {
+    forgetPasswordOpen() {
         this.setState({
             forgotPasswordClicked: true
         });
     }
 
-    forgotPasswordClose() {
+    forgetPasswordClose() {
         this.setState({
             forgotPasswordClicked: false
         });
@@ -134,9 +136,10 @@ class SignIn extends React.Component {
         const {email} = this.state;
         if (email !== '')
             firebase.doPasswordReset(email).then((res) => {
-                this.forgotPasswordClose();
+                this.forgetPasswordClose();
                 this.props.handleSignInClose();
             }).catch((err) => {
+                this.setState({forgetError: true, forgetErrorMessage: err.message});
                 console.log(err);
             });
     }
@@ -147,15 +150,22 @@ class SignIn extends React.Component {
         });
     };
 
+    handleForgetErrorClose = () => {
+        this.setState({
+            forgetError: false
+        });
+    };
+
     render() {
-        // console.log(firebase.auth.currentUser);
         const {classes} = this.props;
         const {
             forgotPasswordClicked,
             email,
             password,
             loginError,
-            loginErrorMessage
+            loginErrorMessage,
+            forgetError,
+            forgetErrorMessage
         } = this.state;
 
         return (
@@ -212,7 +222,7 @@ class SignIn extends React.Component {
                                     </Grid>
                                     <Grid item>
                                         <Link href="#" variant="body2" color="secondary"
-                                              onClick={() => this.forgotPasswordOpen()}>
+                                              onClick={() => this.forgetPasswordOpen()}>
                                             Forgot Password?
                                         </Link>
                                     </Grid>
@@ -235,7 +245,7 @@ class SignIn extends React.Component {
                     <Paper className={classes.paper2}>
                         <Grid container direction="row" alignItems="center">
                             <Grid container item xs={3} justify="flex-start">
-                                <IconButton className={classes.iconButton} onClick={() => this.forgotPasswordClose()}>
+                                <IconButton className={classes.iconButton} onClick={() => this.forgetPasswordClose()}>
                                     <ArrowBackIcon/>
                                 </IconButton>
                             </Grid>
@@ -245,6 +255,12 @@ class SignIn extends React.Component {
                         </Grid>
                         <Typography variant="body1" align="center">Enter your user account's verified email address and
                             we will send you a password reset link.</Typography>
+                        <Collapse in={forgetError}>
+                            <Alert severity="error" onClose={() => this.handleForgetErrorClose()}>
+                                <AlertTitle>Error!</AlertTitle>
+                                {forgetErrorMessage}
+                            </Alert>
+                        </Collapse>
                         <TextField
                             variant="outlined"
                             margin="normal"

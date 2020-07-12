@@ -8,6 +8,8 @@ import {withRouter} from 'react-router-dom';
 import withStyles from "@material-ui/core/styles/withStyles";
 import FirebaseContext, {withFirebase} from "../../services/firebase/context";
 import Header from "./components/Header";
+import Alert from "@material-ui/lab/Alert";
+import Snackbar from "@material-ui/core/Snackbar";
 
 const styles = theme => ({
     root: {
@@ -60,6 +62,11 @@ class Home extends React.Component {
         confirmPassword: '',
         error: null,
         user: null,
+        loginSuccess: false,
+    };
+
+    handleLoginSuccess = (bool) => {
+        this.setState({loginSuccess: bool});
     };
 
     updateInputVal = (e) => {
@@ -109,7 +116,7 @@ class Home extends React.Component {
             }).catch((err) => {
                 console.log(err);
             });
-    }
+    };
 
     render() {
         const {classes} = this.props;
@@ -120,7 +127,8 @@ class Home extends React.Component {
             confirmPassword,
             firstName,
             lastName,
-            user
+            user,
+            loginSuccess
         } = this.state;
         return (
             <div className={classes.root}>
@@ -274,9 +282,14 @@ class Home extends React.Component {
                     aria-describedby="modal-description"
                 >
                     <>
-                        <SignIn handleSignInClose={this.handleSignInClose}/>
+                        <SignIn handleLoginSuccess={this.handleLoginSuccess} handleSignInClose={this.handleSignInClose}/>
                     </>
                 </Modal>
+                <Snackbar open={loginSuccess} anchorOrigin={{horizontal: 'center', vertical: 'top'}} autoHideDuration={3000} onClose={() => this.handleLoginSuccess(false)}>
+                    <Alert onClose={() => this.handleLoginSuccess(false)} severity="success">
+                        Login successful
+                    </Alert>
+                </Snackbar>
             </div>
         );
     }

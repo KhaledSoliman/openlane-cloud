@@ -122,6 +122,7 @@ class SignIn extends React.Component {
             firebase.doSignInWithEmailAndPassword(email, password).then((res) => {
                 console.log(res);
                 this.props.handleSignInClose();
+                this.props.handleLoginSuccess(true);
             }).catch((err) => {
                 this.setState({loginError: true, loginErrorMessage: err.message});
                 console.log(err);

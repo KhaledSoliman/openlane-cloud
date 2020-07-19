@@ -66,6 +66,7 @@ class JobSubmission extends React.Component {
                     {
                         idToken: token,
                         job: {
+                            email: user.email,
                             repoURL: this.state.repo
                         }
                     }

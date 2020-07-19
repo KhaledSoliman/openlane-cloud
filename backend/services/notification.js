@@ -7,18 +7,19 @@ class Notification {
         this.transporter = nodeMailer.createTransport({
             service: 'gmail',
             auth: {
-                user: 'youremail@gmail.com',
-                pass: 'yourpassword'
+                user: 'kingsonlineforsoftware@gmail.com',
+                pass: 'Walid112358@'
             }
         });
+        logger.info("Notification service initialized");
     }
 
     sendMail(receiver, subject, body) {
         const mailOptions = {
-            from: 'youremail@gmail.com',
-            to: 'myfriend@yahoo.com',
-            subject: 'Sending Email using Node.js',
-            text: 'That was easy!'
+            from: 'khaledsoli111@gmail.com',
+            to: receiver,
+            subject: subject,
+            text: body
         };
         this.transporter.sendMail(mailOptions, function(error, info){
             if (error) {

@@ -4,7 +4,6 @@ import {SignIn} from './components';
 import Modal from "@material-ui/core/Modal";
 import CardContent from "@material-ui/core/CardContent";
 import Card from "@material-ui/core/Card";
-import {withRouter} from 'react-router-dom';
 import withStyles from "@material-ui/core/styles/withStyles";
 import FirebaseContext, {withFirebase} from "../../services/firebase/context";
 import Header from "./components/Header";
@@ -13,7 +12,6 @@ import Snackbar from "@material-ui/core/Snackbar";
 import Collapse from "@material-ui/core/Collapse";
 import {AlertTitle} from "@material-ui/lab";
 import Footer from "./components/Footer";
-import axios from 'axios';
 
 const styles = theme => ({
     root: {
@@ -67,6 +65,7 @@ class Home extends React.Component {
         error: null,
         user: null,
         loginSuccess: false,
+        signOutSuccess: false,
         signUpError: false,
         signUpErrorMessage: '',
         fNameEmpty: false,
@@ -80,37 +79,42 @@ class Home extends React.Component {
         this.setState({loginSuccess: bool});
     };
 
+    handleSignOutSuccess = (bool) => {
+        this.setState({signOutSuccess: bool});
+    };
+
     updateInputVal = (e) => {
         let {name: fieldName, value} = e.target;
 
         this.setState({
             [fieldName]: value
         });
-    }
+    };
 
     handleSignOut = (firebase) => {
         firebase.doSignOut().then(() => {
             this.setState({user: null});
+            this.handleSignOutSuccess(true);
         }).catch((err) => {
             console.log(err);
         });
-    }
+    };
 
     handleSignInOpen = () => {
         this.setState({
             signInOpen: true
         })
-    }
+    };
 
     handleSignInClose = () => {
         this.setState({
             signInOpen: false
         })
-    }
+    };
 
     handleDBClick = () => {
         this.props.history.push("/dashboard");
-    }
+    };
 
 
     handleSignUp = (e, firebase) => {
@@ -160,6 +164,7 @@ class Home extends React.Component {
             lastName,
             user,
             loginSuccess,
+            signOutSuccess,
             signUpError,
             signUpErrorMessage,
             fNameEmpty,
@@ -334,7 +339,13 @@ class Home extends React.Component {
                 <Snackbar open={loginSuccess} anchorOrigin={{horizontal: 'center', vertical: 'top'}}
                           autoHideDuration={3000} onClose={() => this.handleLoginSuccess(false)}>
                     <Alert onClose={() => this.handleLoginSuccess(false)} severity="success">
-                        Login successful
+                        Sign in successful
+                    </Alert>
+                </Snackbar>
+                <Snackbar open={signOutSuccess} anchorOrigin={{horizontal: 'center', vertical: 'top'}}
+                          autoHideDuration={3000} onClose={() => this.handleSignOutSuccess(false)}>
+                    <Alert onClose={() => this.handleSignOutSuccess(false)} severity="success">
+                        Sign out successful
                     </Alert>
                 </Snackbar>
             </div>

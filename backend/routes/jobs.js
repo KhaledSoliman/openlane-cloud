@@ -7,7 +7,8 @@ const scheduler = new Scheduler();
  * Submit Job Request
  */
 router.post('/', function (req, res, next) {
-    res.send(scheduler.addJob(req.uid, req.body.job));
+    scheduler.addJob(req.uid, req.body.job);
+    res.sendStatus(200);
 });
 
 module.exports = router;

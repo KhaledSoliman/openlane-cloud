@@ -11,12 +11,13 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import {withStyles} from "@material-ui/core/styles";
 import PropTypes from "prop-types";
-import FirebaseContext from "../../../../services/firebase/context";
+import FirebaseContext, {withFirebase} from "../../../../services/firebase/context";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import IconButton from "@material-ui/core/IconButton";
 import {Alert, AlertTitle} from '@material-ui/lab';
 import Collapse from "@material-ui/core/Collapse";
-
+import * as firebaseui from 'firebaseui'
+import {StyledFirebaseAuth} from "react-firebaseui";
 
 const styles = theme => ({
     paper: {
@@ -98,6 +99,17 @@ class SignIn extends React.Component {
 
     constructor(props) {
         super(props);
+        this.uiConfig =
+            {
+                signInFlow: 'popup',
+                callbacks: {
+                    signInSuccess: this.signInSuccess.bind(this)
+                },
+                signInOptions: [
+                    props.firebase.authObj.GoogleAuthProvider.PROVIDER_ID,
+                    props.firebase.authObj.GithubAuthProvider.PROVIDER_ID,
+                ]
+            }
     }
 
     updateInputVal(e) {
@@ -120,19 +132,23 @@ class SignIn extends React.Component {
         });
     }
 
+    signInSuccess(res) {
+        console.log(res);
+        this.props.handleSignInClose();
+        this.props.handleLoginSuccess(true);
+    }
+
     handleSignIn(e, firebase) {
         e.preventDefault();
         const {email, password} = this.state;
         if (password !== '' && email !== '')
             firebase.doSignInWithEmailAndPassword(email, password).then((res) => {
-                console.log(res);
-                this.props.handleSignInClose();
-                this.props.handleLoginSuccess(true);
+               this.signInSuccess(res);
             }).catch((err) => {
                 this.setState({loginError: true, loginErrorMessage: err.message});
                 console.log(err);
             });
-        else{
+        else {
             if (email === '')
                 this.setState({loginEmailIsEmpty: true});
             if (password === '')
@@ -168,7 +184,7 @@ class SignIn extends React.Component {
     };
 
     render() {
-        const {classes} = this.props;
+        const {classes, firebase} = this.props;
         const {
             forgotPasswordClicked,
             email,
@@ -181,7 +197,6 @@ class SignIn extends React.Component {
             loginPWIsEmpty,
             forgetIsEmpty,
         } = this.state;
-
         return (
             <>
                 {!forgotPasswordClicked ?
@@ -255,6 +270,11 @@ class SignIn extends React.Component {
                                         </Button>
                                     }}
                                 </FirebaseContext.Consumer>
+                                <FirebaseContext.Consumer>
+                                    {firebase => {
+                                        return <StyledFirebaseAuth uiConfig={this.uiConfig} firebaseAuth={firebase.auth}/>
+                                    }}
+                                </FirebaseContext.Consumer>
                             </Grid>
                         </form>
                     </Paper> :
@@ -314,4 +334,4 @@ SignIn.propTypes = {
 };
 
 
-export default withStyles(styles)(SignIn);
+export default withStyles(styles)(withFirebase(SignIn));

@@ -175,3 +175,6 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+repos/
+openlane.alpha-16/

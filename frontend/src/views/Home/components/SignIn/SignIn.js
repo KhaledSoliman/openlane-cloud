@@ -16,7 +16,6 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import IconButton from "@material-ui/core/IconButton";
 import {Alert, AlertTitle} from '@material-ui/lab';
 import Collapse from "@material-ui/core/Collapse";
-import * as firebaseui from 'firebaseui'
 import {StyledFirebaseAuth} from "react-firebaseui";
 
 const styles = theme => ({

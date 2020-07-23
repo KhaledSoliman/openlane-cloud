@@ -1,5 +1,6 @@
 import app from 'firebase/app';
 import 'firebase/auth';
+import firebase from "firebase";
 
 const prodConfig = {
     apiKey: process.env.REACT_APP_PROD_API_KEY,
@@ -8,6 +9,7 @@ const prodConfig = {
     projectId: process.env.REACT_APP_PROD_PROJECT_ID,
     storageBucket: process.env.REACT_APP_PROD_STORAGE_BUCKET,
     messagingSenderId: process.env.REACT_APP_PROD_MESSAGING_SENDER_ID,
+    appId: process.env.REACT_APP_PROD_ID,
 };
 
 const devConfig = {
@@ -17,6 +19,7 @@ const devConfig = {
     projectId: process.env.REACT_APP_DEV_PROJECT_ID,
     storageBucket: process.env.REACT_APP_DEV_STORAGE_BUCKET,
     messagingSenderId: process.env.REACT_APP_DEV_MESSAGING_SENDER_ID,
+    appId: process.env.REACT_APP_DEV_ID,
 };
 
 const config =
@@ -27,6 +30,7 @@ class Firebase {
         app.initializeApp(config);
         this.auth = app.auth();
         this.authObj  = app.auth;
+       // this.messaging = firebase.messaging();
     }
 
     doCreateUserWithEmailAndPassword = (email, password) =>

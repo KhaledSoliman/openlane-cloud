@@ -22,7 +22,7 @@ class Scheduler {
             try {
                 logger.info(`Processing job ${job.id}`);
                 //self.notification.sendMail(job.data.email, `No-reply: Job #${job.id} processed` , `Job #${job.id} processed with repo url: ${job.data.repoURL}`);
-                await self.resourceService.runJob(job.data.designName);
+                await self.resourceService.runJob(job.data.designName, job.data.regToken);
                 return done(null, job.data.repoURL);
             } catch (e) {
                 logger.error(e);

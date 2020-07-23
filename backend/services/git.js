@@ -1,4 +1,3 @@
-const clone = require('git-clone');
 const logger = require('../log/logger');
 const del = require('del');
 const shell = require('shelljs');

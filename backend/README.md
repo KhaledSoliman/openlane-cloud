@@ -5,3 +5,4 @@
 - openlane
 - docker
 - git
+brew install libpulsar

@@ -45,7 +45,7 @@ class JobsToolbar extends React.Component {
             <div>
                 <div className={classes.row}>
                     <span className={classes.spacer}/>
-                    <Button className={classes.importButton} disabled>Import</Button>
+                    <Button className={classes.importButton} disabled>Delete</Button>
                     <Button className={classes.exportButton} disabled>Export</Button>
                     <Button
                         color="primary"

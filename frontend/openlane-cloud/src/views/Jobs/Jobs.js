@@ -22,7 +22,7 @@ class Jobs extends React.Component {
 
     state = {
         addJobOpen: false,
-        users: mockData,
+        jobsData: mockData,
         jobNotification: false
     };
 
@@ -42,18 +42,22 @@ class Jobs extends React.Component {
         this.setState({jobNotification: bool});
     };
 
+    handleConsoleClick = () => {
+        this.props.history.push("/console");
+    };
+
     render() {
         const {classes} = this.props;
         const {
             addJobOpen,
-            users,
+            jobsData,
             jobNotification
         } = this.state;
         return (
             <div className={classes.root}>
                 <JobsToolbar handleAddJobOpen={this.handleAddJobOpen}/>
                 <div className={classes.content}>
-                    <JobsTable users={users}/>
+                    <JobsTable jobs={jobsData} handleConsoleClick={this.handleConsoleClick}/>
                 </div>
                 <Modal
                     open={addJobOpen}

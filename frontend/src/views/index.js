@@ -7,5 +7,5 @@ export { default as Settings } from './Settings';
 export { default as Home } from './Home';
 export { default as Typography } from './Typography';
 export { default as UserList } from './UserList';
-export { default as JobSubmission } from './Jobs/components/JobSubmission';
+export { default as JobConsole } from './JobConsole';
 export { default as Jobs } from './Jobs';

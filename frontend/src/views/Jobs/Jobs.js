@@ -5,7 +5,6 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import Modal from "@material-ui/core/Modal";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
-import {withFirebase} from "../../services/firebase";
 
 const styles = theme => ({
     root: {
@@ -23,41 +22,9 @@ class Jobs extends React.Component {
 
     state = {
         addJobOpen: false,
-        users: mockData,
-        jobNotification: false,
-        regToken: null
+        jobsData: mockData,
+        jobNotification: false
     };
-
-    updateRegToken = (token) => {
-        this.setState({regToken: token});
-    };
-
-    componentDidMount() {
-        // const messaging = this.props.firebase.messaging;
-        // messaging.usePublicVapidKey("BKq0NFfehH_ddw1pUhZaeEKbvaE1izqr53Z_MHkPC1lefnGL9jbaB5eyOUPRTwI7npbx6V3vzmnfD6T7ZHc2QBk");
-        // messaging.getToken().then((currentToken) => {
-        //     if (currentToken) {
-        //         this.updateRegToken(currentToken);
-        //     } else {
-        //         // Show permission request.
-        //         console.log('No Instance ID token available. Request permission to generate one.');
-        //     }
-        // }).catch((err) => {
-        //     console.log('An error occurred while retrieving token. ', err);
-        // });
-        //
-        // messaging.onTokenRefresh(() => {
-        //     messaging.getToken().then((refreshedToken) => {
-        //         console.log('Token refreshed.');
-        //         this.updateRegToken(refreshedToken);
-        //     }).catch((err) => {
-        //         console.log('Unable to retrieve refreshed token ', err);
-        //     });
-        // });
-        // messaging.onMessage((payload) => {
-        //     console.log('Message received. ', payload);
-        // });
-    }
 
     handleAddJobOpen = () => {
         this.setState({
@@ -75,18 +42,22 @@ class Jobs extends React.Component {
         this.setState({jobNotification: bool});
     };
 
+    handleConsoleClick = () => {
+        this.props.history.push("/console");
+    };
+
     render() {
         const {classes} = this.props;
         const {
             addJobOpen,
-            users,
+            jobsData,
             jobNotification
         } = this.state;
         return (
             <div className={classes.root}>
                 <JobsToolbar handleAddJobOpen={this.handleAddJobOpen}/>
                 <div className={classes.content}>
-                    <JobsTable users={users}/>
+                    <JobsTable jobs={jobsData} handleConsoleClick={this.handleConsoleClick}/>
                 </div>
                 <Modal
                     open={addJobOpen}
@@ -95,8 +66,7 @@ class Jobs extends React.Component {
                     aria-describedby="modal-description"
                 >
                     <>
-                        <JobSubmission regToken={this.state.regToken} handleAddJobClose={this.handleAddJobClose}
-                                       handleJobNotification={this.handleJobNotification}/>
+                        <JobSubmission handleAddJobClose={this.handleAddJobClose} handleJobNotification={this.handleJobNotification}/>
                     </>
                 </Modal>
                 <Snackbar open={jobNotification} anchorOrigin={{horizontal: 'center', vertical: 'bottom'}}
@@ -110,4 +80,4 @@ class Jobs extends React.Component {
     }
 };
 
-export default withStyles(styles)(withFirebase(Jobs));
+export default withStyles(styles)(Jobs);

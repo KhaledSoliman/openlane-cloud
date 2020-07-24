@@ -65,15 +65,23 @@ class JobsTable extends React.Component {
                             data={jobs}
                             columns={[
                                 {
-                                    name: "name",
-                                    label: "Job Name",
+                                    name: "id",
+                                    label: "Job Id",
                                     options: {
                                         searchable: true,
                                         sort: false,
                                     }
                                 },
                                 {
-                                    name: "repo",
+                                    name: "designName",
+                                    label: "Design Name",
+                                    options: {
+                                        searchable: true,
+                                        sort: false,
+                                    }
+                                },
+                                {
+                                    name: "repoURL",
                                     label: "Repository URL",
                                     options: {
                                         searchable: true,
@@ -89,7 +97,7 @@ class JobsTable extends React.Component {
                                     }
                                 },
                                 {
-                                    name: "submission",
+                                    name: "createdAt",
                                     label: "Submission Time",
                                     options: {
                                         searchable: false,

@@ -41,13 +41,16 @@ class Scheduler {
         });
         this.git.cloneRepo(jobDescription.repoURL, jobDescription.designName).then(() => {
             job.save().then((res) => {
+                db['job'].create({
+                    id: job.id,
+                    user_uuid: uuid,
+                    designName: jobDescription.designName,
+                    repoURL: jobDescription.repoURL,
+                    status: 'submitted'
+                });
                 //this.notification.sendMail(job.data.email, `No-reply: Job #${job.id} submitted` , `Job #${job.id} submitted with repo url: ${job.data.repoURL}`);
                 return res;
             })
-        });
-        db['job'].create({
-            user_uuid: uuid,
-            status: 'submitted'
         });
     }
 

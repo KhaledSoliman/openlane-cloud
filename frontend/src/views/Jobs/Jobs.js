@@ -5,6 +5,8 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import Modal from "@material-ui/core/Modal";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
+import {withFirebase} from "../../services/firebase";
+import axios from "axios";
 
 const styles = theme => ({
     root: {
@@ -22,8 +24,30 @@ class Jobs extends React.Component {
 
     state = {
         addJobOpen: false,
-        jobsData: mockData,
+        jobsData: [],
         jobNotification: false
+    };
+
+    componentDidMount() {
+        this.handleQueryJobs();
+    }
+
+    handleQueryJobs() {
+        this.props.firebase.auth.onAuthStateChanged((user) => {
+            user.getIdToken().then((token) => {
+                axios({
+                    method: 'get',
+                    url: 'http://localhost:3001/jobs',
+                    headers: {
+                        'Authorization': token
+                    },
+                }).then((res) => {
+                    this.setState({
+                        jobsData: res.data
+                    });
+                }).catch(console.log);
+            }).catch(console.log);
+        })
     };
 
     handleAddJobOpen = () => {
@@ -80,4 +104,4 @@ class Jobs extends React.Component {
     }
 };
 
-export default withStyles(styles)(Jobs);
+export default withStyles(styles)(withFirebase(Jobs));

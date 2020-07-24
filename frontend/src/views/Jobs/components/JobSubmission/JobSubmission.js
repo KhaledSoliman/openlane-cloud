@@ -61,9 +61,13 @@ class JobSubmission extends React.Component {
     handleJobSubmission = () => {
         this.props.firebase.auth.onAuthStateChanged((user) => {
             user.getIdToken().then((token) => {
-                axios.post(
-                    'http://localhost:3001/jobs',
-                    {
+                axios({
+                    method: 'post',
+                    url: 'http://localhost:3001/jobs',
+                    headers: {
+                        'Authorization': token
+                    },
+                    data: {
                         idToken: token,
                         job: {
                             email: user.email,
@@ -71,7 +75,7 @@ class JobSubmission extends React.Component {
                             regToken: this.props.regToken,
                         }
                     }
-                ).then((res) => {
+                } ).then((res) => {
                     this.props.handleAddJobClose();
                     this.props.handleJobNotification(true);
                 }).catch(console.log);

@@ -16,7 +16,13 @@ module.exports = (sequelize, DataTypes) => {
     };
     job.init({
         user_uuid: DataTypes.UUID,
-        status: DataTypes.ENUM('submitted', 'running', 'done')
+        repoURL: DataTypes.STRING,
+        designName: DataTypes.STRING,
+        status: DataTypes.ENUM('submitted', 'running', 'done'),
+        completedAt: {
+            type: DataTypes.DATE,
+            defaultValue: null
+        }
     }, {
         sequelize,
         modelName: 'job',

@@ -12,7 +12,7 @@ import Snackbar from "@material-ui/core/Snackbar";
 import Collapse from "@material-ui/core/Collapse";
 import {AlertTitle} from "@material-ui/lab";
 import Footer from "./components/Footer";
-import landingImage from '../../assets/images/undraw_page_not_found_su7k.svg';
+import landingImage from '../../assets/images/undraw_programming_2svr.svg';
 
 const styles = theme => ({
     root: {

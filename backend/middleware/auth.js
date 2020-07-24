@@ -5,7 +5,7 @@ const authMiddleware = (whiteList =[]) => (req, res, next) => {
     // if(whiteList.find(req.baseUrl))
     //     next();
     //authenticate request
-    return admin.auth().verifyIdToken(req.body.idToken)
+    return admin.auth().verifyIdToken(req.headers.authorization)
         .then(function(decodedToken) {
             req.uid = decodedToken.uid;
             return next();

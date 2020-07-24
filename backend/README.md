@@ -3,6 +3,6 @@
 ## Prerequistes
 - nodejs & npm
 - openlane
-- docker
+- docker (https://docs.docker.com/desktop/#download-and-install)
 - git
 brew install libpulsar

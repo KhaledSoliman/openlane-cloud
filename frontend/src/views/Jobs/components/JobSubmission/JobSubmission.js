@@ -75,7 +75,7 @@ class JobSubmission extends React.Component {
                             regToken: this.props.regToken,
                         }
                     }
-                } ).then((res) => {
+                }).then((res) => {
                     this.props.handleAddJobClose();
                     this.props.handleJobNotification(true);
                 }).catch(console.log);

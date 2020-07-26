@@ -5,6 +5,7 @@ const Notification = require('./notification');
 const db = require('../models');
 const Git = require('./git');
 const ResourceService = require('./resources');
+const admin = require('./firebase');
 
 class Scheduler {
     constructor() {
@@ -39,6 +40,21 @@ class Scheduler {
             //this.git.deleteRepo(job.id);
             logger.info(`Received result for job ${job.id}: ${result}`);
         });
+        const message = {
+            notification: {
+                title: "Jobs",
+                body: "Your Job repo is now being cloned"
+            },
+            token: jobDescription.regToken
+        };
+        admin.messaging().send(message)
+            .then((response) => {
+                // Response is a message ID string.
+                console.log('Successfully sent message:', response);
+            })
+            .catch((error) => {
+                console.log('Error sending message:', error);
+            });
         this.git.cloneRepo(jobDescription.repoURL, jobDescription.designName).then(() => {
             job.save().then((res) => {
                 db['job'].create({
@@ -48,6 +64,21 @@ class Scheduler {
                     repoURL: jobDescription.repoURL,
                     status: 'submitted'
                 });
+                const message = {
+                    "notification": {
+                        "title": "Jobs",
+                        "body": "Your Job is now scheduled"
+                    },
+                    token: jobDescription.regToken
+                };
+                admin.messaging().send(message)
+                    .then((response) => {
+                        // Response is a message ID string.
+                        console.log('Successfully sent message:', response);
+                    })
+                    .catch((error) => {
+                        console.log('Error sending message:', error);
+                    });
                 //this.notification.sendMail(job.data.email, `No-reply: Job #${job.id} submitted` , `Job #${job.id} submitted with repo url: ${job.data.repoURL}`);
                 return res;
             })

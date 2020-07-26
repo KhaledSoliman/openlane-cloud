@@ -30,7 +30,7 @@ class Firebase {
         app.initializeApp(config);
         this.auth = app.auth();
         this.authObj  = app.auth;
-       // this.messaging = firebase.messaging();
+        this.messaging = firebase.messaging();
     }
 
     doCreateUserWithEmailAndPassword = (email, password) =>

@@ -179,4 +179,4 @@ dist
 repos/
 backend/openlane.alpha-16/
 /backend/openlane/
-/backend/openlane/
+/backend/openlane_working_dir/

@@ -56,6 +56,9 @@ class Home extends React.Component {
         })
     }
 
+    componentDidMount() {
+    }
+
     state = {
         signInOpen: false,
         firstName: '',

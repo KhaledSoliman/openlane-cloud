@@ -22,6 +22,7 @@ const server = http.createServer(app);
  */
 
 server.listen(port);
+const io = require('socket.io')(server);
 server.on('error', onError);
 server.on('listening', onListening);
 

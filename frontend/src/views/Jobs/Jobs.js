@@ -24,15 +24,31 @@ class Jobs extends React.Component {
     state = {
         addJobOpen: false,
         jobsData: [],
-        jobNotification: false
+        jobNotification: false,
+        deviceToken: null,
     };
 
     componentDidMount() {
         this.handleQueryJobs();
+        this.handleGetDeviceToken();
+    }
+
+    handleGetDeviceToken() {
+        this.props.firebase.messaging.getToken().then((currentToken) => {
+            if (currentToken) {
+                this.setState({deviceToken: currentToken});
+            } else {
+                // Show permission request.
+                console.log('No Instance ID token available. Request permission to generate one.');
+            }
+        }).catch((err) => {
+            console.log('An error occurred while retrieving token. ', err);
+        });
     }
 
     handleQueryJobs() {
         this.props.firebase.auth.onAuthStateChanged((user) => {
+            console.log('getting jobs');
             user.getIdToken().then((token) => {
                 axios({
                     method: 'get',
@@ -74,8 +90,10 @@ class Jobs extends React.Component {
         const {
             addJobOpen,
             jobsData,
-            jobNotification
+            jobNotification,
+            deviceToken
         } = this.state;
+
         return (
             <div className={classes.root}>
                 <JobsToolbar handleAddJobOpen={this.handleAddJobOpen}/>
@@ -89,7 +107,7 @@ class Jobs extends React.Component {
                     aria-describedby="modal-description"
                 >
                     <>
-                        <JobSubmission handleAddJobClose={this.handleAddJobClose} handleJobNotification={this.handleJobNotification}/>
+                        <JobSubmission deviceToken={deviceToken} handleAddJobClose={this.handleAddJobClose} handleJobNotification={this.handleJobNotification}/>
                     </>
                 </Modal>
                 <Snackbar open={jobNotification} anchorOrigin={{horizontal: 'center', vertical: 'bottom'}}

@@ -33,7 +33,7 @@ module.exports = {
         publicPath: publicPath,
     },
     devServer: {
-        contentBase: './src/index.js',
+        contentBase: './src/',
         host: '0.0.0.0',
         compress: true,
         port: 3000,
@@ -108,31 +108,31 @@ module.exports = {
             }
         ]
     },
-    optimization: {
-        minimize: true,
-        minimizer: [
-            new TerserPlugin({
-                terserOptions: {
-                    parse: {
-                        ecma: 8,
-                    },
-                    compress: {
-                        ecma: 5,
-                        warnings: false,
-                        comparisons: false
-                    },
-                    mangle: true,
-                    output: {
-                        ecma: 5,
-                        comments: false,
-                        ascii_only: true,
-                    },
-                    safari10: true,
-                },
-                sourceMap: true
-            })
-        ]
-    },
+    // optimization: {
+    //     minimize: true,
+    //     minimizer: [
+    //         new TerserPlugin({
+    //             terserOptions: {
+    //                 parse: {
+    //                     ecma: 8,
+    //                 },
+    //                 compress: {
+    //                     ecma: 5,
+    //                     warnings: false,
+    //                     comparisons: false
+    //                 },
+    //                 mangle: true,
+    //                 output: {
+    //                     ecma: 5,
+    //                     comments: false,
+    //                     ascii_only: true,
+    //                 },
+    //                 safari10: true,
+    //             },
+    //             sourceMap: true
+    //         })
+    //     ]
+    // },
     performance: {
         hints: process.env.NODE_ENV === 'production' ? "warning" : false
     },

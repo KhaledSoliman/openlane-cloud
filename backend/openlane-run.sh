@@ -1,5 +1,5 @@
-cd openlane
+cd openlane_working_dir/openlane.alpha-16
 # shellcheck disable=SC2046
-DOCKER_ID=$(docker run -div $(pwd)/openlane:/openLANE_flow -v $(pwd)/pdks/open_pdks/sky130/pdks:/openLANE_flow/pdks -u $(id -u $USER):$(id -g $USER) openlane:rc1)
+DOCKER_ID=$(docker run -div $(pwd):/openLANE_flow -u $(id -u $USER):$(id -g $USER) openlane:develop)
 docker exec "$DOCKER_ID" ./flow.tcl -design "$1"
 docker stop "$DOCKER_ID"

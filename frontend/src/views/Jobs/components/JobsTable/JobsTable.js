@@ -39,6 +39,7 @@ const options = {
     download: false,
     print: false,
     viewColumns: false,
+    selectableRows: 'none',
 };
 
 class JobsTable extends React.Component {

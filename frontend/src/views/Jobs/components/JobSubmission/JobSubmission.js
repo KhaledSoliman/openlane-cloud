@@ -28,17 +28,11 @@ const styles = theme => ({
     submit: {
         color: 'black',
         boxShadow: 'none',
-        marginLeft: 20,
         minHeight: 54,
         '&:hover': {
             boxShadow: 'none'
         },
     },
-
-    textField: {
-        marginLeft: 0,
-        marginRight: 0,
-    }
 });
 
 class JobSubmission extends React.Component {
@@ -93,8 +87,8 @@ class JobSubmission extends React.Component {
             <>
                 <Paper className={classes.paper}>
                     <Typography variant="h4">Submit Job</Typography>
-                    <Grid container direction="row" alignItems="center">
-                        <Grid item xs={10}>
+                    <Grid container direction="row" alignItems="center" justify="center">
+                        <Grid item xs="12">
                             <TextField
                                 variant="outlined"
                                 margin="normal"
@@ -108,16 +102,17 @@ class JobSubmission extends React.Component {
                                 onChange={e => this.updateInputVal(e)}
                             />
                         </Grid>
-                        <Grid item xs={2}>
+                        <Grid item>
+                            <div align="center">
                             <Button
                                 type="submit"
                                 variant="contained"
                                 color="primary"
-                                fullWidth
                                 onClick={() => this.handleJobSubmission()}
                                 className={classes.submit}>
                                 Submit
                             </Button>
+                            </div>
                         </Grid>
                     </Grid>
                 </Paper>

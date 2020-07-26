@@ -45,6 +45,9 @@ class Firebase {
 
     doPasswordUpdate = password =>
         this.auth.currentUser.updatePassword(password);
+
+    doReauthentication = credential =>
+        this.auth.currentUser.reauthenticateWithCredential(credential);
 }
 
 export default Firebase;

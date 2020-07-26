@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Topbar = props => {
-    const {className, onSidebarOpen, ...rest} = props;
+    const {className, onSidebarOpen, onNotificationsOpen, ...rest} = props;
 
     const classes = useStyles();
 
@@ -39,8 +39,10 @@ const Topbar = props => {
                     <Typography color="primary">OpenLANE Cloud</Typography>
                 </RouterLink>
                 <div className={classes.flexGrow}/>
-                <Hidden mdDown>
-                    <IconButton color="primary">
+                    <IconButton
+                        color="primary"
+                        onClick={onNotificationsOpen}
+                    >
                         <Badge
                             badgeContent={notifications.length}
                             color="primary"
@@ -57,10 +59,9 @@ const Topbar = props => {
                             <ExitToAppIcon/>
                         </IconButton>
                     </RouterLink>
-                </Hidden>
                 <Hidden lgUp>
                     <IconButton
-                        color="inherit"
+                        color="primary"
                         onClick={onSidebarOpen}
                     >
                         <MenuIcon/>

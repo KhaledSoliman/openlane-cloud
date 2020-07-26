@@ -1,6 +1,5 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {JobsToolbar, JobsTable, JobSubmission} from './components';
-import mockData from './data';
 import withStyles from "@material-ui/core/styles/withStyles";
 import Modal from "@material-ui/core/Modal";
 import Snackbar from "@material-ui/core/Snackbar";

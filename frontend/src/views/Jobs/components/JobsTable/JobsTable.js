@@ -54,7 +54,6 @@ class JobsTable extends React.Component {
     };
 
 
-
     render() {
         const {jobs, handleConsoleClick} = this.props;
         return (
@@ -66,7 +65,7 @@ class JobsTable extends React.Component {
                             columns={[
                                 {
                                     name: "id",
-                                    label: "Job Id",
+                                    label: "Job ID",
                                     options: {
                                         searchable: true,
                                         sort: false,

@@ -17,10 +17,20 @@ import {
 
 const useStyles = makeStyles(() => ({
   root: {},
+  card: {
+    width: 600,
+  },
   item: {
     display: 'flex',
     flexDirection: 'column'
-  }
+  },
+  submit: {
+    color: 'black',
+    boxShadow: 'none',
+    '&:hover': {
+      boxShadow: 'none'
+    },
+  },
 }));
 
 const Notifications = props => {
@@ -30,27 +40,24 @@ const Notifications = props => {
 
   return (
     <Card
-      {...rest}
-      className={clsx(classes.root, className)}
+      className={classes.card}
     >
       <form>
         <CardHeader
-          subheader="Manage the notifications"
-          title="Notifications"
+          subheader="Manage your notifications"
+          title="Notifications Settings"
         />
         <Divider />
         <CardContent>
           <Grid
             container
-            spacing={6}
+            spacing={10}
             wrap="wrap"
           >
             <Grid
               className={classes.item}
               item
-              md={4}
-              sm={6}
-              xs={12}
+              xs
             >
               <Typography
                 gutterBottom
@@ -80,28 +87,17 @@ const Notifications = props => {
                 control={<Checkbox color="primary" />}
                 label="Text Messages"
               />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    color="primary"
-                    defaultChecked //
-                  />
-                }
-                label="Phone calls"
-              />
             </Grid>
             <Grid
               className={classes.item}
               item
-              md={4}
-              sm={6}
-              xs={12}
+              xs
             >
               <Typography
                 gutterBottom
                 variant="h6"
               >
-                Messages
+                Newsletter
               </Typography>
               <FormControlLabel
                 control={
@@ -116,15 +112,6 @@ const Notifications = props => {
                 control={<Checkbox color="primary" />}
                 label="Push Notifications"
               />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    color="primary"
-                    defaultChecked //
-                  />
-                }
-                label="Phone calls"
-              />
             </Grid>
           </Grid>
         </CardContent>
@@ -132,7 +119,8 @@ const Notifications = props => {
         <CardActions>
           <Button
             color="primary"
-            variant="outlined"
+            variant="contained"
+            className={classes.submit}
           >
             Save
           </Button>

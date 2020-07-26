@@ -128,7 +128,7 @@ web_modules/
 backend/.env
 .env
 .env.test
-frontend/openlane-cloud/.env
+frontend/.env
 
 #firebase
 backend/ordinal-mote-281302-firebase-adminsdk-27cvg-1d92276163.json
@@ -178,3 +178,5 @@ dist
 
 repos/
 backend/openlane.alpha-16/
+/backend/openlane/
+/backend/openlane/

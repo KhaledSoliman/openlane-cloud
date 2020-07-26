@@ -54,6 +54,11 @@ const Sidebar = props => {
             href: '/jobs',
             icon: <WorkIcon/>
         },
+        {
+            title: 'Settings',
+            href: '/settings',
+            icon: <SettingsIcon/>
+        },
     ];
 
     return (

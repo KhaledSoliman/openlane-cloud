@@ -15,7 +15,8 @@ import {
     Home as HomeView,
     Jobs as JobsView,
     JobConsole as JobConsoleView,
-    NotFound as NotFoundView
+    NotFound as NotFoundView,
+    Home3 as Home3View,
 } from './views';
 
 const Routes = () => {
@@ -38,6 +39,12 @@ const Routes = () => {
                 exact
                 layout={MainLayout}
                 path="/dashboard"
+            />
+            <RouteWithLayout
+                component={Home3View}
+                exact
+                layout={SALayout}
+                path="/home3"
             />
             <RouteWithLayout
                 component={UserListView}

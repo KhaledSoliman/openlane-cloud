@@ -55,7 +55,7 @@ const styles = theme => ({
     },
 });
 
-class SignIn extends React.Component {
+class SignUp extends React.Component {
     state = {
         forgetPasswordClicked: false,
         email: '',
@@ -304,9 +304,9 @@ class SignIn extends React.Component {
     }
 }
 
-SignIn.propTypes = {
+SignUp.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
 
-export default withStyles(styles)(withFirebase(SignIn));
+export default withStyles(styles)(withFirebase(SignUp));

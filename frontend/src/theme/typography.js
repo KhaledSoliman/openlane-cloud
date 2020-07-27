@@ -3,10 +3,10 @@ import palette from './palette';
 export default {
   h1: {
     color: palette.text.primary,
-    fontWeight: 600,
-    fontSize: '40px',
+    fontWeight: 900,
+    fontSize: '80px',
     letterSpacing: '-0.24px',
-    lineHeight: '40px'
+    lineHeight: '74px'
   },
   h2: {
     color: palette.text.primary,
@@ -38,10 +38,10 @@ export default {
   },
   h6: {
     color: palette.text.primary,
-    fontWeight: 500,
-    fontSize: '14px',
+    fontWeight: 300,
+    fontSize: '22px',
     letterSpacing: '-0.05px',
-    lineHeight: '20px'
+    lineHeight: '26px'
   },
   subtitle1: {
     color: palette.text.primary,

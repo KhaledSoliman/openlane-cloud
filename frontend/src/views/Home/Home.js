@@ -1,24 +1,15 @@
 import React, {useState} from 'react';
-import {Button, Grid, Container, TextField, Box, Tooltip, Typography, Link} from '@material-ui/core'
-import {SignIn} from './components';
-import Modal from "@material-ui/core/Modal";
-import CardContent from "@material-ui/core/CardContent";
-import Card from "@material-ui/core/Card";
+import {Button, Grid, Container, TextField, Box, Tooltip, Typography, Link, colors} from '@material-ui/core'
+import {SignIn, SignUp} from './components';
 import withStyles from "@material-ui/core/styles/withStyles";
 import FirebaseContext, {withFirebase} from "../../services/firebase/context";
-import Header from "./components/Header";
-import Alert from "@material-ui/lab/Alert";
-import Snackbar from "@material-ui/core/Snackbar";
-import Collapse from "@material-ui/core/Collapse";
-import {AlertTitle} from "@material-ui/lab";
-import Footer from "./components/Footer";
 import landingImage from '../../assets/images/undraw_programming_2svr.svg';
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import TabPanel from "@material-ui/lab/TabPanel";
+import TabContext from "@material-ui/lab/TabContext";
 
 const styles = theme => ({
-    root: {
-        height: "auto",
-        backgroundColor: 'rgb(241,244,246)'
-    },
     card: {
         borderRadius: 10,
         paddingTop: 20,
@@ -26,8 +17,33 @@ const styles = theme => ({
         boxShadow: 'none'
     },
 
+    sideBar: {
+        color: 'white',
+        backgroundColor: 'rgb(48,48,48)',
+        paddingTop: 80,
+        paddingLeft: 20,
+        paddingRight: 20,
+    },
+
     typography: {
         marginTop: 25,
+    },
+
+    main: {
+        backgroundColor: 'rgb(245,245,245)',
+        padding: 40,
+        position: 'relative',
+        overflow: 'hidden',
+    },
+
+    info: {
+        marginTop: 75,
+        marginLeft: 50,
+    },
+
+    description: {
+        marginTop: 50,
+        maxWidth: '60%',
     },
 
     button: {
@@ -39,13 +55,41 @@ const styles = theme => ({
         },
     },
     image: {
-        marginTop: 100,
-        textAlign: 'center',
-        display: 'inline-block',
         maxWidth: '100%',
-        width: 700
+        width: 700,
+        position: 'absolute',
+        bottom: '-10px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+
     },
 });
+
+const StyledTabs = withStyles({
+    indicator: {
+        display: 'flex',
+        justifyContent: 'center',
+        backgroundColor: 'transparent',
+        '& > span': {
+            maxWidth: 40,
+            width: '100%',
+            backgroundColor: colors.amber[500],
+        },
+    },
+})((props) => <Tabs {...props} TabIndicatorProps={{children: <span/>}}/>);
+
+const StyledTab = withStyles((theme) => ({
+    root: {
+        textTransform: 'none',
+        fontWeight: theme.typography.fontWeightRegular,
+        color: 'white',
+        fontSize: theme.typography.pxToRem(15),
+        marginRight: theme.spacing(1),
+        '&:focus': {
+            opacity: 1,
+        },
+    },
+}))((props) => <Tab disableRipple {...props} />);
 
 class Home extends React.Component {
     constructor(props) {
@@ -60,6 +104,7 @@ class Home extends React.Component {
     }
 
     state = {
+        value: 0,
         signInOpen: false,
         firstName: '',
         lastName: '',
@@ -156,10 +201,22 @@ class Home extends React.Component {
         });
     };
 
+    handleChange = (e, newVal) => {
+        this.setState({value: newVal});
+    };
+
+    a11yProps = (index) => {
+        return {
+            id: `simple-tab-${index}`,
+            'aria-controls': `styled-tabpanel-${index}`,
+        };
+    };
+
     render() {
 
         const {classes} = this.props;
         const {
+            value,
             signInOpen,
             email,
             password,
@@ -178,181 +235,55 @@ class Home extends React.Component {
             pwTwoEmpty,
         } = this.state;
         return (
-            <div className={classes.root}>
-                <FirebaseContext.Consumer>
-                    {firebase => {
-                        return <Header firebase={firebase} user={user} handleSignOut={this.handleSignOut}
-                                       handleSignInOpen={this.handleSignInOpen} handleDBClick={this.handleDBClick}/>
-                    }}
-                </FirebaseContext.Consumer>
-                <Container maxWidth="xl">
-                    <div className="row">
-                        <Box display="flex" justifyContent="center" alignItems="center" minHeight="90vh">
-                            <Grid container direction="row" justify="space-evenly" alignItems="flex-start">
-                                <Grid item xs={6}>
-                                    <Container>
-                                        <Typography variant="h1">Open Source Design Automation</Typography>
-
-                                        <Typography variant="h5" className={classes.typography}>
-                                            Automate your design flow using OpenLANE Cloud. The open-source solution
-                                            that will
-                                            allow you to deploy, monitor, and modify your OpenLANE designs.
-                                        </Typography>
-                                        <Container alignItems="center">
-                                            <img
-                                                alt="Landing Image"
-                                                className={classes.image}
-                                                src={landingImage}
-                                            />
-                                        </Container>
-                                    </Container>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Card className={classes.card}>
-                                        <CardContent>
-                                            <Grid container direction="row" justify="space-evenly"
-                                                  alignItems="flex-start">
-                                                <Grid item xs={10}>
-                                                    <Typography variant="h3">Get Started!</Typography>
-                                                </Grid>
-                                                <Grid item xs={10}>
-                                                    <Collapse in={signUpError}>
-                                                        <Alert severity="error" className={classes.alert}
-                                                               onClose={() => this.handleSignUpErrorClose()}>
-                                                            <AlertTitle>Sign Up Error</AlertTitle>
-                                                            {signUpErrorMessage}
-                                                        </Alert>
-                                                    </Collapse>
-                                                </Grid>
-                                                <Grid item xs={10}>
-                                                    <TextField
-                                                        autoComplete="firstName"
-                                                        name="firstName"
-                                                        margin="normal"
-                                                        variant="outlined"
-                                                        required
-                                                        fullWidth
-                                                        error={fNameEmpty}
-                                                        id="firstName"
-                                                        label="First Name"
-                                                        value={firstName}
-                                                        onChange={e => this.updateInputVal(e)}
-                                                    />
-                                                </Grid>
-                                                <Grid item xs={10}>
-                                                    <TextField
-                                                        variant="outlined"
-                                                        margin="normal"
-                                                        required
-                                                        fullWidth
-                                                        error={lNameEmpty}
-                                                        id="lastName"
-                                                        label="Last Name"
-                                                        name="lastName"
-                                                        autoComplete="lastName"
-                                                        value={lastName}
-                                                        onChange={e => this.updateInputVal(e)}
-                                                    />
-                                                </Grid>
-                                                <Grid item xs={10}>
-                                                    <TextField
-                                                        variant="outlined"
-                                                        required
-                                                        margin="normal"
-                                                        fullWidth
-                                                        error={emailEmpty}
-                                                        id="email"
-                                                        label="Email Address"
-                                                        name="email"
-                                                        autoComplete="email"
-                                                        value={email}
-                                                        onChange={e => this.updateInputVal(e)}
-                                                    />
-                                                </Grid>
-                                                <Grid item xs={10}>
-                                                    <Tooltip
-                                                        title="Make sure it's at least 15 characters OR at least 8 characters including a number and a lowercase letter."
-                                                        arrow>
-                                                        <TextField
-                                                            variant="outlined"
-                                                            margin="normal"
-                                                            required
-                                                            fullWidth
-                                                            error={pwOneEmpty}
-                                                            name="password"
-                                                            label="Password"
-                                                            type="password"
-                                                            id="password"
-                                                            autoComplete="current-password"
-                                                            value={password}
-                                                            onChange={e => this.updateInputVal(e)}
-                                                        />
-                                                    </Tooltip>
-                                                </Grid>
-                                                <Grid item xs={10}>
-                                                    <TextField
-                                                        variant="outlined"
-                                                        margin="normal"
-                                                        required
-                                                        fullWidth
-                                                        error={pwTwoEmpty}
-                                                        name="confirmPassword"
-                                                        label="Confirm Password"
-                                                        type="password"
-                                                        id="confirmPassword"
-                                                        autoComplete="current-password"
-                                                        value={confirmPassword}
-                                                        onChange={e => this.updateInputVal(e)}
-                                                    />
-                                                </Grid>
-                                                <Grid item xs={10}>
-                                                    <Box mt={4}>
-                                                        <FirebaseContext.Consumer>
-                                                            {firebase => {
-                                                                return <Button className={classes.button}
-                                                                               variant="contained" fullWidth
-                                                                               color="primary"
-                                                                               onClick={(e) => this.handleSignUp(e, firebase)}>
-                                                                    Sign Up Now!
-                                                                </Button>;
-                                                            }}
-                                                        </FirebaseContext.Consumer>
-
-                                                    </Box>
-                                                </Grid>
-                                            </Grid>
-                                        </CardContent>
-                                    </Card>
-                                </Grid>
-                            </Grid>
+            <>
+                <Box display="flex" justifyContent="center" alignItems="stretch" height="100vh" width="100vw">
+                    <Box flexGrow={8} className={classes.main}>
+                        <Typography variant="body1">OpenLANE Cloud Runner</Typography>
+                        <Box className={classes.info} justifyContent="start"
+                             alignItems="start">
+                            <Typography display="block" variant="h1">Open Source</Typography>
+                            <Typography display="block" variant="h1">Design Automation</Typography>
+                            <div className={classes.description}>
+                                <Typography display="block" variant="h6">Automate your design flow
+                                    using OpenLANE Cloud Runner. The open-source solution that will
+                                    allow you to deploy, monitor, and modify your OpenLANE
+                                    designs.</Typography>
+                            </div>
                         </Box>
-                    </div>
-                </Container>
-                <Footer/>
-                <Modal
-                    open={signInOpen}
-                    onClose={() => this.handleSignInClose()}
-                    aria-labelledby="modal-title"
-                    aria-describedby="modal-description"
-                >
-                    <>
-                        <SignIn handleLoginSuccess={this.handleLoginSuccess}
-                                handleSignInClose={this.handleSignInClose}/>
-                    </>
-                </Modal>
-                <Snackbar open={loginSuccess} anchorOrigin={{horizontal: 'center', vertical: 'top'}}
-                          autoHideDuration={3000} onClose={() => this.handleLoginSuccess(false)}>
-                    <Alert onClose={() => this.handleLoginSuccess(false)} severity="success">
-                        Sign in successful
-                    </Alert>
-                </Snackbar>
-                <Snackbar open={signOutSuccess} anchorOrigin={{horizontal: 'center', vertical: 'top'}}
-                          autoHideDuration={3000} onClose={() => this.handleSignOutSuccess(false)}>
-                    <Alert onClose={() => this.handleSignOutSuccess(false)} severity="success">
-                        Sign out successful
-                    </Alert>
-                </Snackbar>
-            </div>
+                        <img
+                            alt="Landing Image"
+                            className={classes.image}
+                            src={landingImage}
+                        />
+                    </Box>
+                    <Box display="flex" justifyContent="flex-start" alignItems="flex-start" flexGrow={1}
+                         className={classes.sideBar}>
+                        <Grid container direction="column">
+                            <TabContext value={value}>
+                                <StyledTabs
+                                    value={value}
+                                    onChange={(e, newVal) => this.handleChange(e, newVal)}
+                                    centered
+                                >
+                                    <StyledTab label="Sign In" {...this.a11yProps(0)}/>
+                                    <StyledTab label="Sign Up" {...this.a11yProps(1)}/>
+                                </StyledTabs>
+
+                                <TabPanel value={0}>
+                                    <Grid item justify="center" >
+                                        <SignIn/>
+                                    </Grid>
+                                </TabPanel>
+                                <TabPanel value={1}>
+                                    <Grid item justify="center">
+                                        <SignUp/>
+                                    </Grid>
+                                </TabPanel>
+                            </TabContext>
+                        </Grid>
+                    </Box>
+                </Box>
+            </>
         );
     }
 }

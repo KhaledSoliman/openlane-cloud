@@ -1,11 +1,14 @@
-import React from 'react';
+import React, {useState} from 'react';
+import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
+import Paper from '@material-ui/core/Paper';
 import {withStyles} from "@material-ui/core/styles";
 import PropTypes from "prop-types";
 import FirebaseContext, {withFirebase} from "../../../../services/firebase/context";
@@ -16,30 +19,54 @@ import Collapse from "@material-ui/core/Collapse";
 import {StyledFirebaseAuth} from "react-firebaseui";
 
 const styles = theme => ({
+    paper: {
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        margin: 'auto',
+        padding: theme.spacing(2, 4, 3),
+        paddingTop: 20,
+        paddingBottom: 35,
+        position: 'absolute',
+        width: 600,
+        backgroundColor: theme.palette.background.paper,
+        boxShadow: theme.shadows[5],
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    paper2: {
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        margin: 'auto',
+        padding: theme.spacing(2, 4, 3),
+        paddingTop: 30,
+        paddingBottom: 30,
+        position: 'absolute',
+        width: 600,
+        backgroundColor: theme.palette.background.paper,
+        boxShadow: theme.shadows[5],
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
     avatar: {
         margin: theme.spacing(1),
         backgroundColor: theme.palette.primary.main,
     },
     form: {
         width: '100%',
-        marginTop: 100,
+        marginTop: theme.spacing(1),
     },
     submit: {
         color: 'black',
         boxShadow: 'none',
-        borderRadius: 0,
-        marginTop: 50,
+        marginTop: 20,
         minHeight: 45,
         '&:hover': {
             boxShadow: 'none'
         },
-    },
-    textField: {
-        borderRadius: 0,
-        backgroundColor: 'white',
-    },
-    formCheck: {
-        color: 'white',
     },
     submit2: {
         color: 'black',
@@ -115,7 +142,7 @@ class SignIn extends React.Component {
         const {email, password} = this.state;
         if (password !== '' && email !== '')
             firebase.doSignInWithEmailAndPassword(email, password).then((res) => {
-                this.signInSuccess(res);
+               this.signInSuccess(res);
             }).catch((err) => {
                 this.setState({loginError: true, loginErrorMessage: err.message});
                 console.log(err);
@@ -172,7 +199,11 @@ class SignIn extends React.Component {
         return (
             <>
                 {!forgotPasswordClicked ?
-                    <div>
+                    <Paper className={classes.paper}>
+                        <Avatar className={classes.avatar}>
+                            <LockOutlinedIcon/>
+                        </Avatar>
+                        <Typography variant="h4">Sign in to OpenLANE Cloud</Typography>
                         <form className={classes.form} noValidate>
                             <Collapse in={loginError}>
                                 <Alert severity="error" onClose={() => this.handleLoginErrorClose()}>
@@ -183,15 +214,13 @@ class SignIn extends React.Component {
                             <Grid container direction="column" justify="space-evenly">
                                 <Grid item>
                                     <TextField
-                                        variant="filled"
+                                        variant="outlined"
                                         margin="normal"
+                                        required
                                         fullWidth
-                                        error={loginEmailIsEmpty}
-                                        color="secondary"
-                                        className={classes.textField}
+                                        error={loginEmailIsEmpty ? true : false}
                                         id="email"
                                         label="Email Address"
-                                        InputProps={{disableUnderline: true}}
                                         name="email"
                                         autoComplete="email"
                                         value={email}
@@ -200,13 +229,11 @@ class SignIn extends React.Component {
                                 </Grid>
                                 <Grid item>
                                     <TextField
-                                        variant="filled"
+                                        variant="outlined"
                                         margin="normal"
-                                        color="secondary"
-                                        className={classes.textField}
-                                        InputProps={{disableUnderline: true}}
+                                        required
                                         fullWidth
-                                        error={loginPWIsEmpty}
+                                        error={loginPWIsEmpty ? true : false}
                                         name="password"
                                         label="Password"
                                         type="password"
@@ -219,15 +246,14 @@ class SignIn extends React.Component {
                                 <Grid container direction="row" justify="space-between" alignItems="center">
                                     <Grid item>
                                         <FormControlLabel
-                                            control={<Checkbox value="remember" color="primary"
-                                                               className={classes.formCheck}/>}
-                                            label={<Typography style={{color: 'white'}}>Remember me</Typography>}
+                                            control={<Checkbox value="remember" color="primary"/>}
+                                            label="Remember me"
                                         />
                                     </Grid>
                                     <Grid item>
-                                        <Link href="#" color="primary"
+                                        <Link href="#" variant="body2" color="secondary"
                                               onClick={() => this.forgetPasswordOpen()}>
-                                            <Typography style={{color: '#ffc107'}}>Forgot Password?</Typography>
+                                            Forgot Password?
                                         </Link>
                                     </Grid>
                                 </Grid>
@@ -245,14 +271,13 @@ class SignIn extends React.Component {
                                 </FirebaseContext.Consumer>
                                 <FirebaseContext.Consumer>
                                     {firebase => {
-                                        return <StyledFirebaseAuth uiConfig={this.uiConfig}
-                                                                   firebaseAuth={firebase.auth}/>
+                                        return <StyledFirebaseAuth uiConfig={this.uiConfig} firebaseAuth={firebase.auth}/>
                                     }}
                                 </FirebaseContext.Consumer>
                             </Grid>
                         </form>
-                    </div> :
-                    <div>
+                    </Paper> :
+                    <Paper className={classes.paper2}>
                         <Grid container direction="row" alignItems="center">
                             <Grid container item xs={3} justify="flex-start">
                                 <IconButton className={classes.iconButton} onClick={() => this.forgetPasswordClose()}>
@@ -279,9 +304,8 @@ class SignIn extends React.Component {
                             id="email"
                             label="Email Address"
                             name="email"
-                            className={classes.textField}
                             autoComplete="email"
-                            error={forgetIsEmpty}
+                            error={forgetIsEmpty ? true : false}
                             value={email}
                             onChange={e => this.updateInputVal(e)}
                         />
@@ -298,7 +322,7 @@ class SignIn extends React.Component {
                                 </Button>
                             }}
                         </FirebaseContext.Consumer>
-                    </div>
+                    </Paper>
                 }
             </>);
     }

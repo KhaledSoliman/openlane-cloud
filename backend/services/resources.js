@@ -1,9 +1,11 @@
 const os = require('os');
-const logger = require('../log/logger');
+const logger = require('../log/logger')('Resources');
 const shell = require('shelljs');
 const admin = require('./firebase');
 // const Pulsar = require('pulsar-client');
 const {JobMonitoring} = require('./monitoring');
+const Notification = require('./notification');
+
 
 class ResourceService {
     constructor() {
@@ -45,6 +47,7 @@ class ResourceService {
         child.stderr.on('data', function (error) {
             logger.error(error);
         });
+
     }
 }
 

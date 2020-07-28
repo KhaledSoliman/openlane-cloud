@@ -6,7 +6,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
-const winstonLogger =require('./log/logger');
+const winstonLogger =require('./log/logger')('Backend');
 const auth = require('./middleware/auth');
 const cors = require('cors');
 const corsOptions = {
@@ -34,6 +34,8 @@ app.use(auth(allowUrl));
  * Routes
  */
 app.use('/jobs', require('./routes/jobs'));
+app.use('/download', require('./routes/download'));
+
 
 /**
  * Catch 404 and forward to error handler

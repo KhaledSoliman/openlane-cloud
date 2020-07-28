@@ -1,4 +1,4 @@
-const logger = require('../log/logger');
+const logger = require('../log/logger')('Git');
 const del = require('del');
 const shell = require('shelljs');
 

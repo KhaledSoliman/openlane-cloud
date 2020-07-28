@@ -18,7 +18,8 @@ module.exports = (sequelize, DataTypes) => {
         user_uuid: DataTypes.UUID,
         repoURL: DataTypes.STRING,
         designName: DataTypes.STRING,
-        status: DataTypes.ENUM('submitted', 'running', 'done'),
+        jobId: DataTypes.INTEGER,
+        status: DataTypes.ENUM('submitted', 'scheduled', 'running', 'completed', 'failed'),
         completedAt: {
             type: DataTypes.DATE,
             defaultValue: null

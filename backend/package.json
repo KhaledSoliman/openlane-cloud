@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "archiver": "^5.0.0",
     "bee-queue": "^1.2.3",
     "body-parser": "^1.19.0",
     "cookie-parser": "~1.4.4",

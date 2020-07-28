@@ -3,13 +3,21 @@ const router = express.Router();
 const Scheduler = require('../services/scheduler');
 const scheduler = new Scheduler();
 const db = require('../models');
-const logger = require('../log/logger');
+const logger = require('../log/logger')('Backend');
 /**
  * Submit Job Request
  */
 router.post('/', function (req, res, next) {
-    scheduler.addJob(req.uid, req.body.job);
-    res.sendStatus(200);
+    req.body.job.designName = `${req.body.job.repoURL.split('/').pop()}`;
+    db['job'].create({
+        user_uuid: req.uid,
+        designName: req.body.job.designName,
+        repoURL: req.body.job.repoURL,
+        status: 'submitted'
+    }).then((job) => {
+        scheduler.addJob(job.id, req.uid, req.body.job);
+        res.sendStatus(200);
+    });
 });
 
 router.get('/', function (req, res, next) {

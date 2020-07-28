@@ -1,6 +1,6 @@
 const nodeMailer = require('nodemailer');
-const logger = require('../log/logger');
-
+const logger = require('../log/logger')('Notification');
+const admin = require('./firebase');
 
 class Notification {
     constructor() {
@@ -21,13 +21,30 @@ class Notification {
             subject: subject,
             text: body
         };
-        this.transporter.sendMail(mailOptions, function(error, info){
+        this.transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
                 logger.error(error);
             } else {
                 logger.info('Email sent: ' + info.response);
             }
         });
+    }
+
+    sendPushNotification(title, body, token) {
+        const message = {
+            notification: {
+                title: title,
+                body: body
+            },
+            token: token
+        };
+        admin.messaging().send(message)
+            .then((response) => {
+                logger.info('Successfully sent message:', response);
+            })
+            .catch((error) => {
+                logger.error('Error sending message:', error);
+            });
     }
 }
 

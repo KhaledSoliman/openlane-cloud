@@ -1,4 +1,4 @@
-const logger = require('../log/logger');
+const logger = require('../log/logger')('Monitoring');
 const WebSocket = require('ws');
 
 class JobMonitoring {

@@ -6,7 +6,7 @@ export default {
     fontWeight: 900,
     fontSize: '80px',
     letterSpacing: '-0.24px',
-    lineHeight: '74px'
+    lineHeight: '84px'
   },
   h2: {
     color: palette.text.primary,

@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Button, Grid, Container, TextField, Box, Tooltip, Typography, Link, colors} from '@material-ui/core'
-import {SignIn, SignUp} from './components';
+import {SignIn, SignUp, ForgotPassword} from './components';
 import withStyles from "@material-ui/core/styles/withStyles";
 import FirebaseContext, {withFirebase} from "../../services/firebase/context";
 import landingImage from '../../assets/images/undraw_programming_2svr.svg';
@@ -105,39 +105,15 @@ class Home extends React.Component {
 
     state = {
         value: 0,
-        signInOpen: false,
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        error: null,
-        user: null,
-        loginSuccess: false,
-        signOutSuccess: false,
-        signUpError: false,
-        signUpErrorMessage: '',
-        fNameEmpty: false,
-        lNameEmpty: false,
-        emailEmpty: false,
-        pwOneEmpty: false,
-        pwTwoEmpty: false,
+        forgotPasswordClicked: false,
     };
 
-    handleLoginSuccess = (bool) => {
-        this.setState({loginSuccess: bool});
+    handleLoginSuccess = () => {
+        this.props.history.push("/dashboard");
     };
 
     handleSignOutSuccess = (bool) => {
         this.setState({signOutSuccess: bool});
-    };
-
-    updateInputVal = (e) => {
-        let {name: fieldName, value} = e.target;
-
-        this.setState({
-            [fieldName]: value
-        });
     };
 
     handleSignOut = (firebase) => {
@@ -149,56 +125,8 @@ class Home extends React.Component {
         });
     };
 
-    handleSignInOpen = () => {
-        this.setState({
-            signInOpen: true
-        })
-    };
-
-    handleSignInClose = () => {
-        this.setState({
-            signInOpen: false
-        })
-    };
-
-    handleDBClick = () => {
+    handleSignUpSuccess = () => {
         this.props.history.push("/dashboard");
-    };
-
-
-    handleSignUp = (e, firebase) => {
-        const {firstName, lastName, password, confirmPassword, email} = this.state;
-        if (password === confirmPassword && email !== '' && firstName !== '' && lastName !== '')
-            firebase.doCreateUserWithEmailAndPassword(email, password).then((res) => {
-                res.user.updateProfile({
-                    displayName: firstName + " " + lastName
-                }).then(() => {
-                }).catch((err) => {
-                    console.log(err);
-                });
-                console.log(res);
-            }).catch((err) => {
-                this.setState({signUpError: true, signUpErrorMessage: err.message});
-                console.log(err);
-            });
-        else {
-            if (email === '')
-                this.setState({emailEmpty: true});
-            if (firstName === '')
-                this.setState({fNameEmpty: true});
-            if (lastName === '')
-                this.setState({lNameEmpty: true});
-            if (password === '')
-                this.setState({pwOneEmpty: true});
-            if (confirmPassword === '')
-                this.setState({pwTwoEmpty: true});
-        }
-    };
-
-    handleSignUpErrorClose = () => {
-        this.setState({
-            signUpError: false
-        });
     };
 
     handleChange = (e, newVal) => {
@@ -212,41 +140,38 @@ class Home extends React.Component {
         };
     };
 
+    forgotPasswordOpen = () => {
+        this.setState({
+            forgotPasswordClicked: true
+        });
+    };
+
+    forgotPasswordClose = () => {
+        this.setState({
+            forgotPasswordClicked: false
+        });
+    };
+
     render() {
 
         const {classes} = this.props;
         const {
             value,
-            signInOpen,
-            email,
-            password,
-            confirmPassword,
-            firstName,
-            lastName,
-            user,
-            loginSuccess,
-            signOutSuccess,
-            signUpError,
-            signUpErrorMessage,
-            fNameEmpty,
-            lNameEmpty,
-            emailEmpty,
-            pwOneEmpty,
-            pwTwoEmpty,
+            forgotPasswordClicked,
         } = this.state;
         return (
             <>
                 <Box display="flex" justifyContent="center" alignItems="stretch" height="100vh" width="100vw">
                     <Box flexGrow={8} className={classes.main}>
-                        <Typography variant="body1">OpenLANE Cloud Runner</Typography>
+                        {/*<Typography variant="body1">OpenLANE Cloud Runner</Typography>*/}
                         <Box className={classes.info} justifyContent="start"
                              alignItems="start">
-                            <Typography display="block" variant="h1">Open Source</Typography>
-                            <Typography display="block" variant="h1">Design Automation</Typography>
+                            <Typography display="block" variant="h1">OpenLane</Typography>
+                            <Typography display="block" variant="h1">Cloud Runner</Typography>
                             <div className={classes.description}>
                                 <Typography display="block" variant="h6">Automate your design flow
                                     using OpenLANE Cloud Runner. The open-source solution that will
-                                    allow you to deploy, monitor, and modify your OpenLANE
+                                    allow you to deploy, monitor, and modify your OpenLane
                                     designs.</Typography>
                             </div>
                         </Box>
@@ -258,29 +183,32 @@ class Home extends React.Component {
                     </Box>
                     <Box display="flex" justifyContent="flex-start" alignItems="flex-start" flexGrow={1}
                          className={classes.sideBar}>
-                        <Grid container direction="column">
-                            <TabContext value={value}>
-                                <StyledTabs
-                                    value={value}
-                                    onChange={(e, newVal) => this.handleChange(e, newVal)}
-                                    centered
-                                >
-                                    <StyledTab label="Sign In" {...this.a11yProps(0)}/>
-                                    <StyledTab label="Sign Up" {...this.a11yProps(1)}/>
-                                </StyledTabs>
+                        {forgotPasswordClicked ?
+                            <ForgotPassword forgotPasswordClose={this.forgotPasswordClose}/> :
+                            <Grid container direction="column">
+                                <TabContext value={value}>
+                                    <StyledTabs
+                                        value={value}
+                                        onChange={(e, newVal) => this.handleChange(e, newVal)}
+                                        centered
+                                    >
+                                        <StyledTab label="Sign In" {...this.a11yProps(0)}/>
+                                        <StyledTab label="Sign Up" {...this.a11yProps(1)}/>
+                                    </StyledTabs>
 
-                                <TabPanel value={0}>
-                                    <Grid item justify="center" >
-                                        <SignIn/>
-                                    </Grid>
-                                </TabPanel>
-                                <TabPanel value={1}>
-                                    <Grid item justify="center">
-                                        <SignUp/>
-                                    </Grid>
-                                </TabPanel>
-                            </TabContext>
-                        </Grid>
+                                    <TabPanel value={0}>
+                                        <Grid item>
+                                            <SignIn handleLoginSuccess={this.handleLoginSuccess} forgotPasswordOpen={this.forgotPasswordOpen}/>
+                                        </Grid>
+                                    </TabPanel>
+                                    <TabPanel value={1}>
+                                        <Grid item>
+                                            <SignUp handleSignUpSuccess={this.handleSignUpSuccess}/>
+                                        </Grid>
+                                    </TabPanel>
+                                </TabContext>
+                            </Grid>
+                        }
                     </Box>
                 </Box>
             </>

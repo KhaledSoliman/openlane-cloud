@@ -57,16 +57,12 @@ const styles = theme => ({
 
 class SignIn extends React.Component {
     state = {
-        forgetPasswordClicked: false,
         email: '',
         password: '',
         loginError: false,
         loginErrorMessage: '',
-        forgetError: false,
-        forgetErrorMessage: '',
         loginEmailIsEmpty: false,
         loginPWIsEmpty: false,
-        forgetIsEmpty: false,
     };
 
     constructor(props) {
@@ -92,23 +88,14 @@ class SignIn extends React.Component {
         });
     }
 
-    forgetPasswordOpen() {
-        this.setState({
-            forgotPasswordClicked: true
-        });
-    }
-
-    forgetPasswordClose() {
-        this.setState({
-            forgotPasswordClicked: false
-        });
-    }
-
     signInSuccess(res) {
         console.log(res);
-        this.props.handleSignInClose();
-        this.props.handleLoginSuccess(true);
+        this.props.handleLoginSuccess();
     }
+
+    forgotPasswordClicked = () => {
+      this.props.forgotPasswordOpen();
+    };
 
     handleSignIn(e, firebase) {
         e.preventDefault();
@@ -128,179 +115,106 @@ class SignIn extends React.Component {
         }
     }
 
-    handleForgetPassword(e, firebase) {
-        e.preventDefault();
-        const {email} = this.state;
-        if (email !== '')
-            firebase.doPasswordReset(email).then((res) => {
-                this.forgetPasswordClose();
-                this.props.handleSignInClose();
-            }).catch((err) => {
-                this.setState({forgetError: true, forgetErrorMessage: err.message});
-                console.log(err);
-            });
-        else
-            this.setState({forgetIsEmpty: true});
-    }
-
     handleLoginErrorClose = () => {
         this.setState({
             loginError: false
         });
     };
 
-    handleForgetErrorClose = () => {
-        this.setState({
-            forgetError: false
-        });
-    };
-
     render() {
         const {classes, firebase} = this.props;
         const {
-            forgotPasswordClicked,
             email,
             password,
             loginError,
             loginErrorMessage,
-            forgetError,
-            forgetErrorMessage,
             loginEmailIsEmpty,
             loginPWIsEmpty,
-            forgetIsEmpty,
         } = this.state;
         return (
             <>
-                {!forgotPasswordClicked ?
-                    <div>
-                        <form className={classes.form} noValidate>
-                            <Collapse in={loginError}>
-                                <Alert severity="error" onClose={() => this.handleLoginErrorClose()}>
-                                    <AlertTitle>Login Error</AlertTitle>
-                                    {loginErrorMessage}
-                                </Alert>
-                            </Collapse>
-                            <Grid container direction="column" justify="space-evenly">
-                                <Grid item>
-                                    <TextField
-                                        variant="filled"
-                                        margin="normal"
-                                        fullWidth
-                                        error={loginEmailIsEmpty}
-                                        color="secondary"
-                                        className={classes.textField}
-                                        id="email"
-                                        label="Email Address"
-                                        InputProps={{disableUnderline: true}}
-                                        name="email"
-                                        autoComplete="email"
-                                        value={email}
-                                        onChange={e => this.updateInputVal(e)}
-                                    />
-                                </Grid>
-                                <Grid item>
-                                    <TextField
-                                        variant="filled"
-                                        margin="normal"
-                                        color="secondary"
-                                        className={classes.textField}
-                                        InputProps={{disableUnderline: true}}
-                                        fullWidth
-                                        error={loginPWIsEmpty}
-                                        name="password"
-                                        label="Password"
-                                        type="password"
-                                        id="password"
-                                        autoComplete="current-password"
-                                        value={password}
-                                        onChange={e => this.updateInputVal(e)}
-                                    />
-                                </Grid>
-                                <Grid container direction="row" justify="space-between" alignItems="center">
-                                    <Grid item>
-                                        <FormControlLabel
-                                            control={<Checkbox value="remember" color="primary"
-                                                               className={classes.formCheck}/>}
-                                            label={<Typography style={{color: 'white'}}>Remember me</Typography>}
-                                        />
-                                    </Grid>
-                                    <Grid item>
-                                        <Link href="#" color="primary"
-                                              onClick={() => this.forgetPasswordOpen()}>
-                                            <Typography style={{color: '#ffc107'}}>Forgot Password?</Typography>
-                                        </Link>
-                                    </Grid>
-                                </Grid>
-                                <FirebaseContext.Consumer>
-                                    {firebase => {
-                                        return <Button
-                                            type="submit"
-                                            variant="contained"
-                                            color="primary"
-                                            className={classes.submit}
-                                            onClick={(e) => this.handleSignIn(e, firebase)}>
-                                            Sign In
-                                        </Button>
-                                    }}
-                                </FirebaseContext.Consumer>
-                                <FirebaseContext.Consumer>
-                                    {firebase => {
-                                        return <StyledFirebaseAuth uiConfig={this.uiConfig}
-                                                                   firebaseAuth={firebase.auth}/>
-                                    }}
-                                </FirebaseContext.Consumer>
-                            </Grid>
-                        </form>
-                    </div> :
-                    <div>
-                        <Grid container direction="row" alignItems="center">
-                            <Grid container item xs={3} justify="flex-start">
-                                <IconButton className={classes.iconButton} onClick={() => this.forgetPasswordClose()}>
-                                    <ArrowBackIcon/>
-                                </IconButton>
-                            </Grid>
-                            <Grid container item xs={6} justify="center">
-                                <Typography variant="h4">Reset your password</Typography>
-                            </Grid>
-                        </Grid>
-                        <Typography variant="body1" align="center">Enter your user account's verified email address and
-                            we will send you a password reset link.</Typography>
-                        <Collapse in={forgetError}>
-                            <Alert severity="error" onClose={() => this.handleForgetErrorClose()}>
-                                <AlertTitle>Error!</AlertTitle>
-                                {forgetErrorMessage}
+                <div>
+                    <form className={classes.form} noValidate>
+                        <Collapse in={loginError}>
+                            <Alert severity="error" onClose={() => this.handleLoginErrorClose()}>
+                                <AlertTitle>Login Error</AlertTitle>
+                                {loginErrorMessage}
                             </Alert>
                         </Collapse>
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="email"
-                            label="Email Address"
-                            name="email"
-                            className={classes.textField}
-                            autoComplete="email"
-                            error={forgetIsEmpty}
-                            value={email}
-                            onChange={e => this.updateInputVal(e)}
-                        />
-                        <FirebaseContext.Consumer>
-                            {firebase => {
-                                return <Button
-                                    type="submit"
-                                    variant="contained"
-                                    color="primary"
+                        <Grid container direction="column" justify="space-evenly">
+                            <Grid item>
+                                <TextField
+                                    margin="normal"
                                     fullWidth
-                                    className={classes.submit2}
-                                    onClick={(e) => this.handleForgetPassword(e, firebase)}>
-                                    Send password reset email
-                                </Button>
-                            }}
-                        </FirebaseContext.Consumer>
-                    </div>
-                }
-            </>);
+                                    error={loginEmailIsEmpty}
+                                    color="secondary"
+                                    variant="filled"
+                                    className={classes.textField}
+                                    InputProps={{disableUnderline: true}}
+                                    id="email"
+                                    label="Email Address"
+                                    name="email"
+                                    autoComplete="email"
+                                    value={email}
+                                    onChange={e => this.updateInputVal(e)}
+                                />
+                            </Grid>
+                            <Grid item>
+                                <TextField
+                                    variant="filled"
+                                    margin="normal"
+                                    color="secondary"
+                                    className={classes.textField}
+                                    InputProps={{disableUnderline: true}}
+                                    fullWidth
+                                    error={loginPWIsEmpty}
+                                    name="password"
+                                    label="Password"
+                                    type="password"
+                                    id="password"
+                                    autoComplete="current-password"
+                                    value={password}
+                                    onChange={e => this.updateInputVal(e)}
+                                />
+                            </Grid>
+                            <Grid container direction="row" justify="space-between" alignItems="center">
+                                <Grid item>
+                                    <FormControlLabel
+                                        control={<Checkbox value="remember" color="primary"
+                                                           className={classes.formCheck}/>}
+                                        label={<Typography style={{color: 'white'}}>Remember me</Typography>}
+                                    />
+                                </Grid>
+                                <Grid item>
+                                    <Link href="#" color="primary"
+                                          onClick={() => this.forgotPasswordClicked()}>
+                                        <Typography style={{color: '#ffc107'}}>Forgot Password?</Typography>
+                                    </Link>
+                                </Grid>
+                            </Grid>
+                            <FirebaseContext.Consumer>
+                                {firebase => {
+                                    return <Button
+                                        type="submit"
+                                        variant="contained"
+                                        color="primary"
+                                        className={classes.submit}
+                                        onClick={(e) => this.handleSignIn(e, firebase)}>
+                                        Sign In
+                                    </Button>
+                                }}
+                            </FirebaseContext.Consumer>
+                            <FirebaseContext.Consumer>
+                                {firebase => {
+                                    return <StyledFirebaseAuth uiConfig={this.uiConfig}
+                                                               firebaseAuth={firebase.auth}/>
+                                }}
+                            </FirebaseContext.Consumer>
+                        </Grid>
+                    </form>
+                </div>
+            </>
+        );
     }
 }
 

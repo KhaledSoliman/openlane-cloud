@@ -42,45 +42,54 @@ class JobSubmission extends React.Component {
 
     state = {
         repo: '',
+        repoIsEmpty: false,
     };
 
     updateInputVal(e) {
         let {name: fieldName, value} = e.target;
 
         this.setState({
-            [fieldName]: value
+            [fieldName]: value,
+            repoIsEmpty: false,
         });
     }
 
+
     handleJobSubmission = () => {
-        this.props.firebase.auth.onAuthStateChanged((user) => {
-            user.getIdToken().then((token) => {
-                axios({
-                    method: 'post',
-                    url: 'http://localhost:3001/jobs',
-                    headers: {
-                        'Authorization': token
-                    },
-                    data: {
-                        idToken: token,
-                        job: {
-                            email: user.email,
-                            repoURL: this.state.repo,
-                            regToken: this.props.deviceToken,
+        if(this.state.repo !== '') {
+            this.props.firebase.auth.onAuthStateChanged((user) => {
+                user.getIdToken().then((token) => {
+                    axios({
+                        method: 'post',
+                        url: 'http://localhost:3001/jobs',
+                        headers: {
+                            'Authorization': token
+                        },
+                        data: {
+                            idToken: token,
+                            job: {
+                                email: user.email,
+                                repoURL: this.state.repo,
+                                regToken: this.props.deviceToken,
+                            }
                         }
-                    }
-                }).then((res) => {
-                    this.props.handleAddJobClose();
-                    this.props.handleJobNotification(true);
+                    }).then((res) => {
+                        this.props.handleAddJobClose();
+                        this.props.handleJobNotification(true);
+                    }).catch(console.log);
                 }).catch(console.log);
-            }).catch(console.log);
-        })
+            })
+        }
+        else{
+            this.setState({repoIsEmpty: true})
+        }
     };
 
     render() {
         const {classes} = this.props;
         const {
             repo,
+            repoIsEmpty,
         } = this.state;
 
         return (
@@ -94,6 +103,7 @@ class JobSubmission extends React.Component {
                                 margin="normal"
                                 required
                                 fullWidth
+                                error={repoIsEmpty}
                                 id="repo"
                                 label="Github Repository"
                                 name="repo"

@@ -61,7 +61,7 @@ const Notifications = props => {
             >
               <Typography
                 gutterBottom
-                variant="h6"
+                variant="subtitle1"
               >
                 Notifications
               </Typography>
@@ -95,7 +95,7 @@ const Notifications = props => {
             >
               <Typography
                 gutterBottom
-                variant="h6"
+                variant="subtitle1"
               >
                 Newsletter
               </Typography>

@@ -31,6 +31,7 @@ const styles = theme => ({
         borderRadius: 0,
         marginTop: 50,
         minHeight: 45,
+        marginBottom: 15,
         '&:hover': {
             boxShadow: 'none'
         },
@@ -41,15 +42,6 @@ const styles = theme => ({
     },
     formCheck: {
         color: 'white',
-    },
-    submit2: {
-        color: 'black',
-        boxShadow: 'none',
-        marginTop: 20,
-        minHeight: 45,
-        '&:hover': {
-            boxShadow: 'none'
-        },
     },
     iconButton: {
         color: 'black'

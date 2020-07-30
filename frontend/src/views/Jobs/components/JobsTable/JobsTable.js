@@ -13,6 +13,7 @@ import MUIDataTable from "mui-datatables";
 import GetAppIcon from '@material-ui/icons/GetApp';
 import WebAssetIcon from '@material-ui/icons/WebAsset';
 import Button from "@material-ui/core/Button";
+import Tooltip from "@material-ui/core/Tooltip";
 
 const styles = theme => ({
     root: {},
@@ -122,8 +123,12 @@ class JobsTable extends React.Component {
                                         customBodyRenderLite: (dataIndex) => {
                                             return (
                                                 <>
-                                                    <GetAppIcon/>
-                                                    <WebAssetIcon onClick={() => handleConsoleClick()}/>
+                                                    <Tooltip title="Download Output">
+                                                        <GetAppIcon/>
+                                                    </Tooltip>
+                                                    <Tooltip title="Live Console">
+                                                        <WebAssetIcon onClick={() => handleConsoleClick()}/>
+                                                    </Tooltip>
                                                 </>
                                             );
                                         }

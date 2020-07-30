@@ -97,7 +97,7 @@ const Routes = () => {
             <RouteWithLayout
                 component={NotFoundView}
                 exact
-                layout={MinimalLayout}
+                layout={SALayout}
                 path="/not-found"
             />
             <Redirect to="/not-found"/>

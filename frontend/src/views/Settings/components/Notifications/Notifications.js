@@ -83,10 +83,6 @@ const Notifications = props => {
                 }
                 label="Push Notifications"
               />
-              <FormControlLabel
-                control={<Checkbox color="primary" />}
-                label="Text Messages"
-              />
             </Grid>
             <Grid
               className={classes.item}

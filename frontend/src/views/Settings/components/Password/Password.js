@@ -124,7 +124,6 @@ class Password extends React.Component {
                         <TextField
                             variant="outlined"
                             margin="normal"
-                            required
                             fullWidth
                             error={currentEmpty}
                             name="currentPassword"
@@ -137,7 +136,6 @@ class Password extends React.Component {
                         <TextField
                             variant="outlined"
                             margin="normal"
-                            required
                             fullWidth
                             error={pwOneEmpty}
                             name="password"
@@ -150,7 +148,6 @@ class Password extends React.Component {
                         <TextField
                             variant="outlined"
                             margin="normal"
-                            required
                             fullWidth
                             error={pwTwoEmpty}
                             name="confirmPassword"

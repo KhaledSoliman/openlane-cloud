@@ -38,7 +38,7 @@ class ResourceService {
                 console.log('Error sending message:', error);
             });
         logger.info("executing shell script...");
-        const child = shell.exec(`./openlane-run.sh ${designName}`, {async: true});
+        const child = shell.exec(`sudo ./openlane-run.sh ${designName}`, {async: true});
         const self = this;
         child.stdout.on('data', function (data) {
             logger.info('streaming data...');

@@ -33,12 +33,15 @@ module.exports = {
         publicPath: publicPath,
     },
     devServer: {
+	https: true,
+    	//key: fs.readFileSync('./key.pem'),
+    	//cert: fs.readFileSync('./cert.pem'),
         contentBase: './src/',
         host: '0.0.0.0',
         compress: true,
         port: 3000,
         historyApiFallback: true,
-        open: true,
+        //open: true,
         inline: true,
         hot: true
     },

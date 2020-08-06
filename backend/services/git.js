@@ -1,5 +1,4 @@
 const logger = require('../log/logger')('Git');
-const del = require('del');
 const shell = require('shelljs');
 
 class Git {
@@ -14,9 +13,6 @@ class Git {
 
     deleteRepo(jobId) {
         logger.info(`removing repository: ${jobId}`);
-        del(`${this.reposPath}/${jobId}/`).then(() => {
-            logger.info(`Successfully deleted repository for ${jobId}`);
-        }).catch(logger.info);
     }
 }
 

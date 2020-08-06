@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
 import withStyles from "@material-ui/core/styles/withStyles";
 import {LazyLog, ScrollFollow} from 'react-lazylog';
+import {hostname, port} from "../../api/config";
 
 const styles = theme => ({
 });
 
-const url = 'ws://localhost:8080';
+const url = `ws://${hostname}:8080`;
 
 class JobConsole extends React.Component {
     constructor(props) {

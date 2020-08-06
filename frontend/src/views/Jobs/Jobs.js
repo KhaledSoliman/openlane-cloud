@@ -6,6 +6,7 @@ import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
 import {withFirebase} from "../../services/firebase";
 import axios from "axios";
+import {hostname, port} from "../../api/config";
 
 const styles = theme => ({
     root: {
@@ -30,7 +31,7 @@ class Jobs extends React.Component {
 
     componentDidMount() {
         this.handleQueryJobs();
-        this.handleGetDeviceToken();
+        //this.handleGetDeviceToken();
     }
 
     handleGetDeviceToken() {
@@ -52,7 +53,7 @@ class Jobs extends React.Component {
             user.getIdToken().then((token) => {
                 axios({
                     method: 'get',
-                    url: 'http://localhost:3001/jobs',
+                    url: `http://${hostname}:${port}/jobs`,
                     headers: {
                         'Authorization': token
                     },

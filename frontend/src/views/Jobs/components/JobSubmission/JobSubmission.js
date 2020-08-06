@@ -7,6 +7,7 @@ import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import {withFirebase} from "../../../../services/firebase";
 import axios from "axios";
+import {hostname, port} from "../../../../api/config";
 
 const styles = theme => ({
     paper: {
@@ -61,7 +62,7 @@ class JobSubmission extends React.Component {
                 user.getIdToken().then((token) => {
                     axios({
                         method: 'post',
-                        url: 'http://localhost:3001/jobs',
+                        url: `http://${hostname}:${port}/jobs`,
                         headers: {
                             'Authorization': token
                         },

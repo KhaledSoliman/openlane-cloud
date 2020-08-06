@@ -3,10 +3,10 @@ const fs = require('fs');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
-const { SourceMapDevToolPlugin } = require("webpack");
+const {SourceMapDevToolPlugin} = require("webpack");
 const Dotenv = require('dotenv-webpack');
 
 let cleanOptions = {
@@ -33,9 +33,9 @@ module.exports = {
         publicPath: publicPath,
     },
     devServer: {
-	https: true,
-    	//key: fs.readFileSync('./key.pem'),
-    	//cert: fs.readFileSync('./cert.pem'),
+        https: false,
+        //key: fs.readFileSync('./key.pem'),
+        //cert: fs.readFileSync('./cert.pem'),
         contentBase: './src/',
         host: '0.0.0.0',
         compress: true,

@@ -31,20 +31,20 @@ class Notification {
     }
 
     sendPushNotification(title, body, token) {
-        const message = {
-            notification: {
-                title: title,
-                body: body
-            },
-            token: token
-        };
-        admin.messaging().send(message)
-            .then((response) => {
-                logger.info('Successfully sent message:', response);
-            })
-            .catch((error) => {
-                logger.error('Error sending message:', error);
-            });
+        // const message = {
+        //     notification: {
+        //         title: title,
+        //         body: body
+        //     },
+        //     token: token
+        // };
+        // admin.messaging().send(message)
+        //     .then((response) => {
+        //         logger.info('Successfully sent message:', response);
+        //     })
+        //     .catch((error) => {
+        //         logger.error('Error sending message:', error);
+        //     });
     }
 }
 

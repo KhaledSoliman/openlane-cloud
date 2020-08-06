@@ -1,13 +1,13 @@
 const logger = require('../log/logger')('Storage');
 const db = require('../models');
+const fs = require('fs');
+const archiver = require('archiver');
 
 class Storage {
     constructor() {
     }
 
     zip() {
-        const fs = require('fs');
-        const archiver = require('archiver');
         const output = fs.createWriteStream(__dirname + '/job.zip');
         const archive = archiver('zip', {
             zlib: { level: 9 } // Sets the compression level.
@@ -20,15 +20,10 @@ class Storage {
             console.log('Data has been drained');
         });
         archive.on('warning', function(err) {
-            if (err.code === 'ENOENT') {
-                // log warning
-            } else {
-                // throw error
-                throw err;
-            }
+            logger.error(err);
         });
         archive.on('error', function(err) {
-            throw err;
+            logger.error(err);
         });
         archive.pipe(output);
         archive.directory('subdir/', 'new-subdir');

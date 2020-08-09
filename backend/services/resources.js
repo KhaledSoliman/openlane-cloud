@@ -24,7 +24,7 @@ class ResourceService {
     async runJob(designName, regToken) {
         // const message = {
         //     "notification": {
-        //         "title": "Jobs",
+        //         "title": "jobs",
         //         "body": "Your Job is now running"
         //     },
         //     token: regToken
@@ -43,12 +43,17 @@ class ResourceService {
         child.stdout.on('data', function (data) {
             logger.info('streaming data...');
             self.jobMonitoring.send(data);
+
         });
         child.stderr.on('data', function (error) {
             logger.error(error);
         });
-
+        return new Promise(resolve => {
+            child.on('exit', (c) => resolve(c));
+        }).then();
     }
+
+
 }
 
 

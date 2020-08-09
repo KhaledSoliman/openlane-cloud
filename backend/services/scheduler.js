@@ -5,11 +5,13 @@ const Notification = require('./notification');
 const db = require('../models');
 const Git = require('./git');
 const ResourceService = require('./resources');
+const StorageService = require('./storage');
 
 class Scheduler {
     constructor() {
         this.git = new Git();
         this.queue = new Queue('jobQueue');
+        this.storage = new StorageService();
         this.notification = new Notification();
         this.resourceService = new ResourceService();
         this.redisClient = redis.createClient();
@@ -28,9 +30,10 @@ class Scheduler {
                         jobId: job.id
                     }
                 });
-                self.notification.sendPushNotification('Job Scheduler', 'Your job is now running', job.data.regToken);
+                //self.notification.sendPushNotification('Job Scheduler', 'Your job is now running', job.data.regToken);
                 //self.notification.sendMail(job.data.email, `No-reply: Job #${job.id} processed` , `Job #${job.id} processed with repo url: ${job.data.repoURL}`);
-                await self.resourceService.runJob(job.data.designName, job.data.regToken);
+                await self.resourceService.runJob(job.data.designName, 'test');
+                await self.storage.zip(job.id, '../openlane_working_dir/pdks/');
                 return done(null, job.data.repoURL);
             } catch (e) {
                 logger.error(e);
@@ -53,11 +56,11 @@ class Scheduler {
 
         });
         db['job'].update({status: 'cloning'}, {where: {id: jobDbId}});
-        this.notification.sendPushNotification('Job Scheduler', 'Your job repository is currently being cloned', jobDescription.regToken);
+        //this.notification.sendPushNotification('Job Scheduler', 'Your job repository is currently being cloned', jobDescription.regToken);
         this.git.cloneRepo(jobDescription.repoURL, jobDescription.designName).then(() => {
             job.save().then((res) => {
                 db['job'].update({status: 'scheduled', jobId: job.id}, {where: {id: jobDbId}});
-                this.notification.sendPushNotification('Job Scheduler', 'Your Job is now scheduled', jobDescription.regToken);
+                //this.notification.sendPushNotification('Job Scheduler', 'Your Job is now scheduled', jobDescription.regToken);
                 //this.notification.sendMail(job.data.email, `No-reply: Job #${job.id} submitted` , `Job #${job.id} submitted with repo url: ${job.data.repoURL}`);
                 return res;
             })

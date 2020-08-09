@@ -1,36 +1,29 @@
-import React, { Component } from 'react';
-import { Router } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
-import { Chart } from 'react-chartjs-2';
-import { ThemeProvider } from '@material-ui/styles';
-import validate from 'validate.js';
+/**
+ * Main App
+ */
+import React from 'react';
+import {Provider} from 'react-redux';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 
-import { chartjs } from './helpers';
-import theme from './theme';
-import 'react-perfect-scrollbar/dist/css/styles.css';
-import './assets/scss/index.scss';
-import validators from './common/validators';
-import Routes from './Routes';
+// css
+import './lib/reactifyCss';
 
-const browserHistory = createBrowserHistory();
+// firebase
+import './firebase';
 
-Chart.helpers.extend(Chart.elements.Rectangle.prototype, {
-  draw: chartjs.draw
-});
+// app component
+import App from './container/App';
 
-validate.validators = {
-  ...validate.validators,
-  ...validators
-};
+import {configureStore} from './store';
 
-export default class App extends Component {
-  render() {
-    return (
-      <ThemeProvider theme={theme}>
-        <Router history={browserHistory}>
-          <Routes />
+const MainApp = () => (
+    <Provider store={configureStore()}>
+        <Router>
+            <Switch>
+                <Route path="/" component={App}/>
+            </Switch>
         </Router>
-      </ThemeProvider>
-    );
-  }
-}
+    </Provider>
+);
+
+export default MainApp;

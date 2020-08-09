@@ -5,10 +5,13 @@ const archiver = require('archiver');
 
 class Storage {
     constructor() {
+        logger.info("Storage Service Initialized");
     }
 
-    zip() {
-        const output = fs.createWriteStream(__dirname + '/job.zip');
+    zip(uuid, path) {
+        const outputPath = './downloads/'+ uuid + '.zip';
+        logger.info(outputPath);
+        const output = fs.createWriteStream( outputPath);
         const archive = archiver('zip', {
             zlib: { level: 9 } // Sets the compression level.
         });
@@ -26,8 +29,7 @@ class Storage {
             logger.error(err);
         });
         archive.pipe(output);
-        archive.directory('subdir/', 'new-subdir');
-        archive.finalize();
+        archive.directory(path, false).finalize();
     }
 }
 

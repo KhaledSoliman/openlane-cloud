@@ -8,7 +8,6 @@ const logger = require('../log/logger')('Backend');
  * Submit Job Request
  */
 router.post('/', function (req, res, next) {
-    req.body.job.designName = `${req.body.job.repoURL.split('/').pop()}`;
     db['job'].create({
         user_uuid: req.uid,
         designName: req.body.job.designName,

@@ -48,15 +48,19 @@ module.exports = {
     resolve: {
         modules: ['node_modules'],
         alias: {
-            theme: resolveApp('src/theme/'),
-            helpers: resolveApp('src/helpers/'),
-            components: resolveApp('src/components/'),
-            services: resolveApp('src/services/'),
-            icons: resolveApp('src/icons/'),
-            layouts: resolveApp('src/layouts/'),
-            assets: resolveApp('src/assets/'),
-            views: resolveApp('src/views/'),
-            common: resolveApp('src/common/')
+            Theme: path.resolve(__dirname, 'src/theme/'),
+            Helpers: path.resolve(__dirname, 'src/helpers/'),
+            Components: path.resolve(__dirname, 'src/components/'),
+            Services: path.resolve(__dirname, 'src/services/'),
+            Icons: path.resolve(__dirname, 'src/icons/'),
+            Layouts: path.resolve(__dirname, 'src/layouts/'),
+            Assets: path.resolve(__dirname, 'src/assets/'),
+            Routes: path.resolve(__dirname, 'src/routes/'),
+            Common: path.resolve(__dirname, 'src/common/'),
+            Constants: path.resolve(__dirname, 'src/constants/'),
+            Api: path.resolve(__dirname, 'src/api/'),
+            Util: path.resolve(__dirname, 'src/util/'),
+            Actions: path.resolve(__dirname, 'src/actions/'),
         }
     },
     module: {
@@ -92,7 +96,8 @@ module.exports = {
                         loader: 'url-loader',
                         options: {
                             limit: 10000,
-                            name: 'static/media/[name].[hash].[ext]'
+                            name: 'static/media/[name].[hash].[ext]',
+                            esModule: false,
                         }
                     }
                 ]

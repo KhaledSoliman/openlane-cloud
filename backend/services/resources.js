@@ -44,7 +44,6 @@ class ResourceService {
         const self = this;
         child.stdout.on('data', function (data) {
             self.statusUpdate(jobId, designName, tag);
-            logger.info('streaming data...');
             self.jobMonitoring.send(user_uuid, data);
         });
         child.stderr.on('data', function (error) {
@@ -58,7 +57,7 @@ class ResourceService {
 
     statusUpdate(jobId, designName, tag) {
         const self = this;
-        fs.readdir(`openlane_working_dir/openlane/designs/${designName}/${tag}/`, function(err, items) {
+        fs.readdir(`openlane_working_dir/openlane/designs/${designName}/runs/${tag}/`, function(err, items) {
             if (err) {
                 logger.error(err);
                 return;

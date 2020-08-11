@@ -48,6 +48,7 @@ import {connect} from "react-redux";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import JobConsole from "../job-monitoring";
 
+import moment from 'moment';
 
 const jobFields = [
     'Job Id',
@@ -291,6 +292,10 @@ class JobManagement extends Component {
         }
     }
 
+    getSinceTime(time) {
+        return `Since ${moment().diff(time, 'minutes')} minutes`;
+    }
+
     render() {
         const {location} = this.props;
         const {jobs, processing, loading, selectedJob, editJob, allSelected, selectedJobs} = this.state;
@@ -362,7 +367,7 @@ class JobManagement extends Component {
                                             className={`badge badge-xs badge-success mr-10 mt-10 position-relative`}>&nbsp;</span>
                                         <div className="status">
                                             <span className="d-block">{job.status}</span>
-                                            <span className="small">Since 1 hour</span>
+                                            <span className="small">{this.getSinceTime(job.updatedAt)}</span>
                                         </div>
                                     </td>
                                     <td><a>{job.repoURL}</a></td>

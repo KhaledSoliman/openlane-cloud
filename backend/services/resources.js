@@ -63,8 +63,11 @@ class ResourceService {
                 return;
             }
             const filteredItems = items.filter((item) => self.stageNames.includes(item));
+            logger.info(filteredItems);
             const job = self.jobs.get(jobId);
+            logger.info(job);
             const newItems = filteredItems.filter((filteredItem) => !job.stages.includes(filteredItem));
+            logger.info(newItems);
             if(newItems.length !== 0) {
                 job.stages = job.stages.concat(newItems);
                 self.jobs.set(jobId, job);

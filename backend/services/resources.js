@@ -58,8 +58,11 @@ class ResourceService {
 
     statusUpdate(jobId, designName, tag) {
         const self = this;
-        console.log(`openlane_working_dir/openlane/designs/${designName}/${tag}`);
         fs.readdir(`openlane_working_dir/openlane/designs/${designName}/${tag}/`, function(err, items) {
+            if (err) {
+                logger.error(err);
+                return;
+            }
             const filteredItems = items.filter((item) => self.stageNames.includes(item));
             const job = self.jobs.get(jobId);
             const newItems = filteredItems.filter((filteredItem) => !job.stages.includes(filteredItem));

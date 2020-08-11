@@ -51,10 +51,11 @@ class JobMonitoring {
     }
 
     send(user_uuid, data) {
-        logger.info(`Send message to user on WS: ${user_uuid}`);
         const ws = this.map.get(user_uuid);
-        if (ws)
+        if (ws) {
             ws.send(data);
+            logger.info(`Sent message to user on WS: ${user_uuid}`);
+        }
     }
 
 }

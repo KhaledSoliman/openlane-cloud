@@ -6,29 +6,32 @@ import {NotificationManager} from "react-notifications";
 import Container from "@material-ui/core/Container";
 
 
-const url = `ws://${hostname}:8080`;
-
 class JobConsole extends Component {
     state = {
-        text: 'meow\nmeow'
+        text: 'Starting stream...\n'
     };
 
     constructor(props) {
         super(props);
-
+        const url = `ws://${hostname}:8080`;
         this.props.user.getIdToken().then((idToken) => {
-            const ws = new WebSocket('ws://localhost:8080', idToken);
+            const ws = new WebSocket(url, idToken);
             ws.onopen = () => {
                 console.log(this.props.job);
-            }
+            };
+            ws.onmessage = (message) => {
+                console.log(message);
+                this.setState({
+                    text: this.state.text + message
+                })
+            };
         });
     }
 
     render() {
         const {} = this.state;
         return (
-            <
-                ScrollFollow
+            <ScrollFollow
                 startFollowing={true}
                 render={({follow, onScroll}) => (
                     <LazyLog

@@ -30,7 +30,7 @@ class Scheduler {
                 });
                 //self.notification.sendPushNotification('Job Scheduler', 'Your job is now running', job.data.regToken);
                 //self.notification.sendMail(job.data.email, `No-reply: Job #${job.id} processed` , `Job #${job.id} processed with repo url: ${job.data.repoURL}`);
-                await self.resourceService.runJob(job.id, job.data.designName, job.user_uuid, 'test');
+                await self.resourceService.runJob(job.id, job.data.designName, job.data.user_uuid, 'test');
                 await db['job'].update({
                     status: 'archiving'
                 }, {

@@ -57,7 +57,7 @@ class ResourceService {
 
     statusUpdate(jobId, designName, tag) {
         const self = this;
-        fs.readdir(`openlane_working_dir/openlane/designs/${designName}/runs/${tag}/`, function(err, items) {
+        fs.readdir(`openlane_working_dir/openlane/designs/${designName}/runs/${tag}/logs/`, function(err, items) {
             if (err) {
                 logger.error(err);
                 return;

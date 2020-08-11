@@ -3,6 +3,27 @@
 	height: 100%;
 	width: 100%;
 }
+.badge-synthesis {
+	background: darksalmon !important;
+}
+.badge-floorplan {
+	background: darkslategray !important;
+}
+.badge-placement {
+	background: darkslateblue !important;
+}
+.badge-cts {
+	background: darkgoldenrod !important;
+}
+.badge-routing {
+	background: darkolivegreen !important;
+}
+.badge-lvs {
+	background: darkblue !important;
+}
+.badge-magic {
+	background: darkmagenta !important;
+}
 .app-main-container {
 	display: flex;
 	flex-wrap: nowrap;

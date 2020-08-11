@@ -5,10 +5,9 @@ const fs = require('fs');
 const router = express.Router();
 const db = require('../models');
 const logger = require('../log/logger')('Backend');
-const {storageService} = require('../services');
 
 router.get('/', function (req, res, next) {
-    const file = './downloads/app.js';
+    const file = `./downloads/${req.uid}-${req.query.jobId}.zip`;
     const filename = path.basename(file);
     const mimetype = mime.getType(file);
     res.setHeader('Content-disposition', 'attachment; filename=' + filename);

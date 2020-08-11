@@ -22,7 +22,7 @@ class JobConsole extends Component {
             ws.onmessage = (message) => {
                 console.log(message);
                 this.setState({
-                    text: this.state.text + message
+                    text: this.state.text + message.data
                 })
             };
         });

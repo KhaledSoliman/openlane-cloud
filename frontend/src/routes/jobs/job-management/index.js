@@ -53,12 +53,28 @@ import moment from 'moment';
 const jobFields = [
     'Job Id',
     'Design Name',
-    'Repo URL',
     'Status',
+    'Repo URL',
     'Submission Time',
     'Completion Time',
     'Actions'
 ];
+
+const badgeDict = {
+    'submitted': 'badge-secondary',
+    'scheduled': 'badge-info',
+    'running': 'badge-primary',
+    'running-synthesis': 'badge-synthesis',
+    'running-floorplan': 'badge-floorplan',
+    'running-placement': 'badge-placement',
+    'running-cts:': 'badge-cts',
+    'running-routing': 'badge-routing',
+    'running-lvs': 'badge-lvs',
+    'running-magic': 'badge-magic',
+    'archiving': 'badge-dark',
+    'completed': 'badge-success',
+    'failed': 'badge-danger'
+}
 
 class JobManagement extends Component {
 
@@ -127,6 +143,22 @@ class JobManagement extends Component {
             });
         });
         this.getJobs();
+    }
+
+    downloadJobResult(jobId) {
+        const {user} = this.props;
+        this.setState({processing: true}, () => {
+            user.getIdToken().then((idToken) => {
+                api.setToken(idToken);
+                api.downloadJobResult(jobId).then((res) => {
+                    console.log(res);
+                    this.setState({processing: false});
+                });
+            }).catch((err) => {
+                this.setState({processing: false});
+                console.log(err);
+            });
+        });
     }
 
     /**
@@ -364,7 +396,7 @@ class JobManagement extends Component {
                                     <td>{job.designName}</td>
                                     <td className="d-flex justify-content-start">
                                         <span
-                                            className={`badge badge-xs badge-success mr-10 mt-10 position-relative`}>&nbsp;</span>
+                                            className={`badge badge-xs ${badgeDict[job.status]} mr-10 mt-10 position-relative`}>&nbsp;</span>
                                         <div className="status">
                                             <span className="d-block">{job.status}</span>
                                             <span className="small">{this.getSinceTime(job.updatedAt)}</span>
@@ -380,6 +412,8 @@ class JobManagement extends Component {
                                             className="ti-pencil"></i></a>
                                         <a href="#" onClick={() => this.onDelete(job)}><i
                                             className="ti-close"></i></a>
+                                        {job.status == 'completed' && <a href="#" onClick={() => this.downloadJobResult(job.id)}><i
+                                            className="ti-download"></i></a>}
                                     </td>
                                 </tr>
                             ))}

@@ -39,6 +39,19 @@ class API {
         }).catch(console.log);
     }
 
+    async downloadJobResult(jobId) {
+        return this.axios.get('/download', {
+            headers: {
+                'Authorization': this.token
+            },
+            params: {
+              jobId: jobId
+            }
+        }).then((res) => {
+            return res;
+        }).catch(console.log);
+    }
+
 }
 
 const api = new API();

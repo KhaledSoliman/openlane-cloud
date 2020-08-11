@@ -59,7 +59,9 @@ class ResourceService {
         });
         return new Promise(resolve => {
             child.on('exit', (c) => resolve(c));
-        }).then();
+        }).then(() => {
+            return `openlane_working_dir/openlane/designs/${designName}/runs/${tag}`
+        });
     }
 
     statusUpdate(jobId, designName, tag) {

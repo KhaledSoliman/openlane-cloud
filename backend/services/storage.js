@@ -16,11 +16,11 @@ class Storage {
             zlib: { level: 9 } // Sets the compression level.
         });
         output.on('close', function() {
-            console.log(archive.pointer() + ' total bytes');
-            console.log('archiver has been finalized and the output file descriptor has closed.');
+            logger.info(archive.pointer() + ' total bytes');
+            logger.info('archiver has been finalized and the output file descriptor has closed.');
         });
         output.on('end', function() {
-            console.log('Data has been drained');
+            logger.info('Data has been drained');
         });
         archive.on('warning', function(err) {
             logger.error(err);

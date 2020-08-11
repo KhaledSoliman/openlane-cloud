@@ -3,6 +3,7 @@ const logger = require('../log/logger')('Scheduler');
 const Queue = require('bee-queue');
 const db = require('../models');
 
+
 class Scheduler {
     constructor(notification, storage, resourceService, git) {
         //Services
@@ -30,7 +31,7 @@ class Scheduler {
                 });
                 //self.notification.sendPushNotification('Job Scheduler', 'Your job is now running', job.data.regToken);
                 //self.notification.sendMail(job.data.email, `No-reply: Job #${job.id} processed` , `Job #${job.id} processed with repo url: ${job.data.repoURL}`);
-                await self.resourceService.runJob(job.id, job.data.designName, job.data.user_uuid, 'test');
+                const path = await self.resourceService.runJob(job.id, job.data.designName, job.data.user_uuid, 'test');
                 await db['job'].update({
                     status: 'archiving'
                 }, {
@@ -38,7 +39,7 @@ class Scheduler {
                         jobId: job.id
                     }
                 });
-                await self.storage.zip(job.id, '../openlane_working_dir/pdks/');
+                await self.storage.zip(`${job.data.user_uuid}-${job.id}`, path);
                 await db['job'].update({
                     status: 'completed',
                     completedAt: new Date().getTime()

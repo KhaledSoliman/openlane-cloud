@@ -16,8 +16,7 @@ const corsOptions = {
 };
 const allowUrl = ['public', 'downloads'];
 const app = express();
-const services = require('./services');
-services.init();
+require('./services');
 
 /**
  * Middleware

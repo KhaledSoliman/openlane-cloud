@@ -21,7 +21,7 @@ class Scheduler {
         this.queue.process(async function (job, done) {
             try {
                 logger.info(`Processing job ${job.id}`);
-                db['job'].update({
+                await db['job'].update({
                     status: 'running'
                 }, {
                     where: {
@@ -31,7 +31,7 @@ class Scheduler {
                 //self.notification.sendPushNotification('Job Scheduler', 'Your job is now running', job.data.regToken);
                 //self.notification.sendMail(job.data.email, `No-reply: Job #${job.id} processed` , `Job #${job.id} processed with repo url: ${job.data.repoURL}`);
                 await self.resourceService.runJob(job.id, job.data.designName, job.user_uuid, 'test');
-                db['job'].update({
+                await db['job'].update({
                     status: 'archiving'
                 }, {
                     where: {
@@ -39,8 +39,9 @@ class Scheduler {
                     }
                 });
                 await self.storage.zip(job.id, '../openlane_working_dir/pdks/');
-                db['job'].update({
-                    status: 'completed'
+                await db['job'].update({
+                    status: 'completed',
+                    completedAt: new Date().getTime()
                 }, {
                     where: {
                         jobId: job.id

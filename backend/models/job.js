@@ -16,10 +16,30 @@ module.exports = (sequelize, DataTypes) => {
     };
     job.init({
         user_uuid: DataTypes.UUID,
-        repoURL: DataTypes.STRING,
+        repoURL: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
         designName: DataTypes.STRING,
-        jobId: DataTypes.INTEGER,
-        status: DataTypes.ENUM('submitted', 'scheduled', 'running', 'running-cts', 'running-floorplan', 'running-lvs', 'running-magic', 'running-placement', 'running-routing', 'running-synthesis', 'archiving', 'completed', 'failed'),
+        jobId: {
+            type: DataTypes.INTEGER,
+            unique: true
+        },
+        status: DataTypes.ENUM(
+            'submitted',
+            'scheduled',
+            'running',
+            'running-cts',
+            'running-floorplan',
+            'running-lvs',
+            'running-magic',
+            'running-placement',
+            'running-routing',
+            'running-synthesis',
+            'archiving',
+            'completed',
+            'failed'
+        ),
         completedAt: {
             type: DataTypes.DATE,
             defaultValue: null

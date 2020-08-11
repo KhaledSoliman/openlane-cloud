@@ -9,9 +9,16 @@ class ResourceService {
     constructor(monitoring) {
         //Services
         this.jobMonitoring = monitoring;
-
         this.jobs = new Map();
-        this.stageNames = ['cts',  'floorplan',  'lvs',  'magic',  'placement',  'routing',  'synthesis'];
+        this.stageNames = [
+            'synthesis',
+            'floorplan',
+            'placement',
+            'cts',
+            'routing',
+            'lvs',
+            'magic'
+        ];
         logger.info("Resource service initialized");
     }
 
@@ -40,7 +47,7 @@ class ResourceService {
         logger.info("Executing openlane shell script...");
         const tag = `${new Date().getTime()}`;
         const child = shell.exec(`sudo ./openlane-run.sh ${designName} ${tag}`, {async: true});
-        this.jobs.set(jobId, {process: child, stages: []});
+        this.jobs.set(jobId, {process: child, currentStage: -1});
         const self = this;
         child.stdout.on('data', function (data) {
             self.statusUpdate(jobId, designName, tag);
@@ -57,29 +64,51 @@ class ResourceService {
 
     statusUpdate(jobId, designName, tag) {
         const self = this;
-        fs.readdir(`openlane_working_dir/openlane/designs/${designName}/runs/${tag}/logs/`, function(err, items) {
-            if (err) {
-                logger.error(err);
-                return;
-            }
-            const filteredItems = items.filter((item) => self.stageNames.includes(item));
-            logger.info(filteredItems);
-            const job = self.jobs.get(jobId);
-            logger.info(job);
-            const newItems = filteredItems.filter((filteredItem) => !job.stages.includes(filteredItem));
-            logger.info(newItems);
-            if(newItems.length !== 0) {
-                job.stages = job.stages.concat(newItems);
-                self.jobs.set(jobId, job);
-                db['job'].update({
-                    status: `running-${newItems[0]}`
-                }, {
-                    where: {
-                        jobId: job.id
-                    }
-                });
-            }
-        });
+        const job = self.jobs.get(jobId);
+        if(job.currentStage === -1) {
+            fs.readdir(`openlane_working_dir/openlane/designs/${designName}/runs/${tag}/logs/`, function (err, items) {
+                if (err) {
+                    //No directory yet
+                    logger.error(err);
+                    return;
+                }
+
+                //First Stage
+                if (items.length !== 0) {
+                    job.currentStage++;
+                    db['job'].update({
+                        status: `running-${self.stageNames[job.currentStage]}`
+                    }, {
+                        where: {
+                            jobId: jobId
+                        }
+                    }).then(() => {
+                        self.jobs.set(jobId, job);
+                    });
+                }
+            });
+        } else {
+            fs.readdir(`openlane_working_dir/openlane/designs/${designName}/runs/${tag}/logs/${this.stageNames[job.currentStage]}`, function (err, items) {
+                if (err) {
+                    //No directory yet
+                    logger.error(err);
+                    return;
+                }
+
+                if (items.length !== 0) {
+                    job.currentStage++;
+                    db['job'].update({
+                        status: `running-${self.stageNames[job.currentStage]}`
+                    }, {
+                        where: {
+                            jobId: jobId
+                        }
+                    }).then(() => {
+                        self.jobs.set(jobId, job);
+                    });
+                }
+            });
+        }
     }
 
     hookSocket(jobId, user_uuid) {

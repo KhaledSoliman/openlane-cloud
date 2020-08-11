@@ -25,17 +25,18 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             unique: true
         },
+
         status: DataTypes.ENUM(
             'submitted',
             'scheduled',
             'running',
-            'running-cts',
+            'running-synthesis',
             'running-floorplan',
+            'running-placement',
+            'running-cts',
+            'running-routing',
             'running-lvs',
             'running-magic',
-            'running-placement',
-            'running-routing',
-            'running-synthesis',
             'archiving',
             'completed',
             'failed'

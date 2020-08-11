@@ -4,6 +4,7 @@ const shell = require('shelljs');
 class Git {
     constructor() {
         this.reposPath = './openlane/designs/';
+        logger.info("Git service initialized");
     }
 
     async cloneRepo(repoURL, designName) {

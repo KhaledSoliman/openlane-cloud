@@ -19,7 +19,7 @@ import {
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import {NotificationManager} from 'react-notifications';
-import Avatar from '@material-ui/core/Avatar';
+import {Link} from 'react-router-dom';
 
 // api
 import api from 'Api';
@@ -45,13 +45,8 @@ import RctCollapsibleCard from 'Components/RctCollapsibleCard/RctCollapsibleCard
 // rct section loader
 import RctSectionLoader from 'Components/RctSectionLoader/RctSectionLoader';
 import {connect} from "react-redux";
-import TabContext from "@material-ui/lab/TabContext";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import TabPanel from "@material-ui/lab/TabPanel";
-import {Grid} from "@material-ui/core";
-import {Apps, Notifications, Password} from "../../user/user-settings/components";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import JobConsole from "../job-monitoring";
 
 
 const jobFields = [
@@ -68,11 +63,11 @@ class JobManagement extends Component {
 
     state = {
         all: false,
-        jobs: null, // initial user data
-        selectedUser: null, // selected user to perform operations
+        jobs: null,
+        selectedJob: null,
         loading: false, // loading activity
         processing: false,
-        submitADesign: false, // add new user form modal
+        submitADesign: false,
         submitDesignDetails: {
             id: '',
             designName: '',
@@ -87,7 +82,8 @@ class JobManagement extends Component {
             dateCreated: 'Just Now',
             checked: false
         },
-        openViewUserDialog: false, // view user dialog box
+        openJobViewDialog: false,
+        viewJob: null,
         editJob: null,
         allSelected: false,
         selectedJobs: 0
@@ -137,22 +133,22 @@ class JobManagement extends Component {
      */
     onDelete(data) {
         this.refs.deleteConfirmationDialog.open();
-        this.setState({selectedUser: data});
+        this.setState({selectedJob: data});
     }
 
     /**
      * Delete User Permanently
      */
     deleteUserPermanently() {
-        const {selectedUser} = this.state;
+        const {selectedJob} = this.state;
         let users = this.state.jobs;
-        let indexOfDeleteUser = users.indexOf(selectedUser);
+        let indexOfDeleteUser = users.indexOf(selectedJob);
         users.splice(indexOfDeleteUser, 1);
         this.refs.deleteConfirmationDialog.close();
         this.setState({loading: true});
         let self = this;
         setTimeout(() => {
-            self.setState({loading: false, users, selectedUser: null});
+            self.setState({loading: false, users, selectedJob: null});
             NotificationManager.success('User Deleted!');
         }, 2000);
     }
@@ -221,7 +217,7 @@ class JobManagement extends Component {
      * View User Detail Hanlder
      */
     viewUserDetail(data) {
-        this.setState({openViewUserDialog: true, selectedUser: data});
+        // this.setState({openViewUserDialog: true, selectedUser: data});
     }
 
     /**
@@ -249,6 +245,10 @@ class JobManagement extends Component {
             }
         });
     }
+
+    openJobViewDialog = (job) => {
+        this.setState({selectedJob: job, openJobViewDialog: true});
+    };
 
     /**
      * Update User
@@ -292,7 +292,8 @@ class JobManagement extends Component {
     }
 
     render() {
-        const {jobs, processing, loading, selectedUser, editJob, allSelected, selectedJobs} = this.state;
+        const {location} = this.props;
+        const {jobs, processing, loading, selectedJob, editJob, allSelected, selectedJobs} = this.state;
         return (
             <div className="user-management">
                 <Helmet>
@@ -305,7 +306,7 @@ class JobManagement extends Component {
                 />
                 <RctCollapsibleCard fullBlock>
                     {processing &&
-                    <LinearProgress />
+                    <LinearProgress/>
                     }
                     <div className="table-responsive">
                         <div className="d-flex justify-content-between py-20 px-10 border-bottom">
@@ -315,7 +316,7 @@ class JobManagement extends Component {
                             </div>
                             <div>
                                 <a href="javascript:void(0)" onClick={() => this.opnSubmitADesign()} color="primary"
-								   className="caret btn-sm mr-10"><i className="zmdi zmdi-plus"></i> Submit Design</a>
+                                   className="caret btn-sm mr-10"><i className="zmdi zmdi-plus"></i> Submit Design</a>
                             </div>
                         </div>
                         <table className="table table-middle table-hover mb-0">
@@ -368,11 +369,11 @@ class JobManagement extends Component {
                                     <td>{new Date(job.createdAt).toLocaleString()}</td>
                                     <td>{job.completedAt ? new Date(job.completedAt).toLocaleString() : 'N/A'}</td>
                                     <td className="list-action">
-                                        <a href="javascript:void(0)" onClick={() => this.viewUserDetail(job)}><i
+                                        <a href="#" onClick={() => this.openJobViewDialog(job)}><i
                                             className="ti-eye"></i></a>
-                                        <a href="javascript:void(0)" onClick={() => this.onEditUser(job)}><i
+                                        <a href="#" onClick={() => this.onEditUser(job)}><i
                                             className="ti-pencil"></i></a>
-                                        <a href="javascript:void(0)" onClick={() => this.onDelete(job)}><i
+                                        <a href="#" onClick={() => this.onDelete(job)}><i
                                             className="ti-close"></i></a>
                                     </td>
                                 </tr>
@@ -426,7 +427,7 @@ class JobManagement extends Component {
                                 onChangeSubmitDesignDetails={this.onChangeSubmitDesignDetails}
                             />
                             :
-							<UpdateUserForm user={editJob} onUpdateUserDetail={this.onUpdateUserDetails.bind(this)}/>
+                            <UpdateUserForm user={editJob} onUpdateUserDetail={this.onUpdateUserDetails.bind(this)}/>
                         }
                     </ModalBody>
                     <ModalFooter>
@@ -442,30 +443,11 @@ class JobManagement extends Component {
                     </ModalFooter>
                 </Modal>
                 <Dialog
-                    onClose={() => this.setState({openViewUserDialog: false})}
-                    open={this.state.openViewUserDialog}
+                    onClose={() => this.setState({openJobViewDialog: false})}
+                    open={this.state.openJobViewDialog}
                 >
                     <DialogContent>
-                        {selectedUser !== null &&
-                        <div>
-                            <div className="clearfix d-flex">
-                                <div className="media pull-left">
-                                    <img src={selectedUser.avatar} alt="user prof" className="rounded-circle mr-15"
-                                         width="50" height="50"/>
-                                    <div className="media-body">
-                                        <p>Name: <span className="fw-bold">{selectedUser.name}</span></p>
-                                        <p>Email: <span className="fw-bold">{selectedUser.emailAddress}</span></p>
-                                        <p>Type: <span className="badge badge-warning">{selectedUser.type}</span></p>
-                                        <p>Account Type: <span
-                                            className={`badge ${selectedUser.badgeClass} badge-pill`}>{selectedUser.accountType}</span>
-                                        </p>
-                                        <p>Status: {selectedUser.status}</p>
-                                        <p>Last Seen: {selectedUser.lastSeen}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        }
+                        {selectedJob !== null && <JobConsole job={selectedJob}/>}
                     </DialogContent>
                 </Dialog>
             </div>

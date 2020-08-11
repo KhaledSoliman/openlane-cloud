@@ -18,6 +18,11 @@ const AsyncUserSettingsComponent = Loadable({
 	loading: () => <RctPageLoader />,
 });
 
+const AsyncJobMonitoringComponent = Loadable({
+	loader: () => import("Routes/jobs/job-monitoring"),
+	loading: () => <RctPageLoader />,
+});
+
 const AsyncUserWidgetComponent = Loadable({
 	loader: () => import("Routes/widgets/user-widgets"),
 	loading: () => <RctPageLoader />,
@@ -578,6 +583,7 @@ export {
 	AsyncCartComponent,
 	AsyncCheckoutComponent,
 
+	AsyncJobMonitoringComponent,
 	AsyncGettingStartedComponent,
 	AsyncUserSettingsComponent,
 };

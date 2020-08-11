@@ -1,19 +1,17 @@
 const redis = require('redis');
 const logger = require('../log/logger')('Scheduler');
 const Queue = require('bee-queue');
-const Notification = require('./notification');
 const db = require('../models');
-const Git = require('./git');
-const ResourceService = require('./resources');
-const StorageService = require('./storage');
 
 class Scheduler {
-    constructor() {
-        this.git = new Git();
+    constructor(notification, storage, resourceService, git) {
+        //Services
+        this.notification = notification;
+        this.storage = storage;
+        this.resourceService = resourceService;
+        this.git = git;
+
         this.queue = new Queue('jobQueue');
-        this.storage = new StorageService();
-        this.notification = new Notification();
-        this.resourceService = new ResourceService();
         this.redisClient = redis.createClient();
         this.redisClient.on('error', function (err) {
             logger.error('Error ' + err)
@@ -32,8 +30,22 @@ class Scheduler {
                 });
                 //self.notification.sendPushNotification('Job Scheduler', 'Your job is now running', job.data.regToken);
                 //self.notification.sendMail(job.data.email, `No-reply: Job #${job.id} processed` , `Job #${job.id} processed with repo url: ${job.data.repoURL}`);
-                await self.resourceService.runJob(job.data.designName, 'test');
+                await self.resourceService.runJob(job.id, job.data.designName, job.user_uuid, 'test');
+                db['job'].update({
+                    status: 'archiving'
+                }, {
+                    where: {
+                        jobId: job.id
+                    }
+                });
                 await self.storage.zip(job.id, '../openlane_working_dir/pdks/');
+                db['job'].update({
+                    status: 'completed'
+                }, {
+                    where: {
+                        jobId: job.id
+                    }
+                });
                 return done(null, job.data.repoURL);
             } catch (e) {
                 logger.error(e);
@@ -44,6 +56,7 @@ class Scheduler {
 
     addJob(jobDbId, uuid, jobDescription) {
         //jobDescription.designName = `${uuid}-${jobDescription.repoURL.split('/').pop()}`;
+        jobDescription.user_uuid = uuid;
         const job = this.queue.createJob(jobDescription);
         /**
          * Event Listeners

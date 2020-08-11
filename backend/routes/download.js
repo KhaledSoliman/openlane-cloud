@@ -5,6 +5,7 @@ const fs = require('fs');
 const router = express.Router();
 const db = require('../models');
 const logger = require('../log/logger')('Backend');
+const {storageService} = require('../services');
 
 router.get('/', function (req, res, next) {
     const file = './downloads/app.js';

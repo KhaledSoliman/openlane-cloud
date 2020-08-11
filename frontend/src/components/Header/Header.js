@@ -87,12 +87,8 @@ class Header extends Component {
                         {(horizontalMenu || agencyMenu) &&
                         <div className="site-logo">
                             <Link to="/" className="logo-mini">
-                                <img src={require('Assets/img/appLogo.png')} className="mr-15" alt="site logo"
-                                     width="35" height="35"/>
-                            </Link>
-                            <Link to="/" className="logo-normal">
-                                <img src={require('Assets/img/appLogoText.png')} className="img-fluid" alt="site-logo"
-                                     width="67" height="17"/>
+                                <img src={require('Assets/img/site-logo.png')} className="mr-15" alt="site logo"
+                                     width="102" height="35"/>
                             </Link>
                         </div>
                         }

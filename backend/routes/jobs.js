@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const Scheduler = require('../services/scheduler');
-const scheduler = new Scheduler();
 const db = require('../models');
 const logger = require('../log/logger')('Backend');
+const {scheduler, resourceService} = require('../services');
 /**
  * Submit Job Request
  */
@@ -25,6 +24,11 @@ router.get('/', function (req, res, next) {
         }}).then((result) => {
         res.json(result);
     }).catch(logger.error) ;
+});
+
+router.get('/job-monitoring', function (req, res, next) {
+    resourceService.hookSocket(req.query.jobId, req.uid);
+    res.sendStatus(200);
 });
 
 

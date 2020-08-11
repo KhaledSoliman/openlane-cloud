@@ -15,29 +15,28 @@ class API {
     }
 
     async getJobs() {
-       return this.axios.get('/jobs', {
-          headers: {
-             'Authorization': this.token
-          },
-       }).then((res) => {
-          return res;
-       }).catch(console.log);
+        return this.axios.get('/jobs', {
+            headers: {
+                'Authorization': this.token
+            },
+        }).then((res) => {
+            return res;
+        }).catch(console.log);
     }
 
     async postJob(designName, repoURL) {
-       return this.axios.post('/jobs', {
-          headers: {
-             'Authorization': this.token
-          },
-          data: {
-             job: {
+        return this.axios.post('/jobs', {
+            job: {
                 designName: designName,
                 repoURL: repoURL,
-             }
-          }
-       }).then((res) => {
-          return res;
-       }).catch(console.log);
+            }
+        }, {
+            headers: {
+                'Authorization': this.token
+            }
+        },).then((res) => {
+            return res;
+        }).catch(console.log);
     }
 
 }

@@ -11,7 +11,7 @@ const AppConfig = {
     miniSidebar: false,                                       // Mini Sidebar
     enableSidebarBackgroundImage: false,                      // Enable Sidebar Background Image
     sidebarImage: require('Assets/img/sidebar-4.jpg'),     // Select sidebar image
-    isDarkSidenav: true,                                   // Set true to dark sidebar
+    isDarkSidenav: false,                                   // Set true to dark sidebar
     locale: {
         languageId: 'english',
         locale: 'en',

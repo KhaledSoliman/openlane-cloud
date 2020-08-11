@@ -74,7 +74,7 @@ const badgeDict = {
     'archiving': 'badge-dark',
     'completed': 'badge-success',
     'failed': 'badge-danger'
-}
+};
 
 class JobManagement extends Component {
 
@@ -392,7 +392,7 @@ class JobManagement extends Component {
                                             }
                                         />
                                     </td>
-                                    <td>{job.id}</td>
+                                    <td>{job.jobId}</td>
                                     <td>{job.designName}</td>
                                     <td className="d-flex justify-content-start">
                                         <span
@@ -412,7 +412,8 @@ class JobManagement extends Component {
                                             className="ti-pencil"></i></a>
                                         <a href="#" onClick={() => this.onDelete(job)}><i
                                             className="ti-close"></i></a>
-                                        {job.status == 'completed' && <a href="#" onClick={() => this.downloadJobResult(job.id)}><i
+                                        {job.status == 'completed' &&
+                                        <a href="#" onClick={() => this.downloadJobResult(job.jobId)}><i
                                             className="ti-download"></i></a>}
                                     </td>
                                 </tr>

@@ -68,7 +68,7 @@ class Sidebar extends Component {
                         <div className="site-logo">
                             <Link to="/" className="logo-mini">
                                 <img src={require('Assets/img/site-logo.png')} className="mr-15" alt="site logo"
-                                     width="102" height="35"/>
+                                     width="170" height="55"/>
                             </Link>
                         </div>
                         <div className="rct-sidebar-wrap">

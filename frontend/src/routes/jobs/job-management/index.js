@@ -48,7 +48,11 @@ import {connect} from "react-redux";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import JobConsole from "../job-monitoring";
 import GetAppIcon from '@material-ui/icons/GetApp';
+import StopIcon from '@material-ui/icons/Stop';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import moment from 'moment';
+import IconButton from "@material-ui/core/IconButton";
+import Tooltip from "@material-ui/core/Tooltip";
 
 const jobFields = [
     'Job Id',
@@ -116,13 +120,15 @@ class JobManagement extends Component {
     };
 
     componentDidMount() {
-        this.getJobs();
+        this.getJobs(true);
+        //poll
+        setInterval(this.getJobs.bind(this), 5000);
     }
 
 
-    getJobs() {
+    getJobs(loading = false) {
         const {user} = this.props;
-        this.setState({loading: true}, () => {
+        this.setState({loading: loading}, () => {
             user.getIdToken().then((idToken) => {
                 api.setToken(idToken);
                 api.getJobs().then((res) => {
@@ -346,7 +352,7 @@ class JobManagement extends Component {
     }
 
     getSinceTime(time) {
-        return `Since ${moment().diff(time, 'minutes')} minutes`;
+        return `${moment(time).fromNow()}`;
     }
 
     render() {
@@ -428,14 +434,11 @@ class JobManagement extends Component {
                                     <td>{new Date(job.createdAt).toLocaleString()}</td>
                                     <td>{job.completedAt ? new Date(job.completedAt).toLocaleString() : 'N/A'}</td>
                                     <td className="list-action">
-                                        <a href="#" onClick={() => this.openJobViewDialog(job)}><i
-                                            className="ti-eye"></i></a>
-                                        <a href="#" onClick={() => this.onEditUser(job)}><i
-                                            className="ti-pencil"></i></a>
-                                        <a href="#" onClick={() => this.onDelete(job)}><i
-                                            className="ti-close"></i></a>
+                                        {job.status != 'completed' && <Tooltip title="Monitor"><IconButton onClick={() => this.openJobViewDialog(job)}><VisibilityIcon /></IconButton></Tooltip>}
+                                        {/*<a href="#" onClick={() => this.onEditUser(job)}></a>*/}
+                                        {job.status != 'completed' && <Tooltip title="Stop"><IconButton onClick={() => this.onDelete(job)}><StopIcon /></IconButton></Tooltip>}
                                         {job.status == 'completed' &&
-                                        <a href="#" onClick={() => this.downloadJobResult(job.jobId)}><GetAppIcon /></a>}
+                                        <Tooltip title="Download"><IconButton onClick={() => this.downloadJobResult(job.jobId)}><GetAppIcon /></IconButton></Tooltip>}
                                     </td>
                                 </tr>
                             ))}

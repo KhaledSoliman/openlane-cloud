@@ -31,7 +31,7 @@ class Scheduler {
                 });
                 //self.notification.sendPushNotification('Job Scheduler', 'Your job is now running', job.data.regToken);
                 //self.notification.sendMail(job.data.email, `No-reply: Job #${job.id} processed` , `Job #${job.id} processed with repo url: ${job.data.repoURL}`);
-                const path = await self.resourceService.runJob(job.id, job.data.designName, job.data.user_uuid, 'test');
+                const path = await self.resourceService.runJob(job.id, job.data);
                 await db['job'].update({
                     status: 'archiving'
                 }, {

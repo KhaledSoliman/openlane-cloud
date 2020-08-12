@@ -6,9 +6,10 @@ const fs = require('fs');
 const db = require('../models');
 
 class ResourceService {
-    constructor(monitoring) {
+    constructor(monitoring, notification) {
         //Services
         this.jobMonitoring = monitoring;
+        this.notfication = notification;
         this.jobs = new Map();
         this.stageNames = [
             'synthesis',
@@ -28,48 +29,55 @@ class ResourceService {
         logger.warn(os.totalmem() / (1024 * 1024 * 1024));
     }
 
-    async runJob(jobId, designName, user_uuid, regToken) {
-        // const message = {
-        //     "notification": {
-        //         "title": "jobs",
-        //         "body": "Your Job is now running"
-        //     },
-        //     token: regToken
-        // };
-        // admin.messaging().send(message)
-        //     .then((response) => {
-        //         // Response is a message ID string.
-        //         console.log('Successfully sent message:', response);
-        //     })
-        //     .catch((error) => {
-        //         console.log('Error sending message:', error);
-        //     });
+    async runJob(jobId, jobData) {
+        //this.notfication.sendPushNotification("jobs", "Your Job is now running", "");
         logger.info("Executing openlane shell script...");
         const tag = `${new Date().getTime()}`;
-        const child = shell.exec(`sudo ./openlane-run.sh ${designName} ${tag}`, {async: true});
-        this.jobs.set(jobId, {process: child, currentStage: -1});
+        let childProcess;
+        if (jobData.type === 'normal') {
+            childProcess = shell.exec(`sudo ./openlane-run.sh ${jobData.type} ${jobData.designName} ${tag}`, {async: true});
+        } else {
+            let regressionScript = '';
+            for (const property in jobData.regressionScript) {
+                if (jobData.regressionScript.hasOwnProperty(property)) {
+                    if (property !== 'extra')
+                        regressionScript += `${property}=(${jobData.regressionScript[property]})\n`;
+                    else
+                        regressionScript += `${property}="\n${jobData.regressionScript[property]}\n"\n`;
+                }
+            }
+            const regressionScriptPath = `openlane_working_dir/openlane/scripts/${jobData.user_uuid}-${tag}-regression.config`;
+            fs.writeFileSync(regressionScriptPath, regressionScript, function (err) {
+                if (err) {
+                    return logger.error(err);
+                }
+                logger.info("Regression Script Created");
+                childProcess = shell.exec(`sudo ./openlane-run.sh ${jobData.type} ${jobData.designName} ${tag} ${regressionScriptPath}`, {async: true});
+            });
+        }
+        this.jobs.set(jobId, {process: childProcess, currentStage: -1});
         const self = this;
-        child.stdout.on('data', function (data) {
-            self.statusUpdate(jobId, designName, tag);
-            self.jobMonitoring.send(user_uuid, data);
+        childProcess.stdout.on('data', function (data) {
+            self.statusUpdate(jobId, jobData.designName, tag);
+            self.jobMonitoring.send(jobData.user_uuid, data);
         });
-        child.stderr.on('data', function (error) {
+        childProcess.stderr.on('data', function (error) {
             logger.error(error);
-            self.jobMonitoring.send(user_uuid, error);
+            self.jobMonitoring.send(jobData.user_uuid, error);
         });
         return new Promise(resolve => {
-            child.on('exit', (c) => resolve(c));
+            childProcess.on('exit', (c) => resolve(c));
         }).then(() => {
-            return `openlane_working_dir/openlane/designs/${designName}/runs/${tag}`
+            return `openlane_working_dir/openlane/designs/${jobData.designName}/runs/${tag}`
         });
     }
 
     statusUpdate(jobId, designName, tag) {
         const self = this;
         const job = self.jobs.get(jobId);
-        if(job.currentStage === (this.stageNames.length - 1))
+        if (job.currentStage === (this.stageNames.length - 1))
             return;
-        if(job.currentStage === -1) {
+        if (job.currentStage === -1) {
             fs.readdir(`openlane_working_dir/openlane/designs/${designName}/runs/${tag}/logs/`, function (err, items) {
                 if (err) {
                     //No directory yet

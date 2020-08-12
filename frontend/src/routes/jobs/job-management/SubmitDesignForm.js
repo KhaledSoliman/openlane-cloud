@@ -20,6 +20,8 @@ class SubmitDesignForm extends Component {
     };
 
     handleChange = (e, newVal) => {
+        const designTypes = ['normal', 'exploratory'];
+        this.props.submitDesignDetails.type = designTypes[newVal];
         this.setState({value: newVal});
     };
 
@@ -49,84 +51,175 @@ class SubmitDesignForm extends Component {
                 <TabPanel value={0}>
                     <Grid container>
                         <Form>
-                            <FormGroup>
-                                <TextField
-                                    margin="normal"
-                                    color="primary"
-                                    name="designName"
-                                    label="Design Name"
-                                    type="text"
-                                    id="designName"
-                                    autoComplete="designName"
-                                    value={submitDesignDetails.designName}
-                                    onChange={e => onChangeSubmitDesignDetails('designName', e.target.value)}
-                                />
-                            </FormGroup>
-                            <FormGroup>
-                                <TextField
-                                    margin="normal"
-                                    color="primary"
-                                    name="repoURL"
-                                    label="Repo URL"
-                                    helperText="Repo must be publicly accessible"
-                                    type="text"
-                                    id="repoURL"
-                                    autoComplete="repoURL"
-                                    value={submitDesignDetails.repoURL}
-                                    onChange={e => onChangeSubmitDesignDetails('repoURL', e.target.value)}
-                                />
-                            </FormGroup>
+                            <TextField
+                                fullWidth
+                                required
+                                variant="outlined"
+                                margin="normal"
+                                color="primary"
+                                name="designName"
+                                label="Design Name"
+                                type="text"
+                                id="designName"
+                                autoComplete="designName"
+                                value={submitDesignDetails.designName}
+                                onChange={e => onChangeSubmitDesignDetails('designName', e.target.value)}
+                            />
+                            <TextField
+                                fullWidth
+                                required
+                                variant="outlined"
+                                margin="normal"
+                                color="primary"
+                                name="repoURL"
+                                label="Repo URL"
+                                helperText="Repo must be publicly accessible"
+                                type="text"
+                                id="repoURL"
+                                autoComplete="repoURL"
+                                value={submitDesignDetails.repoURL}
+                                onChange={e => onChangeSubmitDesignDetails('repoURL', e.target.value)}
+                            />
                         </Form>
                     </Grid>
                 </TabPanel>
                 <TabPanel value={1}>
                     <Grid container>
                         <Form>
-                            <FormGroup>
-                                <TextField
-                                    margin="normal"
-                                    color="primary"
-                                    name="designName"
-                                    label="Design Name"
-                                    type="text"
-                                    id="designName"
-                                    autoComplete="designName"
-                                    value={submitDesignDetails.designName}
-                                    onChange={e => onChangeSubmitDesignDetails('designName', e.target.value)}
-                                />
-                            </FormGroup>
-                            <FormGroup>
-                                <TextField
-                                    margin="normal"
-                                    color="primary"
-                                    name="repoURL"
-                                    label="Repo URL"
-                                    helperText="Repo must be publicly accessible"
-                                    type="text"
-                                    id="repoURL"
-                                    autoComplete="repoURL"
-                                    value={submitDesignDetails.repoURL}
-                                    onChange={e => onChangeSubmitDesignDetails('repoURL', e.target.value)}
-                                />
-                            </FormGroup>
-                            <FormGroup>
-                                <TextField
-                                    variant="filled"
-                                    fullWidth
-                                    margin="normal"
-                                    color="primary"
-                                    name="regressionScript"
-                                    label="Regression Script"
-                                    type="text"
-                                    id="regressionScript"
-                                    multiline
-                                    rows={8}
-                                    rowsMax={20}
-                                    value={submitDesignDetails.regressionScript}
-                                    onChange={e => onChangeSubmitDesignDetails('regressionScript', e.target.value)}
-                                />
-                                <p><a href="https://github.com/efabless/openlane/blob/master/regression_results/README.md">More information about regression scripts</a></p>
-                            </FormGroup>
+                            <TextField
+                                fullWidth
+                                required
+                                variant="outlined"
+                                margin="normal"
+                                color="primary"
+                                name="designName"
+                                label="Design Name"
+                                type="text"
+                                id="designName"
+                                autoComplete="designName"
+                                value={submitDesignDetails.designName}
+                                onChange={e => onChangeSubmitDesignDetails('designName', e.target.value)}
+                            />
+                            <TextField
+                                fullWidth
+                                required
+                                variant="outlined"
+                                margin="normal"
+                                color="primary"
+                                name="repoURL"
+                                label="Repo URL"
+                                helperText="Repo must be publicly accessible"
+                                type="text"
+                                id="repoURL"
+                                autoComplete="repoURL"
+                                value={submitDesignDetails.repoURL}
+                                onChange={e => onChangeSubmitDesignDetails('repoURL', e.target.value)}
+                            />
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                color="primary"
+                                name="GLB_RT_ADJUSTMENT"
+                                label="GLB_RT_ADJUSTMENT"
+                                type="text"
+                                id="GLB_RT_ADJUSTMENT"
+                                value={submitDesignDetails.regressionScript.GLB_RT_ADJUSTMENT}
+                                onChange={e => onChangeSubmitDesignDetails('GLB_RT_ADJUSTMENT', e.target.value, true)}
+                            />
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                color="primary"
+                                name="FP_CORE_UTIL"
+                                label="FP_CORE_UTIL"
+                                type="text"
+                                id="FP_CORE_UTIL"
+                                value={submitDesignDetails.regressionScript.FP_CORE_UTIL}
+                                onChange={e => onChangeSubmitDesignDetails('FP_CORE_UTIL', e.target.value, true)}
+                            />
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                color="primary"
+                                name="PL_TARGET_DENSITY"
+                                label="PL_TARGET_DENSITY"
+                                type="text"
+                                id="PL_TARGET_DENSITY"
+                                value={submitDesignDetails.regressionScript.PL_TARGET_DENSITY}
+                                onChange={e => onChangeSubmitDesignDetails('PL_TARGET_DENSITY', e.target.value, true)}
+                            />
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                color="primary"
+                                name="SYNTH_STRATEGY"
+                                label="SYNTH_STRATEGY"
+                                type="text"
+                                id="SYNTH_STRATEGY"
+                                value={submitDesignDetails.regressionScript.SYNTH_STRATEGY}
+                                onChange={e => onChangeSubmitDesignDetails('SYNTH_STRATEGY', e.target.value, true)}
+                            />
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                color="primary"
+                                name="FP_PDN_VPITCH"
+                                label="FP_PDN_VPITCH"
+                                type="text"
+                                id="FP_PDN_VPITCH"
+                                value={submitDesignDetails.regressionScript.FP_PDN_VPITCH}
+                                onChange={e => onChangeSubmitDesignDetails('FP_PDN_VPITCH', e.target.value, true)}
+                            />
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                color="primary"
+                                name="FP_PDN_HPITCH"
+                                label="FP_PDN_HPITCH"
+                                type="text"
+                                id="FP_PDN_HPITCH"
+                                value={submitDesignDetails.regressionScript.FP_PDN_HPITCH}
+                                onChange={e => onChangeSubmitDesignDetails('FP_PDN_HPITCH', e.target.value, true)}
+                            />
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                color="primary"
+                                name="FP_ASPECT_RATIO"
+                                label="FP_ASPECT_RATIO"
+                                type="text"
+                                id="FP_ASPECT_RATIO"
+                                value={submitDesignDetails.regressionScript.FP_ASPECT_RATIO}
+                                onChange={e => onChangeSubmitDesignDetails('FP_ASPECT_RATIO', e.target.value, true)}
+                            />
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                color="primary"
+                                name="SYNTH_MAX_FANOUT"
+                                label="SYNTH_MAX_FANOUT"
+                                type="text"
+                                id="SYNTH_MAX_FANOUT"
+                                value={submitDesignDetails.regressionScript.SYNTH_MAX_FANOUT}
+                                onChange={e => onChangeSubmitDesignDetails('SYNTH_MAX_FANOUT', e.target.value, true)}
+                            />
+                            <TextField
+                                fullWidth
+                                variant="filled"
+                                margin="normal"
+                                color="primary"
+                                name="extra"
+                                label="Extra"
+                                type="text"
+                                id="extra"
+                                multiline
+                                rows={6}
+                                rowsMax={20}
+                                value={submitDesignDetails.regressionScript.extra}
+                                onChange={e => onChangeSubmitDesignDetails('extra', e.target.value, true)}
+                            />
+                            <p><a href="https://github.com/efabless/openlane/blob/master/regression_results/README.md">More
+                                information about regression scripts</a></p>
                         </Form>
                     </Grid>
                 </TabPanel>

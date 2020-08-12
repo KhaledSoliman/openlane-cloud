@@ -23,11 +23,15 @@ class API {
         }).catch(console.log);
     }
 
-    async postJob(designName, repoURL) {
+    async postJob(designName, repoURL, type, regressionScript) {
         return this.axios.post('/jobs', {
             job: {
                 designName: designName,
                 repoURL: repoURL,
+                type: type,
+                regressionScript: {
+                    ...regressionScript
+                }
             }
         }, {
             headers: {
@@ -44,7 +48,7 @@ class API {
                 'Authorization': this.token
             },
             params: {
-              jobId: jobId
+                jobId: jobId
             },
             responseType: 'blob', // important
         }).then((response) => {

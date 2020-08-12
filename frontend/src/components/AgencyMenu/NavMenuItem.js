@@ -42,7 +42,7 @@ class NavMenuItem extends Component {
                      <i className={menu.menu_icon}></i>
                      <IntlMessages id={menu.menu_title} />
                   </a>
-                  <ul className={classnames("list-unstyled sub-menu-child", { 'deep-level': menu.child_routes.length > 10 })}>
+                  <ul className={classnames("list-unstyled sub-menu-childProcess", { 'deep-level': menu.child_routes.length > 10 })}>
                      {menu.child_routes.map((subMenu, subKey) => {
                         if (!subMenu.child_routes) {
                            return (
@@ -59,7 +59,7 @@ class NavMenuItem extends Component {
                               <a href="javascript:void(0);" className="nav-link">
                                  <IntlMessages id={subMenu.menu_title} />
                               </a>
-                              <ul className="list-unstyled sub-menu-sub-child">
+                              <ul className="list-unstyled sub-menu-sub-childProcess">
                                  {subMenu.child_routes.map((nestedMenu, nestedKey) => (
                                     <li className="nav-item" key={nestedKey}>
                                        <NavLink to={nestedMenu.path} className="nav-link" activeClassName="active">

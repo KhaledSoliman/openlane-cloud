@@ -25,7 +25,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             unique: true
         },
-
+        type: DataTypes.ENUM(
+            'normal',
+            'exploratory'
+        ),
         status: DataTypes.ENUM(
             'submitted',
             'scheduled',

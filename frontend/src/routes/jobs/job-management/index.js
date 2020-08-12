@@ -47,7 +47,7 @@ import RctSectionLoader from 'Components/RctSectionLoader/RctSectionLoader';
 import {connect} from "react-redux";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import JobConsole from "../job-monitoring";
-
+import GetAppIcon from '@material-ui/icons/GetApp';
 import moment from 'moment';
 
 const jobFields = [
@@ -82,21 +82,27 @@ class JobManagement extends Component {
         all: false,
         jobs: null,
         selectedJob: null,
-        loading: false, // loading activity
+        loading: false,
         processing: false,
         submitADesign: false,
         submitDesignDetails: {
             id: '',
+            jobId: '',
             designName: '',
             repoURL: '',
             type: '',
-            emailAddress: '',
             status: '',
-            lastSeen: '',
-            accountType: '',
-            regressionScript: '',
-            badgeClass: 'badge-success',
-            dateCreated: 'Just Now',
+            regressionScript: {
+                GLB_RT_ADJUSTMENT: '',
+                FP_CORE_UTIL: '',
+                PL_TARGET_DENSITY: '',
+                SYNTH_STRATEGY: '',
+                FP_PDN_VPITCH: '',
+                FP_PDN_HPITCH: '',
+                FP_ASPECT_RATIO: '',
+                SYNTH_MAX_FANOUT: '',
+                extra: '',
+            },
             checked: false
         },
         openJobViewDialog: false,
@@ -127,12 +133,13 @@ class JobManagement extends Component {
         });
     }
 
-    postJob(designName, repoURL) {
+    postJob() {
         const {user} = this.props;
         this.setState({processing: true}, () => {
             user.getIdToken().then((idToken) => {
                 api.setToken(idToken);
-                api.postJob(designName, repoURL).then((res) => {
+                const {submitDesignDetails} = this.state;
+                api.postJob(submitDesignDetails.designName, submitDesignDetails.repoURL, submitDesignDetails.type, submitDesignDetails.regressionScript).then((res) => {
                     console.log(res);
                     NotificationManager.success('Job Created!');
                     this.setState({processing: false});
@@ -225,13 +232,24 @@ class JobManagement extends Component {
     /**
      * On Change Add New User Details
      */
-    onChangeSubmitDesignDetails = (key, value) => {
-        this.setState({
-            submitDesignDetails: {
-                ...this.state.submitDesignDetails,
-                [key]: value
-            }
-        });
+    onChangeSubmitDesignDetails = (key, value, regression) => {
+        if(regression)
+            this.setState({
+                submitDesignDetails: {
+                    ...this.state.submitDesignDetails,
+                    regressionScript: {
+                        ...this.state.submitDesignDetails.regressionScript,
+                        [key]: value
+                    }
+                }
+            });
+        else
+            this.setState({
+                submitDesignDetails: {
+                    ...this.state.submitDesignDetails,
+                    [key]: value
+                }
+            });
     };
 
     /**
@@ -413,8 +431,7 @@ class JobManagement extends Component {
                                         <a href="#" onClick={() => this.onDelete(job)}><i
                                             className="ti-close"></i></a>
                                         {job.status == 'completed' &&
-                                        <a href="#" onClick={() => this.downloadJobResult(job.jobId)}><i
-                                            className="ti-download"></i></a>}
+                                        <a href="#" onClick={() => this.downloadJobResult(job.jobId)}><GetAppIcon /></a>}
                                     </td>
                                 </tr>
                             ))}

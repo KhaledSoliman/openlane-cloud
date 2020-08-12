@@ -11,6 +11,7 @@ router.post('/', function (req, res, next) {
         user_uuid: req.uid,
         designName: req.body.job.designName,
         repoURL: req.body.job.repoURL,
+        type: req.body.job.type,
         status: 'submitted'
     }).then((job) => {
         scheduler.addJob(job.id, req.uid, req.body.job);

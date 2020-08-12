@@ -62,12 +62,14 @@ class ResourceService {
                 }
             }
             const regressionScriptName = `${jobData.user_uuid}-${tag}-regression.config`;
+            const self = this;
             fs.writeFile(`openlane_working_dir/openlane/scripts/${regressionScriptName}`, regressionScript, function (err) {
                 if (err) {
                     return logger.error(err);
                 }
                 logger.info("Regression Script Created");
                 childProcess = shell.exec(`sudo ./openlane-run.sh ${jobData.type} ${jobData.designName} ${tag} ./scripts/${regressionScriptName}`, {async: true});
+                self.jobs.set(jobId, {process: childProcess, currentStage: -1});
                 childProcess.stdout.on('data', function (data) {
                     self.statusUpdate(jobId, jobData.designName, tag);
                     self.jobMonitoring.send(jobData.user_uuid, data);

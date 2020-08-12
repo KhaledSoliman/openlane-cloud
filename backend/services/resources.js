@@ -57,8 +57,8 @@ class ResourceService {
                 if (jobData.regressionScript.hasOwnProperty(property)) {
                     if (property !== 'extra')
                         regressionScript += `${property}=(${jobData.regressionScript[property]})\n`;
-                    else
-                        regressionScript += `${property}="\n${jobData.regressionScript[property]}\n"\n`;
+                    else if(jobData.regressionScript[property] !== '')
+                        regressionScript += `\n${property}="${jobData.regressionScript[property]}\n"\n`;
                 }
             }
             const regressionScriptName = `${jobData.user_uuid}-${tag}-regression.config`;

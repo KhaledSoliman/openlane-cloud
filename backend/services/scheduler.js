@@ -50,6 +50,13 @@ class Scheduler {
                 });
                 return done(null, job.data.repoURL);
             } catch (e) {
+                await db['job'].update({
+                    status: 'failed'
+                }, {
+                    where: {
+                        jobId: job.id
+                    }
+                });
                 logger.error(e);
             }
         });

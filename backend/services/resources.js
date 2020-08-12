@@ -36,6 +36,21 @@ class ResourceService {
         let childProcess;
         if (jobData.type === 'normal') {
             childProcess = shell.exec(`sudo ./openlane-run.sh ${jobData.type} ${jobData.designName} ${tag}`, {async: true});
+            this.jobs.set(jobId, {process: childProcess, currentStage: -1});
+            const self = this;
+            childProcess.stdout.on('data', function (data) {
+                self.statusUpdate(jobId, jobData.designName, tag);
+                self.jobMonitoring.send(jobData.user_uuid, data);
+            });
+            childProcess.stderr.on('data', function (error) {
+                logger.error(error);
+                self.jobMonitoring.send(jobData.user_uuid, error);
+            });
+            return new Promise(resolve => {
+                childProcess.on('exit', (c) => resolve(c));
+            }).then(() => {
+                return `openlane_working_dir/openlane/designs/${jobData.designName}/runs/${tag}`
+            });
         } else {
             let regressionScript = '';
             for (const property in jobData.regressionScript) {
@@ -47,29 +62,27 @@ class ResourceService {
                 }
             }
             const regressionScriptPath = `openlane_working_dir/openlane/scripts/${jobData.user_uuid}-${tag}-regression.config`;
-            fs.writeFileSync(regressionScriptPath, regressionScript, function (err) {
+            fs.writeFile(regressionScriptPath, regressionScript, function (err) {
                 if (err) {
                     return logger.error(err);
                 }
                 logger.info("Regression Script Created");
                 childProcess = shell.exec(`sudo ./openlane-run.sh ${jobData.type} ${jobData.designName} ${tag} ${regressionScriptPath}`, {async: true});
+                childProcess.stdout.on('data', function (data) {
+                    self.statusUpdate(jobId, jobData.designName, tag);
+                    self.jobMonitoring.send(jobData.user_uuid, data);
+                });
+                childProcess.stderr.on('data', function (error) {
+                    logger.error(error);
+                    self.jobMonitoring.send(jobData.user_uuid, error);
+                });
+                return new Promise(resolve => {
+                    childProcess.on('exit', (c) => resolve(c));
+                }).then(() => {
+                    return `openlane_working_dir/openlane/designs/${jobData.designName}/runs/${tag}`
+                });
             });
         }
-        this.jobs.set(jobId, {process: childProcess, currentStage: -1});
-        const self = this;
-        childProcess.stdout.on('data', function (data) {
-            self.statusUpdate(jobId, jobData.designName, tag);
-            self.jobMonitoring.send(jobData.user_uuid, data);
-        });
-        childProcess.stderr.on('data', function (error) {
-            logger.error(error);
-            self.jobMonitoring.send(jobData.user_uuid, error);
-        });
-        return new Promise(resolve => {
-            childProcess.on('exit', (c) => resolve(c));
-        }).then(() => {
-            return `openlane_working_dir/openlane/designs/${jobData.designName}/runs/${tag}`
-        });
     }
 
     statusUpdate(jobId, designName, tag) {

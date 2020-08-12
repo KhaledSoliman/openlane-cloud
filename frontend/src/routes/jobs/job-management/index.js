@@ -53,6 +53,7 @@ import moment from 'moment';
 const jobFields = [
     'Job Id',
     'Design Name',
+    'Type',
     'Status',
     'Repo URL',
     'Submission Time',
@@ -61,6 +62,8 @@ const jobFields = [
 ];
 
 const badgeDict = {
+    'normal': 'badge-primary',
+    'exploratory': 'badge-dark',
     'submitted': 'badge-secondary',
     'scheduled': 'badge-info',
     'running': 'badge-primary',
@@ -90,7 +93,7 @@ class JobManagement extends Component {
             jobId: '',
             designName: '',
             repoURL: '',
-            type: '',
+            type: 'normal',
             status: '',
             regressionScript: {
                 GLB_RT_ADJUSTMENT: '',
@@ -412,6 +415,7 @@ class JobManagement extends Component {
                                     </td>
                                     <td>{job.jobId}</td>
                                     <td>{job.designName}</td>
+                                    <td><span className={`badge ${badgeDict[job.type]} badge-pill`}>{job.type}</span></td>
                                     <td className="d-flex justify-content-start">
                                         <span
                                             className={`badge badge-xs ${badgeDict[job.status]} mr-10 mt-10 position-relative`}>&nbsp;</span>

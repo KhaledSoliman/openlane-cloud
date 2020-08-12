@@ -51,7 +51,6 @@ class JobMonitoring {
     }
 
     send(user_uuid, data) {
-        logger.info(user_uuid);
         const ws = this.map.get(user_uuid);
         if (ws) {
             ws.send(data);

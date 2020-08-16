@@ -80,7 +80,8 @@ const badgeDict = {
     'running-magic': 'badge-magic',
     'archiving': 'badge-dark',
     'completed': 'badge-success',
-    'failed': 'badge-danger'
+    'failed': 'badge-danger',
+    'stopped': 'badge-warning'
 };
 
 class JobManagement extends Component {

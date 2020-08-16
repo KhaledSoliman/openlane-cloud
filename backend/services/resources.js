@@ -77,9 +77,18 @@ class ResourceService {
 
     quitProcess(jobId) {
         logger.info(`Stopping Job #${jobId}`);
-        console.dir(this.jobs);
         const job = this.jobs.get(jobId.toString());
         job.process.kill('SIGINT');
+        db['job'].update({
+            status: 'stopped'
+        }, {
+            where: {
+                jobId: jobId
+            }
+        }).then(() => {
+            console.dir(job);
+            self.jobs.set(jobId, job);
+        });
     }
 
     statusUpdate(jobId, designName, tag) {

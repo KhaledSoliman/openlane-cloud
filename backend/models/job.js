@@ -42,6 +42,7 @@ module.exports = (sequelize, DataTypes) => {
             'running-magic',
             'archiving',
             'completed',
+            'stopped',
             'failed'
         ),
         completedAt: {

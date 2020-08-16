@@ -16,6 +16,9 @@ router.post('/', function (req, res, next) {
     }).then((job) => {
         scheduler.addJob(job.id, req.uid, req.body.job);
         res.sendStatus(200);
+    }).catch((err) => {
+        logger.error(err);
+        res.sendStatus(500);
     });
 });
 
@@ -26,7 +29,10 @@ router.get('/', function (req, res, next) {
         }
     }).then((result) => {
         res.json(result);
-    }).catch(logger.error);
+    }).catch((err) => {
+        logger.error(err);
+        res.sendStatus(500);
+    });
 });
 
 router.get('/job-monitoring', function (req, res, next) {
@@ -43,10 +49,14 @@ router.post('/quit', function (req, res, next) {
     }).then((result) => {
         if (result) {
             resourceService.quitProcess(req.body.job.jobId);
+            res.sendStatus(200);
         } else {
             res.sendStatus(401);
         }
-    }).catch(logger.error);
+    }).catch((err) => {
+        logger.error(err);
+        res.sendStatus(500);
+    });
 });
 
 module.exports = router;

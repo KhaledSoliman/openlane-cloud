@@ -128,24 +128,6 @@ class Header extends Component {
                         }
                     </div>
                     <ul className="navbar-right list-inline mb-0">
-                        <li className="list-inline-item summary-icon">
-                            <Tooltip title="Summary" placement="bottom">
-                                <a href="javascript:void(0)" className="header-icon tour-step-3"
-                                   onClick={() => this.openDashboardOverlay()}>
-                                    <i className="zmdi zmdi-info-outline"></i>
-                                </a>
-                            </Tooltip>
-                        </li>
-                        {!horizontalMenu &&
-                        <li className="list-inline-item">
-                            <Tooltip title="Upgrade" placement="bottom">
-                                <Button component={Link} to={`/${getAppLayout(location)}/pages/pricing`}
-                                        variant="raised" className="upgrade-btn tour-step-4 text-white" color="primary">
-                                    <IntlMessages id="widgets.upgrade"/>
-                                </Button>
-                            </Tooltip>
-                        </li>
-                        }
                         {/*<LanguageProvider/>*/}
                         <Notifications/>
                         <li className="list-inline-item">

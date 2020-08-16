@@ -190,16 +190,28 @@ class JobManagement extends Component {
      */
     deleteUserPermanently() {
         const {selectedJob} = this.state;
-        let users = this.state.jobs;
-        let indexOfDeleteUser = users.indexOf(selectedJob);
-        users.splice(indexOfDeleteUser, 1);
-        this.refs.deleteConfirmationDialog.close();
-        this.setState({loading: true});
-        let self = this;
-        setTimeout(() => {
-            self.setState({loading: false, users, selectedJob: null});
-            NotificationManager.success('User Deleted!');
-        }, 2000);
+        this.setState({processing: true}, () => {
+            user.getIdToken().then((idToken) => {
+                api.setToken(idToken);
+                api.quitJob(selectedJob.jobId).then((res) => {
+                    console.log(res);
+                    NotificationManager.success('User Deleted!');
+                    this.setState({processing: false, selectedJob: null});
+                });
+            }).catch((err) => {
+                this.setState({processing: false});
+                console.log(err);
+            });
+        });
+        // let users = this.state.jobs;
+        // let indexOfDeleteUser = users.indexOf(selectedJob);
+        // users.splice(indexOfDeleteUser, 1);
+        // this.refs.deleteConfirmationDialog.close();
+        // this.setState({loading: true});
+        // let self = this;
+        // setTimeout(() => {
+        //     self.setState({loading: false, users, selectedJob: null});
+        // }, 2000);
     }
 
     /**
@@ -242,7 +254,7 @@ class JobManagement extends Component {
      * On Change Add New User Details
      */
     onChangeSubmitDesignDetails = (key, value, regression) => {
-        if(regression)
+        if (regression)
             this.setState({
                 submitDesignDetails: {
                     ...this.state.submitDesignDetails,
@@ -421,7 +433,8 @@ class JobManagement extends Component {
                                     </td>
                                     <td>{job.jobId}</td>
                                     <td>{job.designName}</td>
-                                    <td><span className={`badge ${badgeDict[job.type]} badge-pill`}>{job.type}</span></td>
+                                    <td><span className={`badge ${badgeDict[job.type]} badge-pill`}>{job.type}</span>
+                                    </td>
                                     <td className="d-flex justify-content-start">
                                         <span
                                             className={`badge badge-xs ${badgeDict[job.status]} mr-10 mt-10 position-relative`}>&nbsp;</span>
@@ -434,11 +447,14 @@ class JobManagement extends Component {
                                     <td>{new Date(job.createdAt).toLocaleString()}</td>
                                     <td>{job.completedAt ? new Date(job.completedAt).toLocaleString() : 'N/A'}</td>
                                     <td className="list-action">
-                                        {job.status != 'completed' && <Tooltip title="Monitor"><IconButton onClick={() => this.openJobViewDialog(job)}><VisibilityIcon /></IconButton></Tooltip>}
+                                        {job.status != 'completed' && <Tooltip title="Monitor"><IconButton
+                                            onClick={() => this.openJobViewDialog(job)}><VisibilityIcon/></IconButton></Tooltip>}
                                         {/*<a href="#" onClick={() => this.onEditUser(job)}></a>*/}
-                                        {job.status != 'completed' && <Tooltip title="Stop"><IconButton onClick={() => this.onDelete(job)}><StopIcon /></IconButton></Tooltip>}
+                                        {job.status != 'completed' &&
+                                        <Tooltip title="Stop"><IconButton onClick={() => this.onDelete(job)}><StopIcon/></IconButton></Tooltip>}
                                         {job.status == 'completed' &&
-                                        <Tooltip title="Download"><IconButton onClick={() => this.downloadJobResult(job.jobId)}><GetAppIcon /></IconButton></Tooltip>}
+                                        <Tooltip title="Download"><IconButton
+                                            onClick={() => this.downloadJobResult(job.jobId)}><GetAppIcon/></IconButton></Tooltip>}
                                     </td>
                                 </tr>
                             ))}

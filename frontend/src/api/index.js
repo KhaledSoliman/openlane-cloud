@@ -42,6 +42,20 @@ class API {
         }).catch(console.log);
     }
 
+    async quitJob(jobId) {
+        return this.axios.post('/jobs/quit', {
+            job: {
+                jobId: jobId
+            }
+        }, {
+            headers: {
+                'Authorization': this.token
+            }
+        },).then((res) => {
+            return res;
+        }).catch(console.log);
+    }
+
     async downloadJobResult(jobId) {
         return this.axios.get('/download', {
             headers: {

@@ -68,6 +68,11 @@ class ResourceService {
         });
     }
 
+    quitProcess(jobId) {
+        const job = this.jobs.get(jobId);
+        job.process.exit(1);
+    }
+
     statusUpdate(jobId, designName, tag) {
         const self = this;
         const job = self.jobs.get(jobId);

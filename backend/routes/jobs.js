@@ -20,11 +20,13 @@ router.post('/', function (req, res, next) {
 });
 
 router.get('/', function (req, res, next) {
-    db['job'].findAll({ where: {
-        user_uuid: req.uid
-        }}).then((result) => {
+    db['job'].findAll({
+        where: {
+            user_uuid: req.uid
+        }
+    }).then((result) => {
         res.json(result);
-    }).catch(logger.error) ;
+    }).catch(logger.error);
 });
 
 router.get('/job-monitoring', function (req, res, next) {
@@ -32,5 +34,19 @@ router.get('/job-monitoring', function (req, res, next) {
     res.sendStatus(200);
 });
 
+router.post('/quit', function (req, res, next) {
+    db['job'].findOne({
+        where: {
+            jobId: req.body.job.jobId,
+            user_uuid: req.uid
+        }
+    }).then((result) => {
+        if (result) {
+            resourceService.quitProcess(req.body.job.jobId)
+        } else {
+            res.sendStatus(401);
+        }
+    }).catch(logger.error);
+});
 
 module.exports = router;

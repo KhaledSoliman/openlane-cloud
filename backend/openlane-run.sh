@@ -2,7 +2,7 @@ cd openlane_working_dir/openlane
 # shellcheck disable=SC2046
 PDK_ROOT=/home/khaledsoli111/openlane-cloud/backend/openlane_working_dir/pdks
 DOCKER_ID=$(
-  sudo docker run -div $(pwd):/openLANE_flow -v $PDK_ROOT:$PDK_ROOT -e PDK_ROOT=$PDK_ROOT -u $(id -u $USER):$(id -g $USER) openlane:rc2
+  sudo docker run --rm --cidfile="./containers/$3" -div $(pwd):/openLANE_flow -v $PDK_ROOT:$PDK_ROOT -e PDK_ROOT=$PDK_ROOT -u $(id -u $USER):$(id -g $USER) openlane:rc2
 )
 case "$1" in
 normal)

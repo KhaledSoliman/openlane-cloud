@@ -42,7 +42,7 @@ router.post('/quit', function (req, res, next) {
         }
     }).then((result) => {
         if (result) {
-            resourceService.quitProcess(req.body.job.jobId)
+            resourceService.quitProcess(req.body.job.jobId);
         } else {
             res.sendStatus(401);
         }

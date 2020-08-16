@@ -35,7 +35,10 @@ class ResourceService {
         const tag = `${new Date().getTime()}`;
         let childProcess;
         if (jobData.type === 'normal') {
-            childProcess = shell.exec(`sudo ./openlane-run.sh ${jobData.type} ${jobData.designName} ${tag}`, {silent: true, async: true});
+            childProcess = shell.exec(`sudo ./openlane-run.sh ${jobData.type} ${jobData.designName} ${tag}`, {
+                silent: true,
+                async: true
+            });
         } else {
             let regressionScript = '';
             for (const property in jobData.regressionScript) {
@@ -49,9 +52,13 @@ class ResourceService {
             const regressionScriptName = `${jobData.user_uuid}-${tag}-regression.config`;
             fs.writeFileSync(`openlane_working_dir/openlane/scripts/${regressionScriptName}`, regressionScript);
             logger.info("Regression Script Created");
-            childProcess = shell.exec(`sudo ./openlane-run.sh ${jobData.type} ${jobData.designName} ${tag} ./scripts/${regressionScriptName}`, {async: true});
+            childProcess = shell.exec(`sudo ./openlane-run.sh ${jobData.type} ${jobData.designName} ${tag} ./scripts/${regressionScriptName}`, {
+                silent: true,
+                async: true
+            });
         }
         const self = this;
+        logger.info(`Saving Job #${jobId}`);
         this.jobs.set(jobId, {process: childProcess, currentStage: -1});
         childProcess.stdout.on('data', function (data) {
             self.statusUpdate(jobId, jobData.designName, tag);
@@ -70,6 +77,7 @@ class ResourceService {
 
     quitProcess(jobId) {
         logger.info(`Stopping Job #${jobId}`);
+        console.dir(this.jobs);
         const job = this.jobs.get(jobId);
         job.process.exit(1);
     }

@@ -59,7 +59,7 @@ class ResourceService {
         }
         const self = this;
         logger.info(`Saving Job #${jobId}`);
-        this.jobs.set(jobId, {process: childProcess, currentStage: -1});
+        this.jobs.set(jobId, {process: childProcess, tag: tag, currentStage: -1});
         childProcess.stdout.on('data', function (data) {
             self.statusUpdate(jobId, jobData.designName, tag);
             self.jobMonitoring.send(jobData.user_uuid, data);
@@ -78,17 +78,18 @@ class ResourceService {
     quitProcess(jobId) {
         logger.info(`Stopping Job #${jobId}`);
         const job = this.jobs.get(jobId.toString());
-        job.process.kill();
-        db['job'].update({
-            status: 'stopped'
-        }, {
-            where: {
-                jobId: jobId
-            }
-        }).then((result) => {
-            console.dir(job);
-            this.jobs.set(jobId, job);
-        });
+        if (shell.exec(`sudo docker stop ${job.tag}`).code === 0) {
+            db['job'].update({
+                status: 'stopped'
+            }, {
+                where: {
+                    jobId: jobId
+                }
+            }).then((result) => {
+                console.dir(job);
+                this.jobs.set(jobId, job);
+            });
+        }
     }
 
     statusUpdate(jobId, designName, tag) {

@@ -29,6 +29,12 @@ class ResourceService {
         logger.warn(os.totalmem() / (1024 * 1024 * 1024));
     }
 
+    /**
+     *
+     * @param jobId
+     * @param jobData
+     * @returns {Promise<boolean|string>}
+     */
     async runJob(jobId, jobData) {
         //this.notfication.sendPushNotification("jobs", "Your Job is now running", "");
         logger.info("Executing openlane shell script...");
@@ -59,7 +65,7 @@ class ResourceService {
         }
         const self = this;
         logger.info(`Saving Job #${jobId}`);
-        this.jobs.set(jobId, {process: childProcess, tag: tag, currentStage: -1});
+        this.jobs.set(jobId, {process: childProcess, tag: tag, stopped:false, currentStage: -1});
         childProcess.stdout.on('data', function (data) {
             self.statusUpdate(jobId, jobData.designName, tag);
             self.jobMonitoring.send(jobData.user_uuid, data);
@@ -71,13 +77,15 @@ class ResourceService {
         return new Promise(resolve => {
             childProcess.on('exit', (c) => resolve(c));
         }).then(() => {
-            return `openlane_working_dir/openlane/designs/${jobData.designName}/runs/${tag}`
+            return this.jobs.get(jobId).stopped ? false : `openlane_working_dir/openlane/designs/${jobData.designName}/runs/${tag}`;
         });
     }
 
     quitProcess(jobId) {
         logger.info(`Stopping Job #${jobId}`);
         const job = this.jobs.get(jobId.toString());
+        job.stopped = true;
+        this.jobs.set(jobId, job);
         if (shell.exec(`sudo docker stop ${job.tag}`).code === 0) {
             db['job'].update({
                 status: 'stopped'
@@ -85,10 +93,7 @@ class ResourceService {
                 where: {
                     jobId: jobId
                 }
-            }).then((result) => {
-                console.dir(job);
-                this.jobs.set(jobId, job);
-            });
+            })
         }
     }
 

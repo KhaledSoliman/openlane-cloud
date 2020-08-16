@@ -31,24 +31,34 @@ class Scheduler {
                 });
                 //self.notification.sendPushNotification('Job Scheduler', 'Your job is now running', job.data.regToken);
                 //self.notification.sendMail(job.data.email, `No-reply: Job #${job.id} processed` , `Job #${job.id} processed with repo url: ${job.data.repoURL}`);
-                const path = await self.resourceService.runJob(job.id, job.data);
-                await db['job'].update({
-                    status: 'archiving'
-                }, {
-                    where: {
-                        jobId: job.id
-                    }
-                });
-                await self.storage.zip(`${job.data.user_uuid}-${job.id}`, path);
-                await db['job'].update({
-                    status: 'completed',
-                    completedAt: new Date().getTime()
-                }, {
-                    where: {
-                        jobId: job.id
-                    }
-                });
-                return done(null, job.data.repoURL);
+                const result = await self.resourceService.runJob(job.id, job.data);
+                if(result) {
+                    await db['job'].update({
+                        status: 'archiving'
+                    }, {
+                        where: {
+                            jobId: job.id
+                        }
+                    });
+                    await self.storage.zip(`${job.data.user_uuid}-${job.id}`, path);
+                    await db['job'].update({
+                        status: 'completed',
+                        completedAt: new Date().getTime()
+                    }, {
+                        where: {
+                            jobId: job.id
+                        }
+                    });
+                } else {
+                    await db['job'].update({
+                        status: 'stopped'
+                    }, {
+                        where: {
+                            jobId: job.id
+                        }
+                    });
+                }
+                return done(result, job.data.repoURL);
             } catch (e) {
                 await db['job'].update({
                     status: 'failed'

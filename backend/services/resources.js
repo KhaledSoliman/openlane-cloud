@@ -79,7 +79,7 @@ class ResourceService {
         logger.info(`Stopping Job #${jobId}`);
         console.dir(this.jobs);
         const job = this.jobs.get(jobId.toString());
-        job.process.exit(1);
+        job.process.kill('SIGINT');
     }
 
     statusUpdate(jobId, designName, tag) {

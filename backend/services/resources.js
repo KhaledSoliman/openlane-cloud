@@ -88,12 +88,24 @@ class ResourceService {
     }
 
     quitProcess(jobId) {
-        logger.info(`Stopping Job #${jobId}`);
         const job = this.jobs.get(jobId.toString());
-        job.stopped = true;
-        this.jobs.set(jobId, job);
-        if (shell.exec(`sudo docker stop ${job.tag}`).code !== 0)
+        db['job'].update({
+            status: 'stopping'
+        }, {
+            where: {
+                jobId: jobId
+            }
+        }).then((result) => {
+            logger.info(`Stopping Job #${jobId}`);
+            job.stopped = true;
+            self.jobs.set(jobId, job);
+        });
+        if (shell.exec(`sudo docker stop ${job.tag}`).code !== 0) {
+            const job = self.jobs.get(jobId.toString());
+            job.stopped = false;
+            self.jobs.set(jobId, job);
             throw new Error("failed to stop docker container");
+        }
     }
 
     statusUpdate(jobId, designName, tag) {

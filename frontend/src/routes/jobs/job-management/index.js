@@ -81,6 +81,7 @@ const badgeDict = {
     'archiving': 'badge-dark',
     'completed': 'badge-success',
     'failed': 'badge-danger',
+    'stopping': 'badge-warning',
     'stopped': 'badge-warning'
 };
 
@@ -193,11 +194,12 @@ class JobManagement extends Component {
         const {user} = this.props;
         const {selectedJob} = this.state;
         this.setState({processing: true}, () => {
+            this.refs.deleteConfirmationDialog.close();
             user.getIdToken().then((idToken) => {
                 api.setToken(idToken);
                 api.quitJob(selectedJob.jobId).then((res) => {
                     console.log(res);
-                    NotificationManager.success('User Deleted!');
+                    NotificationManager.success(`Job #${selectedJob.jobId} stopped`);
                     this.setState({processing: false, selectedJob: null});
                 });
             }).catch((err) => {
@@ -208,7 +210,6 @@ class JobManagement extends Component {
         // let users = this.state.jobs;
         // let indexOfDeleteUser = users.indexOf(selectedJob);
         // users.splice(indexOfDeleteUser, 1);
-        // this.refs.deleteConfirmationDialog.close();
         // this.setState({loading: true});
         // let self = this;
         // setTimeout(() => {
@@ -493,7 +494,7 @@ class JobManagement extends Component {
                 <DeleteConfirmationDialog
                     ref="deleteConfirmationDialog"
                     title="Are you sure?"
-                    message="This will delete the job permanently."
+                    message="This will stop the job permanently."
                     onConfirm={() => this.deleteUserPermanently()}
                 />
                 <Modal isOpen={this.state.submitADesign} toggle={() => this.onAddUpdateUserModalClose()}>

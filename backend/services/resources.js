@@ -37,10 +37,11 @@ class ResourceService {
      */
     async runJob(jobId, jobData) {
         //this.notfication.sendPushNotification("jobs", "Your Job is now running", "");
-        logger.info("Executing openlane shell script...");
         const tag = `${new Date().getTime()}`;
+
         let childProcess;
         if (jobData.type === 'normal') {
+            logger.info("Executing openlane normal shell script...");
             childProcess = shell.exec(`sudo ./openlane-run.sh ${jobData.type} ${jobData.designName} ${tag}`, {
                 silent: true,
                 async: true
@@ -58,16 +59,21 @@ class ResourceService {
             const regressionScriptName = `${jobData.user_uuid}-${tag}-regression.config`;
             fs.writeFileSync(`openlane_working_dir/openlane/scripts/${regressionScriptName}`, regressionScript);
             logger.info("Regression Script Created");
+            logger.info("Executing openlane exploratory shell script...");
             childProcess = shell.exec(`sudo ./openlane-run.sh ${jobData.type} ${jobData.designName} ${tag} ./scripts/${regressionScriptName}`, {
                 silent: true,
                 async: true
             });
         }
-        const self = this;
         logger.info(`Saving Job #${jobId}`);
         this.jobs.set(jobId, {process: childProcess, tag: tag, stopped:false, currentStage: -1});
+
+
+        logger.info(`Registering event listeners for Job #${jobId}`);
+        const self = this;
         childProcess.stdout.on('data', function (data) {
-            self.statusUpdate(jobId, jobData.designName, tag);
+            if(!self.jobs.get(jobId).stopped)
+                self.statusUpdate(jobId, jobData.designName, tag);
             self.jobMonitoring.send(jobData.user_uuid, data);
         });
         childProcess.stderr.on('data', function (error) {
@@ -86,15 +92,8 @@ class ResourceService {
         const job = this.jobs.get(jobId.toString());
         job.stopped = true;
         this.jobs.set(jobId, job);
-        if (shell.exec(`sudo docker stop ${job.tag}`).code === 0) {
-            db['job'].update({
-                status: 'stopped'
-            }, {
-                where: {
-                    jobId: jobId
-                }
-            })
-        }
+        if (shell.exec(`sudo docker stop ${job.tag}`).code !== 0)
+            throw new Error("failed to stop docker container");
     }
 
     statusUpdate(jobId, designName, tag) {

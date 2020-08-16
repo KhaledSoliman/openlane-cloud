@@ -78,7 +78,7 @@ class ResourceService {
     quitProcess(jobId) {
         logger.info(`Stopping Job #${jobId}`);
         console.dir(this.jobs);
-        const job = this.jobs.get(jobId);
+        const job = this.jobs.get(jobId.toString());
         job.process.exit(1);
     }
 

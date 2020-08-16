@@ -35,7 +35,7 @@ class ResourceService {
         const tag = `${new Date().getTime()}`;
         let childProcess;
         if (jobData.type === 'normal') {
-            childProcess = shell.exec(`sudo ./openlane-run.sh ${jobData.type} ${jobData.designName} ${tag}`, {async: true});
+            childProcess = shell.exec(`sudo ./openlane-run.sh ${jobData.type} ${jobData.designName} ${tag}`, {silent: true, async: true});
         } else {
             let regressionScript = '';
             for (const property in jobData.regressionScript) {
@@ -52,7 +52,7 @@ class ResourceService {
             childProcess = shell.exec(`sudo ./openlane-run.sh ${jobData.type} ${jobData.designName} ${tag} ./scripts/${regressionScriptName}`, {async: true});
         }
         const self = this;
-        self.jobs.set(jobId, {process: childProcess, currentStage: -1});
+        this.jobs.set(jobId, {process: childProcess, currentStage: -1});
         childProcess.stdout.on('data', function (data) {
             self.statusUpdate(jobId, jobData.designName, tag);
             self.jobMonitoring.send(jobData.user_uuid, data);
@@ -69,6 +69,7 @@ class ResourceService {
     }
 
     quitProcess(jobId) {
+        logger.info(`Stopping Job #${jobId}`);
         const job = this.jobs.get(jobId);
         job.process.exit(1);
     }

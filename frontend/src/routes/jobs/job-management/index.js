@@ -189,6 +189,7 @@ class JobManagement extends Component {
      * Delete User Permanently
      */
     deleteUserPermanently() {
+        const {user} = this.props;
         const {selectedJob} = this.state;
         this.setState({processing: true}, () => {
             user.getIdToken().then((idToken) => {

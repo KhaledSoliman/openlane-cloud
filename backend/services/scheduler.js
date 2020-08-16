@@ -40,7 +40,7 @@ class Scheduler {
                             jobId: job.id
                         }
                     });
-                    await self.storage.zip(`${job.data.user_uuid}-${job.id}`, path);
+                    await self.storage.zip(`${job.data.user_uuid}-${job.id}`, result);
                     await db['job'].update({
                         status: 'completed',
                         completedAt: new Date().getTime()

@@ -99,19 +99,11 @@ class ResourceService {
             logger.info(`Stopping Job #${jobId}`);
             job.stopped = true;
             this.jobs.set(jobId, job);
-
+            const childProcess = shell.exec(`sudo docker stop ${job.tag}`, {
+                silent: true,
+                async: true
+            });
         });
-        return new Promise(resolve => {
-            if (shell.exec(`sudo docker stop ${job.tag}`).code !== 0) {
-                const job = this.jobs.get(jobId.toString());
-                job.stopped = false;
-                this.jobs.set(jobId, job);
-                throw new Error("failed to stop docker container");
-
-            }
-            resolve('OK');
-        })
-
     }
 
     statusUpdate(jobId, designName, tag) {

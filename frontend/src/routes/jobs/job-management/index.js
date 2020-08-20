@@ -478,7 +478,7 @@ class JobManagement extends Component {
     render() {
         const {location} = this.props;
         const {
-            rows, processing, loading, selectedJob, editJob, allSelected, selectedJobs, snackBarOpen, snackBarMessage,
+            rows, processing, loading, selectedJob, editJob, snackBarOpen, snackBarMessage,
             order, orderBy, page, rowsPerPage, selected
         } = this.state;
         return (

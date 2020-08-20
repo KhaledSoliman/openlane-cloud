@@ -27,7 +27,7 @@ router.get('/', function (req, res, next) {
         where: {
             user_uuid: req.uid
         },
-        limit: req.query.limit | 0,
+        limit: req.query.limit | 500,
         offset: req.query.offset | 0,
     }).then((result) => {
         res.json(result);

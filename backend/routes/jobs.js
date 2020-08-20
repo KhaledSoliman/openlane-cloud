@@ -23,10 +23,12 @@ router.post('/', function (req, res, next) {
 });
 
 router.get('/', function (req, res, next) {
-    db['job'].findAll({
+    db['job'].findAndCountAll({
         where: {
             user_uuid: req.uid
-        }
+        },
+        limit: req.query.limit | 0,
+        offset: req.query.offset | 0,
     }).then((result) => {
         res.json(result);
     }).catch((err) => {
@@ -51,6 +53,23 @@ router.post('/quit', function (req, res, next) {
             resourceService.quitProcess(req.body.job.jobId).then(() => {
                 res.sendStatus(200);
             });
+        } else {
+            res.sendStatus(401);
+        }
+    }).catch((err) => {
+        logger.error(err);
+        res.sendStatus(500);
+    });
+});
+
+router.post('/delete', function (req, res, next) {
+    db['job'].destroy({
+        where: {
+            jobId: req.body.job.jobId,
+        }
+    }).then((result) => {
+        if (result) {
+            res.sendStatus(200);
         } else {
             res.sendStatus(401);
         }

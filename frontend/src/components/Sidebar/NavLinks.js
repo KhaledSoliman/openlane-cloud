@@ -14,10 +14,6 @@ export default {
 					"menu_title": "sidebar.jobManagement",
 					"path": "/app/jobs/job-management",
 				},
-				{
-					"menu_title": "sidebar.createJob",
-					"path": "/app/employees/manage",
-				},
 			]
 		},
 	],

@@ -50,6 +50,7 @@
     "jquery": "^3.5.1",
     "leaflet": "^1.6.0",
     "material-ui-pickers": "^2.2.4",
+    "material-ui-popup-state": "^1.6.1",
     "moment": "^2.24.0",
     "mui-datatables": "^3.2.0",
     "node-sass": "^4.14.1",

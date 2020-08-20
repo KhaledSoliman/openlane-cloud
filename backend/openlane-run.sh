@@ -9,7 +9,7 @@ normal)
   sudo docker exec "$DOCKER_ID" ./flow.tcl -design "$2" -overwrite -tag "$3"
   ;;
 exploratory)
-  sudo docker exec "$DOCKER_ID" python3 run_designs.py --designs "$2" --tag "$3" --regression "$4" --clean
+  sudo docker exec "$DOCKER_ID" python3 run_designs.py --designs "$2" --tag "$3" --regression "$4" --htmlExtract --clean
   ;;
 *)
   echo "unknown run type"

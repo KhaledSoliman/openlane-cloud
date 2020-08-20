@@ -53,7 +53,7 @@ class Jobs extends React.Component {
             user.getIdToken().then((token) => {
                 axios({
                     method: 'get',
-                    url: `http://${hostname}:${port}/jobs`,
+                    url: `http://${hostname}:${port}/rows`,
                     headers: {
                         'Authorization': token
                     },

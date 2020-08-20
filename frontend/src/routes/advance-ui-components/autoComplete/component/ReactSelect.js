@@ -88,7 +88,7 @@ function SelectWrapped(props) {
       clearRenderer={() => <ClearIcon />}
       valueComponent={valueProps => {
         const { value, children, onRemove } = valueProps;
-        const onDelete = event => {
+        const onStop = event => {
           event.preventDefault();
           event.stopPropagation();
           onRemove(value);

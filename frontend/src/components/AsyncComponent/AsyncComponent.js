@@ -8,7 +8,6 @@ import Loadable from 'react-loadable';
 // rct page loader
 import RctPageLoader from 'Components/RctPageLoader/RctPageLoader';
 
-// ecommerce dashboard
 const AsyncGettingStartedComponent = Loadable({
 	loader: () => import("Routes/getting-started"),
 	loading: () => <RctPageLoader />,
@@ -41,24 +40,6 @@ const AsyncGeneralWidgetsComponent = Loadable({
 // about us
 const AsyncAboutUsComponent = Loadable({
 	loader: () => import("Routes/about-us"),
-	loading: () => <RctPageLoader />,
-});
-
-// chat app
-const AsyncChatComponent = Loadable({
-	loader: () => import("Routes/chat"),
-	loading: () => <RctPageLoader />,
-});
-
-// mail app
-const AsyncMailComponent = Loadable({
-	loader: () => import("Routes/mail"),
-	loading: () => <RctPageLoader />,
-});
-
-// todo app
-const AsyncTodoComponent = Loadable({
-	loader: () => import("Routes/todo"),
 	loading: () => <RctPageLoader />,
 });
 
@@ -95,54 +76,6 @@ const AsyncPricingComponent = Loadable({
 // blank
 const AsyncBlankComponent = Loadable({
 	loader: () => import("Routes/pages/blank"),
-	loading: () => <RctPageLoader />,
-});
-
-// google maps
-const AsyncGooleMapsComponent = Loadable({
-	loader: () => import("Routes/maps/google-map"),
-	loading: () => <RctPageLoader />,
-});
-
-// google maps
-const AsyncLeafletMapComponent = Loadable({
-	loader: () => import("Routes/maps/leaflet-map"),
-	loading: () => <RctPageLoader />,
-});
-
-// shop list
-const AsyncShoplistComponent = Loadable({
-	loader: () => import("Routes/ecommerce/shop-list"),
-	loading: () => <RctPageLoader />,
-});
-
-// shop grid
-const AsyncShopGridComponent = Loadable({
-	loader: () => import("Routes/ecommerce/shop-grid"),
-	loading: () => <RctPageLoader />,
-});
-
-// shop 
-const AsyncShopComponent = Loadable({
-	loader: () => import("Routes/ecommerce/shop"),
-	loading: () => <RctPageLoader />,
-});
-
-// cart 
-const AsyncCartComponent = Loadable({
-	loader: () => import("Routes/ecommerce/cart"),
-	loading: () => <RctPageLoader />,
-});
-
-// checkout 
-const AsyncCheckoutComponent = Loadable({
-	loader: () => import("Routes/ecommerce/checkout"),
-	loading: () => <RctPageLoader />,
-});
-
-// invoice
-const AsyncInvoiceComponent = Loadable({
-	loader: () => import("Routes/ecommerce/invoice"),
 	loading: () => <RctPageLoader />,
 });
 
@@ -191,24 +124,6 @@ const AsyncDataTableComponent = Loadable({
 // Responsive Table
 const AsyncResponsiveTableComponent = Loadable({
 	loader: () => import("Routes/tables/responsive"),
-	loading: () => <RctPageLoader />,
-});
-
-// Users List
-const AsyncUsersListComponent = Loadable({
-	loader: () => import("Routes/users/user-list"),
-	loading: () => <RctPageLoader />,
-});
-
-// Users Profile
-const AsyncUserProfileComponent = Loadable({
-	loader: () => import("Routes/users/user-profile"),
-	loading: () => <RctPageLoader />,
-});
-
-// Users Profile 1
-const AsyncUserProfile1Component = Loadable({
-	loader: () => import("Routes/users/user-profile-1"),
 	loading: () => <RctPageLoader />,
 });
 
@@ -508,20 +423,12 @@ export {
 	AsyncUserChartsComponent,
 	AsyncGeneralWidgetsComponent,
 	AsyncAboutUsComponent,
-	AsyncChatComponent,
-	AsyncMailComponent,
-	AsyncTodoComponent,
 	AsyncGalleryComponent,
 	AsyncFeedbackComponent,
 	AsyncReportComponent,
 	AsyncFaqComponent,
 	AsyncPricingComponent,
 	AsyncBlankComponent,
-	AsyncGooleMapsComponent,
-	AsyncLeafletMapComponent,
-	AsyncShoplistComponent,
-	AsyncShopGridComponent,
-	AsyncInvoiceComponent,
 	AsyncReactDragulaComponent,
 	AsyncReactDndComponent,
 	AsyncThemifyIconsComponent,
@@ -530,9 +437,6 @@ export {
 	AsyncBasicTableComponent,
 	AsyncDataTableComponent,
 	AsyncResponsiveTableComponent,
-	AsyncUsersListComponent,
-	AsyncUserProfileComponent,
-	AsyncUserProfile1Component,
 	AsyncJobManagementComponent,
 	AsyncRechartsComponent,
 	AsyncReactChartsjs2Component,
@@ -579,9 +483,6 @@ export {
 	AsyncAdvanceUINotificationComponent,
 	AsyncAdvanceUISweetAlertComponent,
 	AsyncAdvanceUIAutoCompleteComponent,
-	AsyncShopComponent,
-	AsyncCartComponent,
-	AsyncCheckoutComponent,
 
 	AsyncJobMonitoringComponent,
 	AsyncGettingStartedComponent,

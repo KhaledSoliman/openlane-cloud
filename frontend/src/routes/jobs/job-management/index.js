@@ -170,7 +170,7 @@ class JobManagement extends Component {
             user.getIdToken().then((idToken) => {
                 api.setToken(idToken);
                 api.getJobs().then((res) => {
-                    this.setState({rows: res.data});
+                    this.setState({rows: res.data.rows});
                     this.setState({loading: false});
                 });
             }).catch((err) => {

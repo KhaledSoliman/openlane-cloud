@@ -6,11 +6,9 @@ import { TOGGLE_MENU, AGENCY_TOGGLE_MENU } from 'Actions/types';
 
 // nav links
 import navLinks from 'Components/Sidebar/NavLinks';
-import agencyNavLinks from 'Components/AgencyMenu/NavLinks';
 
 const INIT_STATE = {
 	sidebarMenus: navLinks,
-	agencySidebarMenu: agencyNavLinks,
 };
 
 export default (state = INIT_STATE, action) => {

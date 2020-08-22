@@ -18,6 +18,8 @@ import Footer from 'Components/Footer/Footer';
 import PreloadHeader from 'Components/PreloadLayout/PreloadHeader';
 import PreloadSidebar from 'Components/PreloadLayout/PreloadSidebar';
 
+
+import ThemeOptions from 'Components/ThemeOptions/ThemeOptions';
 // actions
 import {collapsedSidebarAction} from 'Actions';
 
@@ -139,6 +141,7 @@ class MainApp extends Component {
                             </div>
                         </div>
                     </Sidebar>
+                    <ThemeOptions />
                 </div>
             </div>
         );

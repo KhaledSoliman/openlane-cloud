@@ -23,12 +23,10 @@ import {getAppLayout} from "Helpers/helpers";
 
 // components
 import Notifications from './Notifications';
-import DashboardOverlay from '../DashboardOverlay/DashboardOverlay';
 import LanguageProvider from './LanguageProvider';
 import SearchForm from './SearchForm';
 import QuickLinks from './QuickLinks';
 import MobileSearchForm from './MobileSearchForm';
-
 // intl messages
 import IntlMessages from 'Util/IntlMessages';
 
@@ -44,24 +42,6 @@ class Header extends Component {
         this.props.collapsedSidebarAction(val);
     };
 
-    // open dashboard overlay
-    openDashboardOverlay() {
-        $('.dashboard-overlay').toggleClass('d-none');
-        $('.dashboard-overlay').toggleClass('show');
-        if ($('.dashboard-overlay').hasClass('show')) {
-            $('body').css('overflow', 'hidden');
-        } else {
-            $('body').css('overflow', '');
-        }
-    }
-
-    // close dashboard overlay
-    closeDashboardOverlay() {
-        $('.dashboard-overlay').removeClass('show');
-        $('.dashboard-overlay').addClass('d-none');
-        $('body').css('overflow', '');
-    }
-
     // toggle screen full
     toggleScreenFull() {
         screenfull.toggle();
@@ -74,11 +54,6 @@ class Header extends Component {
 
     render() {
         const {isMobileSearchFormVisible} = this.state;
-        $('body').click(function () {
-            $('.dashboard-overlay').removeClass('show');
-            $('.dashboard-overlay').addClass('d-none');
-            $('body').css('overflow', '');
-        });
         const {horizontalMenu, agencyMenu, location} = this.props;
         return (
             <AppBar position="static" className="rct-header">
@@ -97,8 +72,7 @@ class Header extends Component {
                             {!horizontalMenu ?
                                 <li className="list-inline-item" onClick={(e) => this.onToggleNavCollapsed(e)}>
                                     <Tooltip title="Sidebar Toggle" placement="bottom">
-                                        <IconButton color="inherit" mini="true" aria-label="Menu"
-                                                    className="humburger p-0">
+                                        <IconButton color="inherit" mini="true" aria-label="Menu">
                                             <MenuIcon/>
                                         </IconButton>
                                     </Tooltip>
@@ -107,7 +81,7 @@ class Header extends Component {
                                     <Tooltip title="Sidebar Toggle" placement="bottom">
                                         <IconButton color="inherit" aria-label="Menu" className="humburger p-0"
                                                     component={Link} to="/">
-                                            <i className="ti-layout-sidebar-left"></i>
+                                            <MenuIcon className="ti-layout-sidebar-left"/>
                                         </IconButton>
                                     </Tooltip>
                                 </li>
@@ -139,9 +113,6 @@ class Header extends Component {
                         </li>
                     </ul>
                 </Toolbar>
-                <DashboardOverlay
-                    onClose={() => this.closeDashboardOverlay()}
-                />
             </AppBar>
         );
     }

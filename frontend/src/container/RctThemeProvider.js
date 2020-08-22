@@ -26,22 +26,22 @@ class RctThemeProvider extends Component {
 		let theme = '';
 		switch (activeTheme.id) {
 			case 1:
-				theme = primaryTheme
+				theme = primaryTheme;
 				break;
 			case 2:
-				theme = secondaryTheme
+				theme = secondaryTheme;
 				break;
 			case 3:
-				theme = warningTheme
+				theme = warningTheme;
 				break;
 			case 4:
-				theme = infoTheme
+				theme = infoTheme;
 				break;
 			case 5:
-				theme = dangerTheme
+				theme = dangerTheme;
 				break;
 			case 6:
-				theme = successTheme
+				theme = successTheme;
 				break;
 			default:
 				break;

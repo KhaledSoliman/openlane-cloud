@@ -91,7 +91,7 @@ $breadcrumb-font-size:            1.875rem; //30px;
 $breadcrumb-font-color:           $gray-900;
 
 // Dark theme
-$dark-bg:                         #2c3644;
+$dark-bg: #424242;
 $dark-bg-color:                   #fff;
 $dark-bg-container:               #303030;
 $dark-border-color:               rgba(0, 0, 0, 0.1);
@@ -103,7 +103,7 @@ $input-lg-height:                 52px;
 $input-radius:                    40px;
 
 // Gradient Theme Color
-$sidebar-dark-gradient:           linear-gradient(0deg, #464D69 0%, rgba(70, 77, 105, 1) 100%);
+$sidebar-dark-gradient:           linear-gradient(0deg, #2d2d2d 0%, rgb(66, 66, 66) 100%);
 $sidebar-dark:                    #2E3344;
 $overlay-light:                   rgb(255,255,255);
 $gradient-primary:                 linear-gradient(180deg, #5D92F4 0%, #09203F 100%); // Primary

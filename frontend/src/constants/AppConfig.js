@@ -5,13 +5,13 @@ const AppConfig = {
     appLogo: require('Assets/img/site-logo.png'),          // App Logo
     brandName: 'OpenLANE Cloud',                                    // Brand Name
     navCollapsed: false,                                      // Sidebar collapse
-    darkMode: false,                                          // Dark Mode
+    darkMode: true,                                          // Dark Mode
     boxLayout: false,                                         // Box Layout
     rtlLayout: false,                                         // RTL Layout
     miniSidebar: false,                                       // Mini Sidebar
     enableSidebarBackgroundImage: false,                      // Enable Sidebar Background Image
     sidebarImage: require('Assets/img/sidebar-4.jpg'),     // Select sidebar image
-    isDarkSidenav: false,                                   // Set true to dark sidebar
+    isDarkSidenav: true,                                   // Set true to dark sidebar
     locale: {
         languageId: 'english',
         locale: 'en',
@@ -37,7 +37,7 @@ const AppConfig = {
     },
     // dark theme colors
     darkThemeColors: {
-        darkBgColor: '#424242'
+        darkBgColor: '#2d2d2d'
     }
 };
 

@@ -73,7 +73,6 @@ router.get('/report', function (req, res, next) {
                 console.log(results);
                 res.json(results);
             });
-        res.sendStatus(200);
     }
 });
 

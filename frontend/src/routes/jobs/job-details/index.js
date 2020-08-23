@@ -65,7 +65,7 @@ class JobDetails extends Component {
 
     getReport(jobId) {
         const {user} = this.props;
-        this.setState({loading: loading}, () => {
+        this.setState({loading: true}, () => {
             user.getIdToken().then((idToken) => {
                 api.setToken(idToken);
                 api.getReport(jobId).then((res) => {

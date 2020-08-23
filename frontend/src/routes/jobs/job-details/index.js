@@ -45,6 +45,7 @@ class JobDetails extends Component {
     componentDidMount() {
         const {jobId} = this.props.match.params;
         this.getJob(jobId, true);
+        this.getReport(78);
     }
 
     getJob(jobId, loading = false) {

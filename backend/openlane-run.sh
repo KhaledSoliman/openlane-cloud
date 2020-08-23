@@ -16,5 +16,7 @@ exploratory)
   exit 1
   ;;
 esac
+cd regression_results
+rename -v "s/${3}_\d{2}_\d{2}_\d{4}_\d{2}_\d{2}/${3}/" "$3"_*.csv
 sudo docker stop "$DOCKER_ID"
 exit 0

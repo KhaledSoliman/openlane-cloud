@@ -32,7 +32,7 @@ class Scheduler {
                 //self.notification.sendPushNotification('Job Scheduler', 'Your job is now running', job.data.regToken);
                 //self.notification.sendMail(job.data.email, `No-reply: Job #${job.id} processed` , `Job #${job.id} processed with repo url: ${job.data.repoURL}`);
                 const result = await self.resourceService.runJob(job.id, job.data);
-                if(result) {
+                if (result) {
                     await db['job'].update({
                         status: 'archiving'
                     }, {
@@ -40,7 +40,7 @@ class Scheduler {
                             jobId: job.id
                         }
                     });
-                    await self.storage.zip(`${job.data.user_uuid}-${job.id}`, result);
+                    await self.storage.zip(result, `./downloads/${job.data.user_uuid}-${job.id}.zip`);
                     await db['job'].update({
                         status: 'completed',
                         completedAt: new Date().getTime()

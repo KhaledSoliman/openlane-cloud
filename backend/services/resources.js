@@ -66,13 +66,13 @@ class ResourceService {
             });
         }
         logger.info(`Saving Job #${jobId}`);
-        this.jobs.set(jobId, {process: childProcess, tag: tag, stopped:false, currentStage: -1});
+        this.jobs.set(jobId, {process: childProcess, tag: tag, stopped: false, currentStage: -1});
 
 
         logger.info(`Registering event listeners for Job #${jobId}`);
         const self = this;
         childProcess.stdout.on('data', function (data) {
-            if(!self.jobs.get(jobId).stopped)
+            if (!self.jobs.get(jobId).stopped)
                 self.statusUpdate(jobId, jobData.designName, tag);
             self.jobMonitoring.send(jobData.user_uuid, data);
         });
@@ -81,7 +81,10 @@ class ResourceService {
             self.jobMonitoring.send(jobData.user_uuid, error);
         });
         return new Promise(resolve => {
-            childProcess.on('exit', (c) => resolve(c));
+            childProcess.on('exit', (c) => {
+                shell.mv(`openlane_working_dir/openlane/regression_results/${tag}.csv`, `~/openlane-cloud/backend/reports/${jobId}.csv`);
+                resolve(c);
+            });
         }).then(() => {
             return this.jobs.get(jobId).stopped ? false : `openlane_working_dir/openlane/designs/${jobData.designName}/runs/${tag}`;
         });

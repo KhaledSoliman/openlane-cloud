@@ -8,8 +8,7 @@ class Storage {
         logger.info("Storage Service Initialized");
     }
 
-    zip(uuid, path) {
-        const outputPath = './downloads/'+ uuid + '.zip';
+    zip(inputPath, outputPath) {
         logger.info(outputPath);
         const output = fs.createWriteStream( outputPath);
         const archive = archiver('zip', {

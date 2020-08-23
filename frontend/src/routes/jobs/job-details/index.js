@@ -35,6 +35,7 @@ class JobDetails extends Component {
     state = {
         job: null,
         loading: true,
+        report: null,
     };
 
     constructor(props) {
@@ -53,6 +54,22 @@ class JobDetails extends Component {
                 api.setToken(idToken);
                 api.getJob(jobId).then((res) => {
                     this.setState({job: res.data, loading: false});
+                });
+            }).catch((err) => {
+                this.setState({loading: false});
+                console.log(err);
+            });
+        });
+    }
+
+    getReport(jobId) {
+        const {user} = this.props;
+        this.setState({loading: loading}, () => {
+            user.getIdToken().then((idToken) => {
+                api.setToken(idToken);
+                api.getReport(jobId).then((res) => {
+                    console.log(res);
+                    this.setState({report: res.data, loading: false});
                 });
             }).catch((err) => {
                 this.setState({loading: false});
@@ -185,6 +202,29 @@ class JobDetails extends Component {
                                             </Table>
                                         </TableCell>
                                     </TableBody>
+                                </Table>
+                            </TableContainer>
+                            <Toolbar>
+                                <div className="container-fluid">
+                                    <div className="row align-items-center justify-content-between">
+                                        <Typography variant="h5">
+                                            Reports
+                                        </Typography>
+                                        <div>
+                                            <Tooltip title="Reload Job Data">
+                                                <IconButton onClick={() => this.onReload()}>
+                                                    <AutorenewIcon/>
+                                                </IconButton>
+                                            </Tooltip>
+                                        </div>
+                                    </div>
+                                    <Divider variant="middle"/>
+                                </div>
+                            </Toolbar>
+                            <TableContainer component={Paper}>
+                                <Table aria-label="spanning table">
+                                    <TableHead>
+                                    </TableHead>
                                 </Table>
                             </TableContainer>
                         </div>

@@ -63,19 +63,15 @@ router.get('/job-monitoring', function (req, res, next) {
     res.sendStatus(200);
 });
 
-router.get('/reports', function (req, res, next) {
+router.get('/report', function (req, res, next) {
     if (req.query.jobId) {
-        const results = [];
-
-        fs.createReadStream('data.csv')
+        let results = [];
+        fs.createReadStream(`${req.query.jobId}.csv`)
             .pipe(csv())
             .on('data', (data) => results.push(data))
             .on('end', () => {
                 console.log(results);
-                // [
-                //   { NAME: 'Daffy Duck', AGE: '24' },
-                //   { NAME: 'Bugs Bunny', AGE: '22' }
-                // ]
+                res.json(results);
             });
         res.sendStatus(200);
     }

@@ -6,7 +6,7 @@ DOCKER_ID=$(
 )
 case "$1" in
 normal)
-  sudo docker exec "$DOCKER_ID" ./flow.tcl -design "$2" -overwrite -tag "$3"
+  sudo docker exec "$DOCKER_ID" python3 run_designs.py --designs "$2" --tag "$3" --clean
   ;;
 exploratory)
   sudo docker exec "$DOCKER_ID" python3 run_designs.py --designs "$2" --tag "$3" --regression "$4" --htmlExtract --clean

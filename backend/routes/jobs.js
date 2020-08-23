@@ -3,6 +3,10 @@ const router = express.Router();
 const db = require('../models');
 const logger = require('../log/logger')('Backend');
 const {scheduler, resourceService} = require('../services');
+const csv = require('csv-parser');
+const fs = require('fs');
+
+
 /**
  * Submit Job Request
  */
@@ -22,6 +26,9 @@ router.post('/', function (req, res, next) {
     });
 });
 
+/**
+ * Get jobs
+ */
 router.get('/', function (req, res, next) {
     if (req.query.jobId) {
         db['job'].findOne({
@@ -54,6 +61,24 @@ router.get('/', function (req, res, next) {
 router.get('/job-monitoring', function (req, res, next) {
     resourceService.hookSocket(req.query.jobId, req.uid);
     res.sendStatus(200);
+});
+
+router.get('/reports', function (req, res, next) {
+    if (req.query.jobId) {
+        const results = [];
+
+        fs.createReadStream('data.csv')
+            .pipe(csv())
+            .on('data', (data) => results.push(data))
+            .on('end', () => {
+                console.log(results);
+                // [
+                //   { NAME: 'Daffy Duck', AGE: '24' },
+                //   { NAME: 'Bugs Bunny', AGE: '22' }
+                // ]
+            });
+        res.sendStatus(200);
+    }
 });
 
 router.post('/quit', function (req, res, next) {

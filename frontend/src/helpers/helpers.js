@@ -3,6 +3,11 @@
  */
 import moment from 'moment';
 
+
+export function getSinceTime(time) {
+    return `${moment(time).fromNow()}`;
+}
+
 /**
  * Function to convert hex to rgba
  */

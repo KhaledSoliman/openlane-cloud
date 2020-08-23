@@ -78,6 +78,8 @@ import AutorenewIcon from '@material-ui/icons/Autorenew';
 import AddIcon from '@material-ui/icons/Add';
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
+import {getSinceTime} from "Helpers/helpers";
+import {badgeDict} from "Constants/jobConstants";
 
 const jobFields = [
     {id: 'jobId', numeric: false, disablePadding: true, label: 'Job Id'},
@@ -89,26 +91,6 @@ const jobFields = [
     {id: 'completedAt', numeric: false, disablePadding: false, label: 'Completion Time'},
     {id: 'overflow', numeric: false, disablePadding: false, label: ''},
 ];
-
-const badgeDict = {
-    'normal': 'badge-primary',
-    'exploratory': 'badge-dark',
-    'submitted': 'badge-secondary',
-    'scheduled': 'badge-info',
-    'running': 'badge-primary',
-    'running-synthesis': 'badge-synthesis',
-    'running-floorplan': 'badge-floorplan',
-    'running-placement': 'badge-placement',
-    'running-cts:': 'badge-cts',
-    'running-routing': 'badge-routing',
-    'running-lvs': 'badge-lvs',
-    'running-magic': 'badge-magic',
-    'archiving': 'badge-dark',
-    'completed': 'badge-success',
-    'failed': 'badge-danger',
-    'stopping': 'badge-warning',
-    'stopped': 'badge-warning'
-};
 
 class JobManagement extends Component {
 
@@ -374,10 +356,6 @@ class JobManagement extends Component {
         }, 2000);
     }
 
-    getSinceTime(time) {
-        return `${moment(time).fromNow()}`;
-    }
-
     handleCloseSnackBar = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -494,7 +472,7 @@ class JobManagement extends Component {
                     <Toolbar>
                         <div className="container-fluid">
                             <div className="row align-items-center justify-content-between">
-                                <Typography variant="h6" id="tableTitle" component="div">
+                                <Typography variant="h5">
                                     My Designs
                                 </Typography>
                                 <div>
@@ -503,14 +481,16 @@ class JobManagement extends Component {
                                             <AutorenewIcon/>
                                         </IconButton>
                                     </Tooltip>
-                                    <Button onClick={() => this.opnSubmitADesign()} color="primary"><AddIcon/> Submit
-                                        Design</Button>
+                                    <Button onClick={() => this.opnSubmitADesign()} color="primary"
+                                            startIcon={<AddIcon/>}>
+                                        Submit Design
+                                    </Button>
                                 </div>
                             </div>
                             <Divider variant="middle"/>
                             {selected.length > 0 && (
                                 <div className="row align-items-center justify-content-between">
-                                    <Typography color="inherit" variant="subtitle1" component="div">
+                                    <Typography color="inherit" variant="subtitle1">
                                         {selected.length} selected
                                     </Typography>
                                     <Tooltip title="Delete">
@@ -592,7 +572,7 @@ class JobManagement extends Component {
                                                         <div className="status">
                                                             <span className="d-block">{row.status}</span>
                                                             <span
-                                                                className="small">{this.getSinceTime(row.updatedAt)}</span>
+                                                                className="small">{getSinceTime(row.updatedAt)}</span>
                                                         </div>
                                                     </div>
                                                 </TableCell>

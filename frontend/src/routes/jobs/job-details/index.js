@@ -34,7 +34,8 @@ import {badgeDict} from "Constants/jobConstants";
 class JobDetails extends Component {
     state = {
         job: null,
-        loading: true,
+        loadingJobDetails: false,
+        loadingReport: false,
         report: null,
     };
 
@@ -45,19 +46,18 @@ class JobDetails extends Component {
     componentDidMount() {
         const {jobId} = this.props.match.params;
         this.getJob(jobId, true);
-        this.getReport(78);
     }
 
     getJob(jobId, loading = false) {
         const {user} = this.props;
-        this.setState({loading: loading}, () => {
+        this.setState({loadingJobDetails: loading}, () => {
             user.getIdToken().then((idToken) => {
                 api.setToken(idToken);
                 api.getJob(jobId).then((res) => {
-                    this.setState({job: res.data, loading: false});
+                    this.setState({job: res.data, loadingJobDetails: false});
                 });
             }).catch((err) => {
-                this.setState({loading: false});
+                this.setState({loadingJobDetails: false});
                 console.log(err);
             });
         });
@@ -65,28 +65,33 @@ class JobDetails extends Component {
 
     getReport(jobId) {
         const {user} = this.props;
-        this.setState({loading: true}, () => {
+        this.setState({loadingReport: true}, () => {
             user.getIdToken().then((idToken) => {
                 api.setToken(idToken);
                 api.getReport(jobId).then((res) => {
-                    console.log(res);
-                    this.setState({report: res.data, loading: false});
+                    this.setState({report: res.data, loadingReport: false});
                 });
             }).catch((err) => {
-                this.setState({loading: false});
+                this.setState({loadingReport: false});
                 console.log(err);
             });
         });
     }
 
-    onReload() {
+    onReloadJobDetails() {
+        const {jobId} = this.props.match.params;
+        this.getJob(jobId, true);
+    }
 
+    onReloadReport() {
+        const {jobId} = this.props.match.params;
+        this.getReport(jobId);
     }
 
     render() {
         const {jobId} = this.props.match.params;
         const {match} = this.props;
-        const {loading, job} = this.state;
+        const {loadingReport, loadingJobDetails, job, report} = this.state;
         return (
             <div className="blank-wrapper">
 
@@ -98,8 +103,8 @@ class JobDetails extends Component {
                     title={<IntlMessages id="sidebar.jobDetails"/>}
                     match={match}
                 />
-                <RctCollapsibleCard fullBlock>
-                    {loading ?
+                <RctCollapsibleCard fullBlock collapsible={true}>
+                    {loadingJobDetails || !job ?
                         <RctSectionLoader/> :
                         <div>
                             <Toolbar>
@@ -110,7 +115,7 @@ class JobDetails extends Component {
                                         </Typography>
                                         <div>
                                             <Tooltip title="Reload Job Data">
-                                                <IconButton onClick={() => this.onReload()}>
+                                                <IconButton onClick={() => this.onReloadJobDetails()}>
                                                     <AutorenewIcon/>
                                                 </IconButton>
                                             </Tooltip>
@@ -130,7 +135,7 @@ class JobDetails extends Component {
                                             </TableCell>
                                             <TableCell align="right">
                                                 <Button
-                                                    className={job.status === 'completed' || job.status === 'stopped' || job.status === 'stopping' ? '' : 'text-warning'}
+                                                    className={job.status === 'completed' || job.status === 'stopped' || job.status === 'stopping' || job.status === 'failed' ? '' : 'text-warning'}
                                                     size="small"
                                                     startIcon={<StopIcon/>}
                                                     disabled={job.status === 'completed' || job.status === 'stopped' || job.status === 'stopping'}
@@ -149,86 +154,131 @@ class JobDetails extends Component {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        <TableCell align="left">
-                                            <Table>
-                                                <TableBody>
-                                                    <TableRow>
-                                                        <TableCell>Job ID</TableCell>
-                                                        <TableCell align="right">{job.jobId}</TableCell>
-                                                    </TableRow>
-                                                    <TableRow>
-                                                        <TableCell>Design Name</TableCell>
-                                                        <TableCell align="right">{job.designName}</TableCell>
-                                                    </TableRow>
-                                                    <TableRow>
-                                                        <TableCell>Type</TableCell>
-                                                        <TableCell align="right"><span
-                                                            className={`badge ${badgeDict[job.type]} badge-pill`}>{job.type}</span></TableCell>
-                                                    </TableRow>
-                                                    <TableRow>
-                                                        <TableCell>Status</TableCell>
-                                                        <TableCell align="right">
-                                                            <div className="d-flex justify-content-end">
+                                        <TableRow>
+                                            <TableCell align="left">
+                                                <Table>
+                                                    <TableBody>
+                                                        <TableRow>
+                                                            <TableCell>Job ID</TableCell>
+                                                            <TableCell align="right">{job.jobId}</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell>Design Name</TableCell>
+                                                            <TableCell align="right">{job.designName}</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell>Type</TableCell>
+                                                            <TableCell align="right"><span
+                                                                className={`badge ${badgeDict[job.type]} badge-pill`}>{job.type}</span></TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell>Status</TableCell>
+                                                            <TableCell align="right">
+                                                                <div className="d-flex justify-content-end">
                                                     <span
                                                         className={`badge badge-xs ${badgeDict[job.status]} mr-10 mt-10 position-relative`}>&nbsp;</span>
-                                                                <div className="status">
-                                                                    <span className="d-block">{job.status}</span>
-                                                                    <span
-                                                                        className="small">{getSinceTime(job.updatedAt)}</span>
+                                                                    <div className="status">
+                                                                        <span className="d-block">{job.status}</span>
+                                                                        <span
+                                                                            className="small">{getSinceTime(job.updatedAt)}</span>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        </TableCell>
-                                                    </TableRow>
-                                                </TableBody>
-                                            </Table>
-                                        </TableCell>
-                                        <TableCell align="left">
-                                            <Table>
-                                                <TableBody>
-                                                    <TableRow>
-                                                        <TableCell>Repository URL</TableCell>
-                                                        <TableCell align="right">{job.repoURL}</TableCell>
-                                                    </TableRow>
-                                                    <TableRow>
-                                                        <TableCell>Submission Time</TableCell>
-                                                        <TableCell
-                                                            align="right">{new Date(job.createdAt).toLocaleString()}</TableCell>
-                                                    </TableRow>
-                                                    <TableRow>
-                                                        <TableCell>Completion Time</TableCell>
-                                                        <TableCell
-                                                            align="right">{job.completedAt ? new Date(job.completedAt).toLocaleString() : 'N/A'}</TableCell>
-                                                    </TableRow>
-                                                </TableBody>
-                                            </Table>
-                                        </TableCell>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    </TableBody>
+                                                </Table>
+                                            </TableCell>
+                                            <TableCell align="left">
+                                                <Table>
+                                                    <TableBody>
+                                                        <TableRow>
+                                                            <TableCell>Repository URL</TableCell>
+                                                            <TableCell align="right">{job.repoURL}</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell>Submission Time</TableCell>
+                                                            <TableCell
+                                                                align="right">{new Date(job.createdAt).toLocaleString()}</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell>Completion Time</TableCell>
+                                                            <TableCell
+                                                                align="right">{job.completedAt ? new Date(job.completedAt).toLocaleString() : 'N/A'}</TableCell>
+                                                        </TableRow>
+                                                    </TableBody>
+                                                </Table>
+                                            </TableCell>
+                                        </TableRow>
                                     </TableBody>
                                 </Table>
                             </TableContainer>
-                            <Toolbar>
-                                <div className="container-fluid">
-                                    <div className="row align-items-center justify-content-between">
-                                        <Typography variant="h5">
-                                            Reports
-                                        </Typography>
-                                        <div>
-                                            <Tooltip title="Reload Job Data">
-                                                <IconButton onClick={() => this.onReload()}>
-                                                    <AutorenewIcon/>
-                                                </IconButton>
-                                            </Tooltip>
-                                        </div>
-                                    </div>
-                                    <Divider variant="middle"/>
-                                </div>
-                            </Toolbar>
-                            <TableContainer component={Paper}>
-                                <Table aria-label="spanning table">
-                                    <TableHead>
-                                    </TableHead>
-                                </Table>
-                            </TableContainer>
                         </div>
+                    }
+                </RctCollapsibleCard>
+                <RctCollapsibleCard fullBlock collapsible={true}>
+                    <Toolbar>
+                        <div className="container-fluid">
+                            <div className="row align-items-center justify-content-between">
+                                <Typography variant="h5">
+                                    Reports
+                                </Typography>
+                                <div>
+                                    <Tooltip title="Reload Job Data">
+                                        <IconButton onClick={() => this.onReloadReport()}>
+                                            <AutorenewIcon/>
+                                        </IconButton>
+                                    </Tooltip>
+                                </div>
+                            </div>
+                            <Divider variant="middle"/>
+                        </div>
+                    </Toolbar>
+                    {loadingReport ?
+                        <RctSectionLoader/> :
+                        <TableContainer component={Paper}>
+                            {report && (report.length === 1 ?
+                                    <Table>
+                                        <TableBody>
+                                            {Object.keys(report[0]).map((key, i) => {
+                                                    if (key !== "")
+                                                        return (
+                                                            <TableRow key={i}>
+                                                                <TableCell>{key}</TableCell>
+                                                                <TableCell align="right">{report[0][key]}</TableCell>
+                                                            </TableRow>
+                                                        )
+                                                }
+                                            )}
+                                        </TableBody>
+                                    </Table> :
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                {Object.keys(report[0]).map((key, i) => {
+                                                        if (key !== "")
+                                                            return (
+                                                                <TableCell key={i}>{key}</TableCell>
+                                                            )
+                                                    }
+                                                )}
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {report.map((value, i) => {
+                                                    return (<TableRow>
+                                                        {Object.keys(report[i]).map((key, index2) => {
+                                                            if (key !== "")
+                                                                return (
+                                                                    <TableCell key={index2}>{report[i][key]}</TableCell>
+                                                                )
+                                                        })}
+                                                    </TableRow>)
+                                                }
+                                            )}
+                                        </TableBody>
+                                    </Table>
+                            )}
+                        </TableContainer>
                     }
                 </RctCollapsibleCard>
             </div>

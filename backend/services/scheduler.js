@@ -19,7 +19,7 @@ class Scheduler {
         });
         // Process jobs from as many servers or processes as you like
         const self = this;
-        this.queue.process(async function (job, done) {
+        this.queue.process(10, async function (job, done) {
             try {
                 logger.info(`Processing job ${job.id}`);
                 await db['job'].update({

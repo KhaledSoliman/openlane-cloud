@@ -9,6 +9,10 @@ import TabPanel from "@material-ui/lab/TabPanel";
 import TabContext from "@material-ui/lab/TabContext";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormControl from "@material-ui/core/FormControl";
 
 class SubmitDesignForm extends Component {
     constructor(props) {
@@ -80,6 +84,22 @@ class SubmitDesignForm extends Component {
                                 value={submitDesignDetails.repoURL}
                                 onChange={e => onChangeSubmitDesignDetails('repoURL', e.target.value)}
                             />
+                            <InputLabel id="pdk-variant-label-select">PDK Variant</InputLabel>
+                            <FormControl>
+                            <Select
+                                value={""}
+                                displayEmpty
+                                inputProps={{ 'aria-label': 'pdk-variant-label-select' }}
+                            >
+                                <MenuItem value="">
+                                    <em>sky130_fd_sc_hd</em>
+                                </MenuItem>
+                                <MenuItem value={10}>sky130_fd_sc_hs</MenuItem>
+                                <MenuItem value={20}>sky130_fd_sc_ms</MenuItem>
+                                <MenuItem value={30}>sky130_fd_sc_ls</MenuItem>
+                                <MenuItem value={30}>sky130_fd_sc_hdll</MenuItem>
+                            </Select>
+                            </FormControl>
                         </Form>
                     </Grid>
                 </TabPanel>

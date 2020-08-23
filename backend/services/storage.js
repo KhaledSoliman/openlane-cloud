@@ -28,7 +28,7 @@ class Storage {
             logger.error(err);
         });
         archive.pipe(output);
-        archive.directory(path, false).finalize();
+        archive.directory(inputPath, false).finalize();
     }
 }
 

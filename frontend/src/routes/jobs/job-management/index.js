@@ -615,7 +615,7 @@ class JobManagement extends Component {
                                                                                             </Typography>
                                                                                         </MenuItem>
                                                                                         <MenuItem
-                                                                                            disabled={row.status === 'completed' || row.status === 'stopped' || row.status === 'stopping'}
+                                                                                            disabled={row.status === 'completed' || row.status === 'stopped' || row.status === 'stopping' || row.status === 'failed'}
                                                                                             onClick={() => {
                                                                                                 this.openJobViewDialog(row);
                                                                                                 popupState.close();
@@ -631,7 +631,7 @@ class JobManagement extends Component {
                                                                                             </Typography>
                                                                                         </MenuItem>
                                                                                         <MenuItem
-                                                                                            disabled={row.status === 'completed' || row.status === 'stopped' || row.status === 'stopping'}
+                                                                                            disabled={row.status === 'completed' || row.status === 'stopped' || row.status === 'stopping' || row.status === 'failed'}
                                                                                             onClick={() => {
                                                                                                 this.onStop(row);
                                                                                                 popupState.close();

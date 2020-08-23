@@ -3,13 +3,9 @@
  */
 import React, {Component} from 'react';
 import {Helmet} from "react-helmet";
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import {
-    Pagination,
-    PaginationItem,
-    PaginationLink,
     Modal,
     ModalHeader,
     ModalBody,
@@ -476,7 +472,7 @@ class JobManagement extends Component {
     }
 
     render() {
-        const {location} = this.props;
+        const {location, match} = this.props;
         const {
             rows, processing, loading, selectedJob, editJob, snackBarOpen, snackBarMessage,
             order, orderBy, page, rowsPerPage, selected
@@ -622,6 +618,22 @@ class JobManagement extends Component {
                                                                                     onClickAway={popupState.close}>
                                                                                     <MenuList autoFocusItem={open}
                                                                                               id="menu-list-grow">
+                                                                                        <MenuItem
+                                                                                            component={Link}
+                                                                                            to={`${match.url}/${row.jobId}`}
+                                                                                            onClick={() => {
+                                                                                                popupState.close();
+                                                                                            }}>
+                                                                                            <ListItemIcon>
+                                                                                                <VisibilityIcon
+                                                                                                    fontSize="small"/>
+                                                                                            </ListItemIcon>
+                                                                                            <Typography
+                                                                                                variant="caption"
+                                                                                                noWrap>
+                                                                                                View Details
+                                                                                            </Typography>
+                                                                                        </MenuItem>
                                                                                         <MenuItem
                                                                                             disabled={row.status === 'completed' || row.status === 'stopped' || row.status === 'stopping'}
                                                                                             onClick={() => {

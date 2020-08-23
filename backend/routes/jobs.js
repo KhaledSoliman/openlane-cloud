@@ -23,18 +23,32 @@ router.post('/', function (req, res, next) {
 });
 
 router.get('/', function (req, res, next) {
-    db['job'].findAndCountAll({
-        where: {
-            user_uuid: req.uid
-        },
-        limit: req.query.limit | 500,
-        offset: req.query.offset | 0,
-    }).then((result) => {
-        res.json(result);
-    }).catch((err) => {
-        logger.error(err);
-        res.sendStatus(500);
-    });
+    if (req.query.jobId) {
+        db['job'].findOne({
+            where: {
+                user_uuid: req.uid,
+                jobId: req.query.jobId
+            }
+        }).then((result) => {
+            res.json(result);
+        }).catch((err) => {
+            logger.error(err);
+            res.sendStatus(500);
+        });
+    } else {
+        db['job'].findAndCountAll({
+            where: {
+                user_uuid: req.uid
+            },
+            limit: req.query.limit | 500,
+            offset: req.query.offset | 0,
+        }).then((result) => {
+            res.json(result);
+        }).catch((err) => {
+            logger.error(err);
+            res.sendStatus(500);
+        });
+    }
 });
 
 router.get('/job-monitoring', function (req, res, next) {

@@ -10,13 +10,16 @@ import {Link} from 'react-router-dom';
 import IntlMessages from 'Util/IntlMessages';
 
 // get display string
-const getDisplayString = (sub) => {
+const getDisplayString = (sub, params) => {
     const arr = sub.split("-");
     if (arr.length > 1) {
         return <IntlMessages
             id={`sidebar.${arr[0].charAt(0) + arr[0].slice(1) + arr[1].charAt(0).toUpperCase() + arr[1].slice(1)}`}/>
     } else {
-        return <IntlMessages id={`sidebar.${sub.charAt(0) + sub.slice(1)}`}/>
+        if (sub.charAt(0) === ':')
+            return params[`${sub.slice(1)}`];
+        else
+            return <IntlMessages id={`sidebar.${sub.charAt(0) + sub.slice(1)}`}/>
     }
 
 };
@@ -46,7 +49,7 @@ const PageTitleBar = ({title, match, enableBreadCrumb}) => {
                 {subPath.map((sub, index) => {
                         return <BreadcrumbItem active={subPath.length === index + 1}
                                                tag={subPath.length === index + 1 ? "span" : Link} key={index}
-                                               to={getUrlString(path, sub, index)}>{getDisplayString(sub)}</BreadcrumbItem>
+                                               to={getUrlString(path, sub, index)}>{getDisplayString(sub, match.params)}</BreadcrumbItem>
                     }
                 )}
             </Breadcrumb>

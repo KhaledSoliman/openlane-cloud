@@ -2,6 +2,7 @@ module.exports = {
 	"sidebar.getting-started": "Getting Started",
 	"sidebar.jobs": "Jobs",
 	"sidebar.jobManagement": "Manage Jobs",
+	"sidebar.jobDetails": "Job Details",
 	"sidebar.createJob": "Create a Job",
 	"sidebar.app": "App",
 	"sidebar.news":"News",

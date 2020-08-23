@@ -72,16 +72,15 @@ class Header extends Component {
                             {!horizontalMenu ?
                                 <li className="list-inline-item" onClick={(e) => this.onToggleNavCollapsed(e)}>
                                     <Tooltip title="Sidebar Toggle" placement="bottom">
-                                        <IconButton color="inherit" mini="true" aria-label="Menu">
+                                        <IconButton mini="true" aria-label="Menu">
                                             <MenuIcon/>
                                         </IconButton>
                                     </Tooltip>
                                 </li> :
                                 <li className="list-inline-item">
                                     <Tooltip title="Sidebar Toggle" placement="bottom">
-                                        <IconButton color="inherit" aria-label="Menu" className="humburger p-0"
-                                                    component={Link} to="/">
-                                            <MenuIcon className="ti-layout-sidebar-left"/>
+                                        <IconButton aria-label="Menu" component={Link} to="/">
+                                            <MenuIcon/>
                                         </IconButton>
                                     </Tooltip>
                                 </li>

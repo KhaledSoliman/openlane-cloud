@@ -17,11 +17,6 @@ const AsyncUserSettingsComponent = Loadable({
 	loading: () => <RctPageLoader />,
 });
 
-const AsyncJobMonitoringComponent = Loadable({
-	loader: () => import("Routes/jobs/job-monitoring"),
-	loading: () => <RctPageLoader />,
-});
-
 // about us
 const AsyncAboutUsComponent = Loadable({
 	loader: () => import("Routes/about-us"),
@@ -64,11 +59,23 @@ const AsyncReactDndComponent = Loadable({
 	loading: () => <RctPageLoader />,
 });
 
-// Users Management
+
+
 const AsyncJobManagementComponent = Loadable({
 	loader: () => import("Routes/jobs/job-management"),
 	loading: () => <RctPageLoader />,
 });
+
+const AsyncJobDetailsComponent = Loadable({
+	loader: () => import("Routes/jobs/job-details"),
+	loading: () => <RctPageLoader />,
+});
+
+const AsyncJobMonitoringComponent = Loadable({
+	loader: () => import("Routes/jobs/job-monitoring"),
+	loading: () => <RctPageLoader />,
+});
+
 
 /*---------------- Session ------------------*/
 
@@ -137,7 +144,6 @@ export {
 	AsyncBlankComponent,
 	AsyncReactDragulaComponent,
 	AsyncReactDndComponent,
-	AsyncJobManagementComponent,
 	AsyncSessionLoginComponent,
 	AsyncSessionRegisterComponent,
 	AsyncSessionLockScreenComponent,
@@ -148,7 +154,10 @@ export {
 	AsyncQuillEditorComponent,
 	AsyncWysiwygEditorComponent,
 
+	AsyncJobManagementComponent,
 	AsyncJobMonitoringComponent,
+	AsyncJobDetailsComponent,
+
 	AsyncGettingStartedComponent,
 	AsyncUserSettingsComponent,
 };

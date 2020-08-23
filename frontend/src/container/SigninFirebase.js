@@ -29,6 +29,7 @@ import {
 import Collapse from "@material-ui/core/Collapse";
 import {Alert, AlertTitle} from "@material-ui/lab";
 import Grid from "@material-ui/core/Grid";
+import Particles from "react-particles-js";
 
 
 class Signin extends Component {
@@ -88,9 +89,71 @@ class Signin extends Component {
             loginPWIsEmpty,
         } = this.state;
         const {loading} = this.props;
+        const st = {
+            position: "fixed",
+            left: 0,
+            top: 0,
+            width: "100%",
+            height: "100%",
+        };
         return (
             <QueueAnim type="bottom" duration={2000}>
                 <div className="rct-session-wrapper">
+                    <Particles style={st}
+                               params={{
+                                   "particles": {
+                                       "number": {
+                                           "value": 160,
+                                           "density": {
+                                               "enable": false
+                                           }
+                                       },
+                                       "size": {
+                                           "value": 3,
+                                           "random": true,
+                                           "anim": {
+                                               "speed": 4,
+                                               "size_min": 0.3
+                                           }
+                                       },
+                                       "color": {
+                                           "value": "#000"
+                                       },
+                                       "line_linked": {
+                                           "enable": false
+                                       },
+                                       "move": {
+                                           "random": true,
+                                           "speed": 1,
+                                           "direction": "top",
+                                           "out_mode": "out"
+                                       }
+                                   },
+                                   "interactivity": {
+                                       "events": {
+                                           "onhover": {
+                                               "enable": true,
+                                               "mode": "bubble"
+                                           },
+                                           "onclick": {
+                                               "enable": true,
+                                               "mode": "repulse"
+                                           }
+                                       },
+                                       "modes": {
+                                           "bubble": {
+                                               "distance": 250,
+                                               "duration": 2,
+                                               "size": 0,
+                                               "opacity": 0
+                                           },
+                                           "repulse": {
+                                               "distance": 400,
+                                               "duration": 4
+                                           }
+                                       }
+                                   }
+                               }}/>
                     {loading &&
                     <LinearProgress/>
                     }
@@ -115,7 +178,7 @@ class Signin extends Component {
                     </AppBar>
                     <div className="session-inner-wrapper">
                         <div className="container">
-                            <div className="row row-eq-height">
+                            <div className="row row-eq-height justify-content-center">
                                 <div className="col-sm-7 col-md-7 col-lg-8">
                                     <div className="session-body text-center">
                                         <div className="session-head mb-30">
@@ -197,9 +260,6 @@ class Signin extends Component {
                                             of Service</a>
                                         </p>
                                     </div>
-                                </div>
-                                <div className="col-sm-5 col-md-5 col-lg-4">
-                                    <SessionSlider/>
                                 </div>
                             </div>
                         </div>

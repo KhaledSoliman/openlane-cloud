@@ -23,6 +23,19 @@ class API {
         }).catch(console.log);
     }
 
+    async getJob(jobId) {
+        return this.axios.get('/jobs', {
+            params: {
+                jobId: jobId
+            },
+            headers: {
+                'Authorization': this.token
+            },
+        }).then((res) => {
+            return res;
+        }).catch(console.log);
+    }
+
     async postJob(designName, repoURL, type, regressionScript) {
         return this.axios.post('/jobs', {
             job: {

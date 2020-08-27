@@ -167,11 +167,11 @@ class ResourceService {
                     //First Stage
                     if (items.length !== 0) {
                         job.runs[i].currentStage++;
-                        db['job.runs[i]'].update({
+                        db['run'].update({
                             status: `running-${self.stageNames[job.runs[i].currentStage]}`
                         }, {
                             where: {
-                                jobId: jobId
+                                id: job.runs[i].id
                             }
                         }).then(() => {
                             self.jobs.set(jobId, job);
@@ -188,11 +188,11 @@ class ResourceService {
 
                     if (items.length !== 0) {
                         job.runs[i].currentStage++;
-                        db['job.runs[i]'].update({
+                        db['run'].update({
                             status: `running-${self.stageNames[job.runs[i].currentStage]}`
                         }, {
                             where: {
-                                jobId: jobId
+                                id: job.runs[i].id
                             }
                         }).then(() => {
                             self.jobs.set(jobId, job);

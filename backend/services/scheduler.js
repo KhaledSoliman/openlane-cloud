@@ -31,8 +31,16 @@ class Scheduler {
                 });
                 //self.notification.sendPushNotification('Job Scheduler', 'Your job is now running', job.data.regToken);
                 //self.notification.sendMail(job.data.email, `No-reply: Job #${job.id} processed` , `Job #${job.id} processed with repo url: ${job.data.repoURL}`);
-                const result = await self.resourceService.runJob(job.id, job.data);
-                if (result) {
+                const stopped = await self.resourceService.runJob(job.id, job.data);
+                if (stopped) {
+                    await db['job'].update({
+                        status: 'stopped'
+                    }, {
+                        where: {
+                            jobId: job.id
+                        }
+                    });
+                } else {
                     await db['job'].update({
                         status: 'completed',
                         completedAt: new Date().getTime()
@@ -41,16 +49,8 @@ class Scheduler {
                             jobId: job.id
                         }
                     });
-                } else {
-                    await db['job'].update({
-                        status: 'stopped'
-                    }, {
-                        where: {
-                            jobId: job.id
-                        }
-                    });
                 }
-                return done(result, job.data.repoURL);
+                return done(stopped, job.data.repoURL);
             } catch (e) {
                 await db['job'].update({
                     status: 'failed'

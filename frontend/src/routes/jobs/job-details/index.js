@@ -30,6 +30,27 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 import {getSinceTime} from "Helpers/helpers";
 import {badgeDict} from "Constants/jobConstants";
+import EnhancedTable from "../../../components/EnhancedTable/EnhancedTable";
+
+const runFields = [
+    {id: 'id', numeric: false, disablePadding: false, label: 'Run Id'},
+    {id: 'name', numeric: false, disablePadding: false, label: 'Run Name'},
+    {
+        id: 'status', numeric: false, disablePadding: false, label: 'Status', jsx: (row) => {
+            return (<div className="d-flex justify-content-start">
+                <span
+                    className={`badge badge-xs ${badgeDict[row.status]} mr-10 mt-10 position-relative`}>&nbsp;</span>
+                <div className="status">
+                    <span className="d-block">{row.status}</span>
+                    <span
+                        className="small">{getSinceTime(row.updatedAt)}</span>
+                </div>
+            </div>)
+        }
+    },
+    {id: 'createdAt', numeric: false, disablePadding: false, label: 'Start Time', timestamp: true},
+    {id: 'completedAt', numeric: false, disablePadding: false, label: 'Completion Time', timestamp: true}
+];
 
 class JobDetails extends Component {
     state = {
@@ -91,7 +112,7 @@ class JobDetails extends Component {
     render() {
         const {jobId} = this.props.match.params;
         const {match} = this.props;
-        const {loadingReport, loadingJobDetails, job, report} = this.state;
+        const {loadingReport, loadingJobDetails, job, report, runOrderBy} = this.state;
         return (
             <div className="blank-wrapper">
 
@@ -213,6 +234,42 @@ class JobDetails extends Component {
                                 </Table>
                             </TableContainer>
                         </div>
+                    }
+                </RctCollapsibleCard>
+                <RctCollapsibleCard fullBlock collapsible={true}>
+                    <Toolbar>
+                        <div className="container-fluid">
+                            <div className="row align-items-center justify-content-between">
+                                <Typography variant="h5">
+                                    Runs
+                                </Typography>
+                                <div>
+                                    <Tooltip title="Reload Run Data">
+                                        <IconButton onClick={() => this.onReloadReport()}>
+                                            <AutorenewIcon/>
+                                        </IconButton>
+                                    </Tooltip>
+                                </div>
+                            </div>
+                            <Divider variant="middle"/>
+                        </div>
+                    </Toolbar>
+                    {loadingJobDetails ?
+                        <RctSectionLoader/> :
+                        <TableContainer component={Paper}>
+                            {job && job.runs && (job.runs.length >= 1 ?
+                                    <EnhancedTable
+                                        sorting
+                                        pagination
+                                        fields={runFields}
+                                        rows={job.runs}
+                                    /> :
+                                    <Typography variant="h5">
+                                        No runs available
+                                    </Typography>
+
+                            )}
+                        </TableContainer>
                     }
                 </RctCollapsibleCard>
                 <RctCollapsibleCard fullBlock collapsible={true}>

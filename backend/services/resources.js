@@ -90,7 +90,6 @@ class ResourceService {
             //Scan for runs
             if (data.includes('running')) {
                 const keywords = data.split('] ')[1].split(' ');
-                console.dir(keywords);
                 db['run'].create({
                     jobId: jobId,
                     name: keywords[1],
@@ -120,7 +119,7 @@ class ResourceService {
                     }
                 }).then(() => {
                     for (let i = 0; i < job.runs.length; i++) {
-                        self.storage.zip(`openlane_working_dir/openlane/designs/${jobData.designName}/runs/${job.runs[i].name}`, `./downloads/${job.data.user_uuid}-${job.id}.zip`);
+                        self.storage.zip(`openlane_working_dir/openlane/designs/${jobData.designName}/runs/${job.runs[i].name}`, `./downloads/${jobData.user_uuid}-${jobId}-${job.runs[i].name}.zip`);
                     }
                 });
                 shell.mv(`openlane_working_dir/openlane/regression_results/${tag}.csv`, `~/openlane-cloud/backend/reports/${jobId}.csv`);

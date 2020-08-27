@@ -80,16 +80,145 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import {getSinceTime} from "Helpers/helpers";
 import {badgeDict} from "Constants/jobConstants";
+import EnhancedTable from "../../../components/EnhancedTable/EnhancedTable";
 
 const jobFields = [
     {id: 'jobId', numeric: false, disablePadding: true, label: 'Job Id'},
     {id: 'designName', numeric: false, disablePadding: false, label: 'Design Name'},
-    {id: 'type', numeric: false, disablePadding: false, label: 'Type'},
-    {id: 'status', numeric: false, disablePadding: false, label: 'Status'},
-    {id: 'repoURL', numeric: false, disablePadding: false, label: 'Repo URL'},
-    {id: 'createdAt', numeric: false, disablePadding: false, label: 'Submission Time'},
-    {id: 'completedAt', numeric: false, disablePadding: false, label: 'Completion Time'},
-    {id: 'overflow', numeric: false, disablePadding: false, label: ''},
+    {
+        id: 'type', numeric: false, disablePadding: false, label: 'Type', jsx: (row) => {
+            return (<span
+                className={`badge ${badgeDict[row.type]} badge-pill`}>{row.type}</span>);
+        }
+    },
+    {
+        id: 'status', numeric: false, disablePadding: false, label: 'Status', jsx: (row) => {
+            return (
+                <div className="d-flex justify-content-start">
+                    <span
+                        className={`badge badge-xs ${badgeDict[row.status]} mr-10 mt-10 position-relative`}>&nbsp;</span>
+                    <div className="status">
+                        <span className="d-block">{row.status}</span>
+                        <span
+                            className="small">{getSinceTime(row.updatedAt)}</span>
+                    </div>
+                </div>);
+        }
+    },
+    {id: 'repoURL', numeric: false, disablePadding: false, label: 'Repo URL', link: true},
+    {id: 'createdAt', numeric: false, disablePadding: false, label: 'Submission Time', timestamp: true},
+    {id: 'completedAt', numeric: false, disablePadding: false, label: 'Completion Time', timestamp: true},
+    {
+        id: 'overflow', numeric: false, disablePadding: false, label: '', jsx: (row, props) => {
+            return (<PopupState variant="popper" popupId={`moreMenu-${row.id}`}>
+                {(popupState) => (
+                    <div>
+                        <IconButton
+                            {...bindToggle(popupState)}
+                        >
+                            <MoreVertIcon/>
+                        </IconButton>
+                        <Popper {...bindPopper(popupState)} role={undefined}
+                                transition>
+                            {({TransitionProps}) => (
+                                <Grow {...TransitionProps}
+                                      style={{transformOrigin: 'center top'}}>
+                                    <Paper>
+                                        <ClickAwayListener
+                                            onClickAway={popupState.close}>
+                                            <MenuList autoFocusItem={open}
+                                                      id="menu-list-grow">
+                                                <MenuItem
+                                                    component={Link}
+                                                    to={`${props.match.url}/${row.jobId}`}
+                                                    onClick={() => {
+                                                        popupState.close();
+                                                    }}>
+                                                    <ListItemIcon>
+                                                        <VisibilityIcon
+                                                            fontSize="small"/>
+                                                    </ListItemIcon>
+                                                    <Typography
+                                                        variant="caption"
+                                                        noWrap>
+                                                        View Details
+                                                    </Typography>
+                                                </MenuItem>
+                                                <MenuItem
+                                                    disabled={row.status === 'completed' || row.status === 'stopped' || row.status === 'stopping' || row.status === 'failed'}
+                                                    onClick={() => {
+                                                        props.openJobViewDialog(row);
+                                                        popupState.close();
+                                                    }}>
+                                                    <ListItemIcon>
+                                                        <VisibilityIcon
+                                                            fontSize="small"/>
+                                                    </ListItemIcon>
+                                                    <Typography
+                                                        variant="caption"
+                                                        noWrap>
+                                                        Monitor
+                                                    </Typography>
+                                                </MenuItem>
+                                                <MenuItem
+                                                    disabled={row.status === 'completed' || row.status === 'stopped' || row.status === 'stopping' || row.status === 'failed'}
+                                                    onClick={() => {
+                                                        props.onStop(row);
+                                                        popupState.close();
+                                                    }}>
+                                                    <ListItemIcon>
+                                                        <StopIcon
+                                                            fontSize="small"/>
+                                                    </ListItemIcon>
+                                                    <Typography
+                                                        variant="caption"
+                                                        noWrap>
+                                                        Stop
+                                                    </Typography>
+                                                </MenuItem>
+                                                <MenuItem
+                                                    disabled={row.status !== 'completed'}
+                                                    onClick={() => {
+                                                        props.downloadJobResult(row.jobId);
+                                                        popupState.close();
+                                                    }}>
+                                                    <ListItemIcon>
+                                                        <GetAppIcon
+                                                            fontSize="small"/>
+                                                    </ListItemIcon>
+                                                    <Typography
+                                                        variant="caption"
+                                                        noWrap>
+                                                        Download
+                                                    </Typography>
+                                                </MenuItem>
+                                                <MenuItem
+                                                    disabled={row.status !== 'completed' && row.status !== 'stopped'}
+                                                    onClick={() => {
+                                                        props.onDelete(row.jobId);
+                                                        popupState.close();
+                                                    }}>
+                                                    <ListItemIcon>
+                                                        <DeleteIcon
+                                                            fontSize="small"/>
+                                                    </ListItemIcon>
+                                                    <Typography
+                                                        variant="caption"
+                                                        noWrap>
+                                                        Delete
+                                                    </Typography>
+                                                </MenuItem>
+                                            </MenuList>
+                                        </ClickAwayListener>
+                                    </Paper>
+                                </Grow>
+                            )}
+                        </Popper>
+                    </div>
+                )}
+            </PopupState>);
+        }
+    },
 ];
 
 class JobManagement extends Component {
@@ -180,7 +309,7 @@ class JobManagement extends Component {
         this.getJobs();
     }
 
-    downloadJobResult(jobId) {
+    downloadJobResult = (jobId) => {
         const {user} = this.props;
         this.setState({processing: true}, () => {
             user.getIdToken().then((idToken) => {
@@ -194,17 +323,17 @@ class JobManagement extends Component {
                 console.log(err);
             });
         });
-    }
+    };
 
     /**
      * On Stop
      */
-    onStop(data) {
+    onStop = (data) => {
         this.refs.deleteConfirmationDialog.open();
         this.setState({selectedJob: data});
-    }
+    };
 
-    onDelete(jobId) {
+    onDelete = (jobId) => {
         const {user} = this.props;
         this.setState({processing: true}, () => {
             user.getIdToken().then((idToken) => {
@@ -218,7 +347,7 @@ class JobManagement extends Component {
                 console.log(err);
             });
         });
-    }
+    };
 
     /**
      * Delete User Permanently
@@ -385,70 +514,6 @@ class JobManagement extends Component {
         });
     };
 
-    handleClick = (event, id) => {
-        const {selected} = this.state;
-        const selectedIndex = selected.indexOf(id);
-        let newSelected = [];
-
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, id);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
-                selected.slice(0, selectedIndex),
-                selected.slice(selectedIndex + 1),
-            );
-        }
-
-        this.setState({
-            selected: newSelected
-        });
-    };
-
-    handleChangePage = (event, newPage) => {
-        this.setState({
-            page: newPage
-        });
-    };
-
-    handleChangeRowsPerPage = (event) => {
-        this.setState({
-            rowsPerPage: parseInt(event.target.value, 10),
-            page: 0
-        });
-    };
-
-    isSelected = (name) => this.state.selected.indexOf(name) !== -1;
-
-    descendingComparator(a, b, orderBy) {
-        if (b[orderBy] < a[orderBy]) {
-            return -1;
-        }
-        if (b[orderBy] > a[orderBy]) {
-            return 1;
-        }
-        return 0;
-    }
-
-    getComparator(order, orderBy) {
-        return order === 'desc'
-            ? (a, b) => this.descendingComparator(a, b, orderBy)
-            : (a, b) => -this.descendingComparator(a, b, orderBy);
-    }
-
-    stableSort(array, comparator) {
-        const stabilizedThis = array.map((el, index) => [el, index]);
-        stabilizedThis.sort((a, b) => {
-            const order = comparator(a[0], b[0]);
-            if (order !== 0) return order;
-            return a[1] - b[1];
-        });
-        return stabilizedThis.map((el) => el[0]);
-    }
-
     render() {
         const {location, match} = this.props;
         const {
@@ -502,215 +567,12 @@ class JobManagement extends Component {
                             )}
                         </div>
                     </Toolbar>
-                    <TableContainer>
-                        <Table
-                            stickyHeader
-                            aria-labelledby="tableTitle"
-                            size="small"
-                            aria-label="enhanced table"
-                        >
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell padding="checkbox">
-                                        <Checkbox
-                                            indeterminate={selected.length > 0 && selected.length < rows.length}
-                                            checked={rows.length > 0 && selected.length === rows.length}
-                                            onChange={this.handleSelectAllClick}
-                                            inputProps={{'aria-label': 'select all jobs'}}
-                                        />
-                                    </TableCell>
-                                    {jobFields.map((headCell) => (
-                                        <TableCell
-                                            key={headCell.id}
-                                            align={headCell.numeric ? 'right' : 'left'}
-                                            padding={headCell.disablePadding ? 'none' : 'default'}
-                                            sortDirection={orderBy === headCell.id ? order : false}
-                                        >
-                                            <TableSortLabel
-                                                active={orderBy === headCell.id}
-                                                direction={orderBy === headCell.id ? order : 'asc'}
-                                                onClick={(e) => this.handleRequestSort(e, headCell.id)}
-                                            >
-                                                {headCell.label}
-                                            </TableSortLabel>
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {this.stableSort(rows, this.getComparator(order, orderBy))
-                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    .map((row, index) => {
-                                        const isItemSelected = this.isSelected(row.id);
-                                        const labelId = `enhanced-table-checkbox-${index}`;
-                                        return (
-                                            <TableRow
-                                                hover
-                                                role="checkbox"
-                                                aria-checked={isItemSelected}
-                                                tabIndex={-1}
-                                                key={row.name}
-                                                selected={isItemSelected}
-                                            >
-                                                <TableCell padding="checkbox">
-                                                    <Checkbox
-                                                        onClick={(event) => this.handleClick(event, row.id)}
-                                                        checked={isItemSelected}
-                                                        inputProps={{'aria-labelledby': labelId}}
-                                                    />
-                                                </TableCell>
-                                                <TableCell component="th" id={labelId} scope="row" padding="none">
-                                                    {row.jobId}
-                                                </TableCell>
-                                                <TableCell>{row.designName}</TableCell>
-                                                <TableCell><span
-                                                    className={`badge ${badgeDict[row.type]} badge-pill`}>{row.type}</span></TableCell>
-                                                <TableCell>
-                                                    <div className="d-flex justify-content-start">
-                                                    <span
-                                                        className={`badge badge-xs ${badgeDict[row.status]} mr-10 mt-10 position-relative`}>&nbsp;</span>
-                                                        <div className="status">
-                                                            <span className="d-block">{row.status}</span>
-                                                            <span
-                                                                className="small">{getSinceTime(row.updatedAt)}</span>
-                                                        </div>
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell><a>{row.repoURL}</a></TableCell>
-                                                <TableCell>{new Date(row.createdAt).toLocaleString()}</TableCell>
-                                                <TableCell>{row.completedAt ? new Date(row.completedAt).toLocaleString() : 'N/A'}</TableCell>
-                                                <TableCell>
-                                                    <PopupState variant="popper" popupId={`moreMenu-${row.id}`}>
-                                                        {(popupState) => (
-                                                            <div>
-                                                                <IconButton
-                                                                    {...bindToggle(popupState)}
-                                                                >
-                                                                    <MoreVertIcon/>
-                                                                </IconButton>
-                                                                <Popper {...bindPopper(popupState)} role={undefined}
-                                                                        transition>
-                                                                    {({TransitionProps}) => (
-                                                                        <Grow {...TransitionProps}
-                                                                              style={{transformOrigin: 'center top'}}>
-                                                                            <Paper>
-                                                                                <ClickAwayListener
-                                                                                    onClickAway={popupState.close}>
-                                                                                    <MenuList autoFocusItem={open}
-                                                                                              id="menu-list-grow">
-                                                                                        <MenuItem
-                                                                                            component={Link}
-                                                                                            to={`${match.url}/${row.jobId}`}
-                                                                                            onClick={() => {
-                                                                                                popupState.close();
-                                                                                            }}>
-                                                                                            <ListItemIcon>
-                                                                                                <VisibilityIcon
-                                                                                                    fontSize="small"/>
-                                                                                            </ListItemIcon>
-                                                                                            <Typography
-                                                                                                variant="caption"
-                                                                                                noWrap>
-                                                                                                View Details
-                                                                                            </Typography>
-                                                                                        </MenuItem>
-                                                                                        <MenuItem
-                                                                                            disabled={row.status === 'completed' || row.status === 'stopped' || row.status === 'stopping' || row.status === 'failed'}
-                                                                                            onClick={() => {
-                                                                                                this.openJobViewDialog(row);
-                                                                                                popupState.close();
-                                                                                            }}>
-                                                                                            <ListItemIcon>
-                                                                                                <VisibilityIcon
-                                                                                                    fontSize="small"/>
-                                                                                            </ListItemIcon>
-                                                                                            <Typography
-                                                                                                variant="caption"
-                                                                                                noWrap>
-                                                                                                Monitor
-                                                                                            </Typography>
-                                                                                        </MenuItem>
-                                                                                        <MenuItem
-                                                                                            disabled={row.status === 'completed' || row.status === 'stopped' || row.status === 'stopping' || row.status === 'failed'}
-                                                                                            onClick={() => {
-                                                                                                this.onStop(row);
-                                                                                                popupState.close();
-                                                                                            }}>
-                                                                                            <ListItemIcon>
-                                                                                                <StopIcon
-                                                                                                    fontSize="small"/>
-                                                                                            </ListItemIcon>
-                                                                                            <Typography
-                                                                                                variant="caption"
-                                                                                                noWrap>
-                                                                                                Stop
-                                                                                            </Typography>
-                                                                                        </MenuItem>
-                                                                                        <MenuItem
-                                                                                            disabled={row.status !== 'completed'}
-                                                                                            onClick={() => {
-                                                                                                this.downloadJobResult(row.jobId);
-                                                                                                popupState.close();
-                                                                                            }}>
-                                                                                            <ListItemIcon>
-                                                                                                <GetAppIcon
-                                                                                                    fontSize="small"/>
-                                                                                            </ListItemIcon>
-                                                                                            <Typography
-                                                                                                variant="caption"
-                                                                                                noWrap>
-                                                                                                Download
-                                                                                            </Typography>
-                                                                                        </MenuItem>
-                                                                                        <MenuItem
-                                                                                            disabled={row.status !== 'completed' && row.status !== 'stopped'}
-                                                                                            onClick={() => {
-                                                                                                this.onDelete(row.jobId);
-                                                                                                popupState.close();
-                                                                                            }}>
-                                                                                            <ListItemIcon>
-                                                                                                <DeleteIcon
-                                                                                                    fontSize="small"/>
-                                                                                            </ListItemIcon>
-                                                                                            <Typography
-                                                                                                variant="caption"
-                                                                                                noWrap>
-                                                                                                Delete
-                                                                                            </Typography>
-                                                                                        </MenuItem>
-                                                                                    </MenuList>
-                                                                                </ClickAwayListener>
-                                                                            </Paper>
-                                                                        </Grow>
-                                                                    )}
-                                                                </Popper>
-                                                            </div>
-                                                        )}
-                                                    </PopupState>
-                                                    {/*<a href="#" onClick={() => this.onEditUser(row)}></a>*/}
-                                                </TableCell>
-                                            </TableRow>
-                                        );
-                                    })}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    <TablePagination
-                        rowsPerPageOptions={[5, 10, 25, {label: 'All', value: -1}]}
-                        colSpan={3}
-                        component="div"
-                        count={rows.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        SelectProps={{
-                            inputProps: {'aria-label': 'rows per page'},
-                            native: true,
-                        }}
-                        onChangePage={this.handleChangePage}
-                        onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                    />
-                    {loading &&
-                    <RctSectionLoader/>
+                    {loading ?
+                        <RctSectionLoader/> :
+                        <EnhancedTable pagination sorting checkBoxes fields={jobFields}
+                                       rows={rows} downloadJobResult={this.downloadJobResult}
+                                       openJobViewDialog={this.openJobViewDialog} onDelete={this.onDelete}
+                                       onStop={this.onStop}/>
                     }
                 </RctCollapsibleCard>
                 <DeleteConfirmationDialog

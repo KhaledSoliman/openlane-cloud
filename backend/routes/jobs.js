@@ -45,7 +45,6 @@ router.get('/', function (req, res, next) {
         });
     } else {
         db['job'].findAndCountAll({
-            include: 'runs',
             where: {
                 user_uuid: req.uid
             },

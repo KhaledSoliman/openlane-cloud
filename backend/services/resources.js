@@ -83,10 +83,10 @@ class ResourceService {
         this.jobs.set(jobId, {process: childProcess, tag: tag, stopped: false, runs: [], intervalId: intervalId});
 
         logger.info(`Registering event listeners for Job #${jobId}`);
-        childProcess.stderr.on('data', function (error) {
-            logger.info(error);
+        childProcess.stderr.on('data', function (data) {
+            logger.info(data);
             //Stream
-            self.jobMonitoring.send(jobData.user_uuid, error);
+            self.jobMonitoring.send(jobData.user_uuid, data);
             //Scan for runs
             const keywords = data.split(' ');
             if (keywords.length === 3 && keywords[0] === jobData.designName && keywords[1].startsWith(`config_${tag}`) && keywords[2] === 'running') {

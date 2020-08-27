@@ -100,6 +100,17 @@ class ResourceService {
                     job.runs.push(result);
                     self.jobs.set(jobId, job);
                 })
+            } else if (data.includes('finished')) {
+                const keywords = data.split('] ')[1].split(' ');
+                db['run'].update({
+                    status: 'completed'
+                }, {
+                    where: {
+                        jobId: jobId,
+                        name: keywords[1],
+                    }
+                }).then((result) => {
+                })
             }
         });
         childProcess.stdout.on('data', (data) => {

@@ -33,6 +33,13 @@ class Scheduler {
                 //self.notification.sendMail(job.data.email, `No-reply: Job #${job.id} processed` , `Job #${job.id} processed with repo url: ${job.data.repoURL}`);
                 const stopped = await self.resourceService.runJob(job.id, job.data);
                 if (stopped) {
+                    await db['run'].update({
+                        status: 'stopped'
+                    }, {
+                        where: {
+                            jobId: job.id
+                        }
+                    });
                     await db['job'].update({
                         status: 'stopped'
                     }, {

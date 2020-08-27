@@ -12,10 +12,11 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             models['job'].hasMany(models['run'], {
+                as: 'runs',
                 foreignKey: {
-                    foreignKey: 'jobId',
                     allowNull: false
-                }
+                },
+                sourceKey: 'jobId'
             });
             // define association here
         }

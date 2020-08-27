@@ -88,9 +88,9 @@ class ResourceService {
             //Stream
             self.jobMonitoring.send(jobData.user_uuid, data);
             //Scan for runs
-            const keywords = data.split(' ');
-            console.dir(keywords);
-            if (keywords.length === 3 && keywords[0] === jobData.designName && keywords[1].startsWith(`config_${tag}`) && keywords[2] === 'running') {
+            if (data.includes('running')) {
+                const keywords = data.split('] ')[1].split(' ');
+                console.dir(keywords);
                 db['run'].create({
                     jobId: jobId,
                     name: keywords[1],

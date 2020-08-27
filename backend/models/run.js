@@ -38,5 +38,5 @@ module.exports = (sequelize, DataTypes) => {
         sequelize,
         modelName: 'run',
     });
-    return job;
+    return run;
 };

@@ -89,6 +89,7 @@ class ResourceService {
             self.jobMonitoring.send(jobData.user_uuid, data);
             //Scan for runs
             const keywords = data.split(' ');
+            console.dir(keywords);
             if (keywords.length === 3 && keywords[0] === jobData.designName && keywords[1].startsWith(`config_${tag}`) && keywords[2] === 'running') {
                 db['run'].create({
                     jobId: jobId,
@@ -115,7 +116,7 @@ class ResourceService {
                     status: 'archiving'
                 }, {
                     where: {
-                        jobId: job.id
+                        jobId: jobId
                     }
                 }).then(() => {
                     for (let i = 0; i < job.runs.length; i++) {

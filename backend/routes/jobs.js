@@ -32,6 +32,7 @@ router.post('/', function (req, res, next) {
 router.get('/', function (req, res, next) {
     if (req.query.jobId) {
         db['job'].findOne({
+            include: 'run',
             where: {
                 user_uuid: req.uid,
                 jobId: req.query.jobId
@@ -44,6 +45,7 @@ router.get('/', function (req, res, next) {
         });
     } else {
         db['job'].findAndCountAll({
+            include: 'run',
             where: {
                 user_uuid: req.uid
             },

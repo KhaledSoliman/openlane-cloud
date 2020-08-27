@@ -9,9 +9,9 @@ const StorageService = require('./storage');
 const notification = new Notification();
 const git = new Git();
 const jobMonitoring = new JobMonitoring();
-const resourceService = new ResourceService(jobMonitoring, notification);
 const storageService = new StorageService();
-const scheduler = new Scheduler(notification, storageService, resourceService, git);
+const resourceService = new ResourceService(jobMonitoring, storageService, notification);
+const scheduler = new Scheduler(notification, resourceService, git);
 
 module.exports = {
     notification,

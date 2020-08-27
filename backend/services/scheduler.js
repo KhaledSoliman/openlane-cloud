@@ -5,10 +5,9 @@ const db = require('../models');
 
 
 class Scheduler {
-    constructor(notification, storage, resourceService, git) {
+    constructor(notification, resourceService, git) {
         //Services
         this.notification = notification;
-        this.storage = storage;
         this.resourceService = resourceService;
         this.git = git;
 
@@ -17,6 +16,7 @@ class Scheduler {
         this.redisClient.on('error', function (err) {
             logger.error('Error ' + err)
         });
+
         // Process jobs from as many servers or processes as you like
         const self = this;
         this.queue.process(10, async function (job, done) {
@@ -33,14 +33,6 @@ class Scheduler {
                 //self.notification.sendMail(job.data.email, `No-reply: Job #${job.id} processed` , `Job #${job.id} processed with repo url: ${job.data.repoURL}`);
                 const result = await self.resourceService.runJob(job.id, job.data);
                 if (result) {
-                    await db['job'].update({
-                        status: 'archiving'
-                    }, {
-                        where: {
-                            jobId: job.id
-                        }
-                    });
-                    await self.storage.zip(result, `./downloads/${job.data.user_uuid}-${job.id}.zip`);
                     await db['job'].update({
                         status: 'completed',
                         completedAt: new Date().getTime()

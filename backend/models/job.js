@@ -11,6 +11,12 @@ module.exports = (sequelize, DataTypes) => {
          * The `models/index` file will call this method automatically.
          */
         static associate(models) {
+            models['job'].hasMany(models['run'], {
+                foreignKey: {
+                    foreignKey: 'jobId',
+                    allowNull: false
+                }
+            });
             // define association here
         }
     };
@@ -33,13 +39,6 @@ module.exports = (sequelize, DataTypes) => {
             'submitted',
             'scheduled',
             'running',
-            'running-synthesis',
-            'running-floorplan',
-            'running-placement',
-            'running-cts',
-            'running-routing',
-            'running-lvs',
-            'running-magic',
             'archiving',
             'completed',
             'stopping',

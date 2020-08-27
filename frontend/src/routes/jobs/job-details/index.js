@@ -138,15 +138,15 @@ class JobDetails extends Component {
                                                     className={job.status === 'completed' || job.status === 'stopped' || job.status === 'stopping' || job.status === 'failed' ? '' : 'text-warning'}
                                                     size="small"
                                                     startIcon={<StopIcon/>}
-                                                    disabled={job.status === 'completed' || job.status === 'stopped' || job.status === 'stopping'}
+                                                    disabled={job.status === 'completed' || job.status === 'stopped' || job.status === 'stopping' || job.status === 'failed'}
                                                 >
                                                     Stop
                                                 </Button>
                                                 <Button
                                                     size="small"
-                                                    className={job.status !== 'completed' && job.status !== 'stopped' ? '' : 'text-danger'}
+                                                    className={job.status !== 'completed' && job.status !== 'stopped' && job.status !== 'failed' ? '' : 'text-danger'}
                                                     startIcon={<DeleteIcon/>}
-                                                    disabled={job.status !== 'completed' && job.status !== 'stopped'}
+                                                    disabled={job.status !== 'completed' && job.status !== 'stopped' && job.status !== 'failed'}
                                                 >
                                                     Delete
                                                 </Button>

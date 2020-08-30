@@ -45,7 +45,7 @@ Object.keys(db).forEach(modelName => {
     }
 });
 
-sequelize.sync({force: true});
+sequelize.sync({force: false});
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

@@ -7,13 +7,17 @@ const db = require('../models');
 const logger = require('../log/logger')('Backend');
 
 router.get('/', function (req, res, next) {
-    const file = `./downloads/${req.uid}-${req.query.jobId}.zip`;
-    const filename = path.basename(file);
-    const mimetype = mime.getType(file);
-    res.setHeader('Content-disposition', 'attachment; filename=' + filename);
-    res.setHeader('Content-type', mimetype);
-    const filestream = fs.createReadStream(file);
-    filestream.pipe(res);
+    try {
+        const file = `./downloads/${req.uid}-${req.query.jobId}-${req.query.runName}.zip`;
+        const filename = path.basename(file);
+        const mimetype = mime.getType(file);
+        res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+        res.setHeader('Content-type', mimetype);
+        const filestream = fs.createReadStream(file);
+        filestream.pipe(res);
+    } catch (e) {
+        console.log(e);
+    }
 
     // db['job'].findAll({ where: {
     //         user_uuid: req.uid

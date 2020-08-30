@@ -31,6 +31,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import {getSinceTime} from "Helpers/helpers";
 import {badgeDict} from "Constants/jobConstants";
 import EnhancedTable from "../../../components/EnhancedTable/EnhancedTable";
+import JobConsole from "../job-monitoring";
 
 const runFields = [
     {id: 'id', numeric: false, disablePadding: false, label: 'Run Id'},
@@ -65,16 +66,18 @@ class JobDetails extends Component {
     }
 
     componentDidMount() {
-        const {jobId} = this.props.match.params;
-        this.getJob(jobId, true);
+        this.getJob(true);
     }
 
-    getJob(jobId, loading = false) {
+    getJob = (loading = false) => {
+        const {jobId} = this.props.match.params;
         const {user} = this.props;
         this.setState({loadingJobDetails: loading}, () => {
             user.getIdToken().then((idToken) => {
                 api.setToken(idToken);
                 api.getJob(jobId).then((res) => {
+                    if(res.data.status === 'completed')
+                        this.getReport(res.data.jobId);
                     this.setState({job: res.data, loadingJobDetails: false});
                 });
             }).catch((err) => {
@@ -82,11 +85,11 @@ class JobDetails extends Component {
                 console.log(err);
             });
         });
-    }
+    };
 
     getReport(jobId) {
         const {user} = this.props;
-        this.setState({loadingReport: true}, () => {
+        this.setState({loadingReport: false}, () => {
             user.getIdToken().then((idToken) => {
                 api.setToken(idToken);
                 api.getReport(jobId).then((res) => {
@@ -132,7 +135,7 @@ class JobDetails extends Component {
                                 <div className="container-fluid">
                                     <div className="row align-items-center justify-content-between">
                                         <Typography variant="h5">
-                                            Job {jobId}
+                                            Job details of job #{jobId}
                                         </Typography>
                                         <div>
                                             <Tooltip title="Reload Job Data">
@@ -237,23 +240,6 @@ class JobDetails extends Component {
                     }
                 </RctCollapsibleCard>
                 <RctCollapsibleCard fullBlock collapsible={true}>
-                    <Toolbar>
-                        <div className="container-fluid">
-                            <div className="row align-items-center justify-content-between">
-                                <Typography variant="h5">
-                                    Runs
-                                </Typography>
-                                <div>
-                                    <Tooltip title="Reload Run Data">
-                                        <IconButton onClick={() => this.onReloadReport()}>
-                                            <AutorenewIcon/>
-                                        </IconButton>
-                                    </Tooltip>
-                                </div>
-                            </div>
-                            <Divider variant="middle"/>
-                        </div>
-                    </Toolbar>
                     {loadingJobDetails ?
                         <RctSectionLoader/> :
                         <TableContainer component={Paper}>
@@ -261,6 +247,9 @@ class JobDetails extends Component {
                                     <EnhancedTable
                                         sorting
                                         pagination
+                                        autoUpdate
+                                        getRows={this.getJob}
+                                        tableTitle="Runs"
                                         fields={runFields}
                                         rows={job.runs}
                                     /> :
@@ -271,6 +260,27 @@ class JobDetails extends Component {
                             )}
                         </TableContainer>
                     }
+                </RctCollapsibleCard>
+                <RctCollapsibleCard fullBlock collapsible={true}>
+                    <Toolbar>
+                        <div className="container-fluid">
+                            <div className="row align-items-center justify-content-between">
+                                <Typography variant="h5">
+                                    Monitoring
+                                </Typography>
+                            </div>
+                            <Divider variant="middle"/>
+                        </div>
+                    </Toolbar>
+                    {job ? job.status === 'completed' || job.status === 'stopped' || job.status === 'stopping' || job.status === 'failed' ?
+                        <div className="container-fluid">
+                            <div className="row align-items-center justify-content-center mb-5">
+                                <Typography align="center" variant="caption">
+                                    Job has already {job.status}
+                                </Typography>
+                            </div>
+                        </div> :
+                        <JobConsole job={job}/> : <RctSectionLoader/>}
                 </RctCollapsibleCard>
                 <RctCollapsibleCard fullBlock collapsible={true}>
                     <Toolbar>
@@ -292,8 +302,8 @@ class JobDetails extends Component {
                     </Toolbar>
                     {loadingReport ?
                         <RctSectionLoader/> :
-                        <TableContainer component={Paper}>
-                            {report && (report.length === 1 ?
+                        (report) ? (report.length === 1 ?
+                                <TableContainer component={Paper}>
                                     <Table>
                                         <TableBody>
                                             {Object.keys(report[0]).map((key, i) => {
@@ -307,7 +317,9 @@ class JobDetails extends Component {
                                                 }
                                             )}
                                         </TableBody>
-                                    </Table> :
+                                    </Table>
+                                </TableContainer> :
+                                <TableContainer component={Paper}>
                                     <Table>
                                         <TableHead>
                                             <TableRow>
@@ -334,8 +346,14 @@ class JobDetails extends Component {
                                             )}
                                         </TableBody>
                                     </Table>
-                            )}
-                        </TableContainer>
+                                </TableContainer>
+                        ) : <div className="container-fluid">
+                            <div className="row align-items-center justify-content-center mb-5">
+                                <Typography align="center" variant="caption">
+                                    No reports available
+                                </Typography>
+                            </div>
+                        </div>
                     }
                 </RctCollapsibleCard>
             </div>

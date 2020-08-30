@@ -147,22 +147,6 @@ const jobFields = [
                                                 <MenuItem
                                                     disabled={row.status === 'completed' || row.status === 'stopped' || row.status === 'stopping' || row.status === 'failed'}
                                                     onClick={() => {
-                                                        props.openJobViewDialog(row);
-                                                        popupState.close();
-                                                    }}>
-                                                    <ListItemIcon>
-                                                        <VisibilityIcon
-                                                            fontSize="small"/>
-                                                    </ListItemIcon>
-                                                    <Typography
-                                                        variant="caption"
-                                                        noWrap>
-                                                        Monitor
-                                                    </Typography>
-                                                </MenuItem>
-                                                <MenuItem
-                                                    disabled={row.status === 'completed' || row.status === 'stopped' || row.status === 'stopping' || row.status === 'failed'}
-                                                    onClick={() => {
                                                         props.onStop(row);
                                                         popupState.close();
                                                     }}>
@@ -266,12 +250,10 @@ class JobManagement extends Component {
 
     componentDidMount() {
         this.getJobs(true);
-        //poll
-        setInterval(this.getJobs.bind(this), 5000);
     }
 
 
-    getJobs(loading = false) {
+    getJobs = (loading = false) => {
         const {user} = this.props;
         this.setState({loading: loading}, () => {
             user.getIdToken().then((idToken) => {
@@ -285,7 +267,7 @@ class JobManagement extends Component {
                 console.log(err);
             });
         });
-    }
+    };
 
     postJob() {
         const {user} = this.props;
@@ -492,34 +474,11 @@ class JobManagement extends Component {
         this.setState({snackBarOpen: false});
     };
 
-    handleRequestSort = (event, property) => {
-        const isAsc = this.state.orderBy === property && this.state.order === 'asc';
-        this.setState({
-            order: isAsc ? 'desc' : 'asc',
-            orderBy: property
-        });
-    };
-
-    handleSelectAllClick = (event) => {
-        if (event.target.checked) {
-            const newSelecteds = this.state.rows.map((n) => n.id);
-            this.setState({
-                selected: newSelecteds
-            });
-            return;
-        }
-
-        this.setState({
-            selected: []
-        });
-    };
-
     render() {
-        const {location, match} = this.props;
         const {
-            rows, processing, loading, selectedJob, editJob, snackBarOpen, snackBarMessage,
-            order, orderBy, page, rowsPerPage, selected
+            rows, processing, loading, selectedJob, editJob, snackBarOpen, snackBarMessage
         } = this.state;
+
         return (
             <div className="user-management">
                 <Helmet>
@@ -534,45 +493,29 @@ class JobManagement extends Component {
                     {processing &&
                     <LinearProgress/>
                     }
-                    <Toolbar>
-                        <div className="container-fluid">
-                            <div className="row align-items-center justify-content-between">
-                                <Typography variant="h5">
-                                    My Designs
-                                </Typography>
-                                <div>
-                                    <Tooltip title="Reload Job Data">
-                                        <IconButton onClick={() => this.onReload()}>
-                                            <AutorenewIcon/>
-                                        </IconButton>
-                                    </Tooltip>
-                                    <Button onClick={() => this.opnSubmitADesign()} color="primary"
-                                            startIcon={<AddIcon/>}>
-                                        Submit Design
-                                    </Button>
-                                </div>
-                            </div>
-                            <Divider variant="middle"/>
-                            {selected.length > 0 && (
-                                <div className="row align-items-center justify-content-between">
-                                    <Typography color="inherit" variant="subtitle1">
-                                        {selected.length} selected
-                                    </Typography>
-                                    <Tooltip title="Delete">
-                                        <IconButton aria-label="delete">
-                                            <DeleteIcon/>
-                                        </IconButton>
-                                    </Tooltip>
-                                </div>
-                            )}
-                        </div>
-                    </Toolbar>
                     {loading ?
                         <RctSectionLoader/> :
-                        <EnhancedTable pagination sorting checkBoxes fields={jobFields}
-                                       rows={rows} downloadJobResult={this.downloadJobResult}
-                                       openJobViewDialog={this.openJobViewDialog} onDelete={this.onDelete}
-                                       onStop={this.onStop}/>
+                        <EnhancedTable pagination sorting checkBoxes autoUpdate
+                                       tableTitle="My Designs"
+                                       fields={jobFields}
+                                       rows={rows}
+                                       getRows={this.getJobs}
+                                       downloadJobResult={this.downloadJobResult}
+                                       openJobViewDialog={this.openJobViewDialog}
+                                       onDelete={this.onDelete}
+                                       onStop={this.onStop}
+                                       toolbarTopOptions={
+                                           <Button onClick={() => this.opnSubmitADesign()} color="primary"
+                                                   startIcon={<AddIcon/>}>
+                                               Submit Design
+                                           </Button>}
+                                       bulkOptions={
+                                           <Tooltip title="Delete">
+                                               <IconButton aria-label="delete">
+                                                   <DeleteIcon/>
+                                               </IconButton>
+                                           </Tooltip>}
+                        />
                     }
                 </RctCollapsibleCard>
                 <DeleteConfirmationDialog
@@ -609,14 +552,6 @@ class JobManagement extends Component {
                                 onClick={() => this.onAddUpdateUserModalClose()}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
-                <Dialog
-                    onClose={() => this.setState({openJobViewDialog: false})}
-                    open={this.state.openJobViewDialog}
-                >
-                    <DialogContent>
-                        {selectedJob !== null && <JobConsole job={selectedJob}/>}
-                    </DialogContent>
-                </Dialog>
                 <Snackbar
                     anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}
                     open={snackBarOpen}

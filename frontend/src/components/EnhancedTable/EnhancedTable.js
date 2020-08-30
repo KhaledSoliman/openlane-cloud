@@ -10,11 +10,19 @@ import Checkbox from "@material-ui/core/Checkbox";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
 import TableBody from "@material-ui/core/TableBody";
 import TablePagination from "@material-ui/core/TablePagination";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import Tooltip from "@material-ui/core/Tooltip";
+import IconButton from "@material-ui/core/IconButton";
+import AutorenewIcon from "@material-ui/icons/Autorenew";
+import Button from "@material-ui/core/Button";
+import AddIcon from "@material-ui/icons/Add";
+import Divider from "@material-ui/core/Divider";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 
 class EnhancedTable extends Component {
     state = {
-        rows: [],
         selected: [],
         order: '',
         orderBy: '',
@@ -23,9 +31,10 @@ class EnhancedTable extends Component {
     };
 
     componentDidMount() {
-        this.setState({
-            rows: this.props.rows
-        })
+        const {autoUpdate, getRows} = this.props;
+
+        if (autoUpdate)
+            setInterval(getRows, 3000);
     }
 
     handleRequestSort = (event, property) => {
@@ -38,7 +47,7 @@ class EnhancedTable extends Component {
 
     handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelecteds = this.state.rows.map((n) => n.id);
+            const newSelecteds = this.props.rows.map((n) => n.id);
             this.setState({
                 selected: newSelecteds
             });
@@ -115,8 +124,8 @@ class EnhancedTable extends Component {
     }
 
     rowOptions() {
-        const {sorting, pagination} = this.props;
-        const {rows, order, orderBy, page, rowsPerPage} = this.state;
+        const {sorting, pagination, rows} = this.props;
+        const {order, orderBy, page, rowsPerPage} = this.state;
         let tableRows = rows;
         if (sorting)
             tableRows = this.stableSort(tableRows, this.getComparator(order, orderBy));
@@ -126,13 +135,44 @@ class EnhancedTable extends Component {
         return tableRows;
     }
 
+    onReload() {
+        const {getRows} = this.props;
+        getRows(true);
+    }
+
     render() {
-        const {tableTitle, checkBoxes, sorting, pagination, fields} = this.props;
-        const {
-            rows, order, orderBy, page, rowsPerPage, selected
+        const {tableTitle, checkBoxes, sorting, pagination, fields, toolbarTopOptions, bulkOptions,
+            rows} = this.props;
+        const {order, orderBy, page, rowsPerPage, selected
         } = this.state;
         return (
             <div>
+                <Toolbar>
+                    <div className="container-fluid">
+                        <div className="row align-items-center justify-content-between">
+                            <Typography variant="h5">
+                                {tableTitle}
+                            </Typography>
+                            <div>
+                                <Tooltip title="Reload Job Data">
+                                    <IconButton onClick={() => this.onReload()}>
+                                        <AutorenewIcon/>
+                                    </IconButton>
+                                </Tooltip>
+                                {toolbarTopOptions}
+                            </div>
+                        </div>
+                        <Divider variant="middle"/>
+                        {checkBoxes && selected.length > 0 && (
+                            <div className="row align-items-center justify-content-between">
+                                <Typography color="inherit" variant="subtitle1">
+                                    {selected.length} selected
+                                </Typography>
+                                {bulkOptions}
+                            </div>
+                        )}
+                    </div>
+                </Toolbar>
                 <TableContainer>
                     <Table
                         stickyHeader

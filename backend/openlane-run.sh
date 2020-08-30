@@ -1,13 +1,13 @@
 cd openlane_working_dir/openlane
 # shellcheck disable=SC2046
 PDK_ROOT=/home/khaledsoli111/openlane-cloud/backend/openlane_working_dir/pdks
-DOCKER_ID=$(sudo docker run --cpus="$1" -m "$2" --rm --name="$3" -div $(pwd):/openLANE_flow -v $PDK_ROOT:$PDK_ROOT -e PDK_ROOT=$PDK_ROOT -u $(id -u $USER):$(id -g $USER) openlane:rc2)
-case "$3" in
+DOCKER_ID=$(sudo docker run --rm --name="$3" -div $(pwd):/openLANE_flow -v $PDK_ROOT:$PDK_ROOT -e PDK_ROOT=$PDK_ROOT -u $(id -u $USER):$(id -g $USER) openlane:rc2)
+case "$1" in
 normal)
- sudo docker exec "$DOCKER_ID" python3 run_designs.py --designs "$4" --tag "$5" --threads 1 --clean
+  sudo docker exec "$DOCKER_ID" python3 run_designs.py --designs "$2" --tag "$3" --threads 1 --clean
   ;;
 exploratory)
-  sudo docker exec "$DOCKER_ID" python3 run_designs.py --designs "$4" --tag "$5" --regression "$6" --threads 4 --htmlExtract --clean
+  sudo docker exec "$DOCKER_ID" python3 run_designs.py --designs "$2" --tag "$3" --regression "$4" --threads 4 --htmlExtract --clean
   ;;
 *)
   echo "unknown run type"

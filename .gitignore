@@ -131,7 +131,7 @@ backend/.env
 frontend/.env
 
 #firebase
-backend/ordinal-mote-281302-firebase-adminsdk-27cvg-1d92276163.json
+backend/service_account.json
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -180,3 +180,4 @@ repos/
 backend/openlane.alpha-16/
 /backend/openlane/
 /backend/openlane_working_dir/
+/backend/service_account.json

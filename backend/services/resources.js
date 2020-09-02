@@ -114,6 +114,7 @@ class ResourceService {
                     const job = self.jobs.get(jobId);
                     job.runs.push(result);
                     self.jobs.set(jobId, job);
+                    shell.rm('-rf', `openlane_working_dir/openlane/scripts/${jobData.user_uuid}-${tag}-regression.config`);
                 })
             }
         });
@@ -135,6 +136,7 @@ class ResourceService {
                 }).then(() => {
                     for (let i = 0; i < job.runs.length; i++) {
                         self.storage.zip(`openlane_working_dir/openlane/designs/${jobData.designName}/runs/${job.runs[i].name}`, `./downloads/${jobData.user_uuid}-${jobId}-${job.runs[i].name}.zip`);
+                        shell.rm('-rf', `openlane_working_dir/openlane/designs/${jobData.designName}/runs/${job.runs[i].name}`);
                     }
                 });
                 shell.mv(`openlane_working_dir/openlane/regression_results/${tag}.csv`, `~/openlane-cloud/backend/reports/${jobId}.csv`);
@@ -218,8 +220,8 @@ class ResourceService {
 
     }
 
-    cleanup() {
-
+    async cleanup() {
+        await shell.rm('-rf', `${this.reposPath}/${jobId}-${designName}`);
     }
 
     hookSocket(jobId, user_uuid) {

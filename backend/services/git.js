@@ -3,7 +3,7 @@ const shell = require('shelljs');
 
 class Git {
     constructor() {
-        this.reposPath = './openlane/designs/';
+        this.reposPath = './openlane_working_dir/openlane/designs/';
         logger.info("Git service initialized");
     }
 
@@ -12,8 +12,9 @@ class Git {
         await shell.exec(`git clone ${repoURL} ${this.reposPath}/${jobId}-${designName}`);
     }
 
-    deleteRepo(jobId) {
+    async deleteRepo(jobId, designName) {
         logger.info(`removing repository: ${jobId}`);
+        await shell.rm('-rf', `${this.reposPath}/${jobId}-${designName}`);
     }
 }
 

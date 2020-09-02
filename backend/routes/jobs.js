@@ -11,10 +11,12 @@ const fs = require('fs');
  * Submit Job Request
  */
 router.post('/', function (req, res, next) {
-    scheduler.addJob(req.uid, req.body.job);
-    res.sendStatus(200);
-    logger.error(err);
-    res.sendStatus(500);
+    scheduler.addJob(req.uid, req.body.job).then(() => {
+        res.sendStatus(200);
+    }).catch((err) => {
+        logger.error(err);
+        res.sendStatus(500);
+    });
 });
 
 /**

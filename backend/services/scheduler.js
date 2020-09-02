@@ -46,9 +46,9 @@ class Scheduler {
         logger.info('Scheduler Initialized');
     }
 
-    async addJob(jobDbId, uuid, jobDescription) {
+    async addJob(user_uuid, jobDescription) {
         //jobDescription.designName = `${uuid}-${jobDescription.repoURL.split('/').pop()}`;
-        jobDescription.user_uuid = uuid;
+        jobDescription.user_uuid = user_uuid;
         const job = this.queue.createJob(jobDescription);
         await job.setId(uuid()).retries(0).timeout(86400000).save();
         //db['job'].update({status: 'scheduled', jobId: job.id}, {where: {id: jobDbId}});

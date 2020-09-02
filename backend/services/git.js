@@ -7,9 +7,9 @@ class Git {
         logger.info("Git service initialized");
     }
 
-    async cloneRepo(repoURL, designName) {
+    async cloneRepo(repoURL, jobId, designName) {
         logger.info(`Cloning repository: ${repoURL}`);
-        await shell.exec(`git clone ${repoURL} ${this.reposPath}/${designName}`);
+        await shell.exec(`git clone ${repoURL} ${this.reposPath}/${jobId}-${designName}`);
     }
 
     deleteRepo(jobId) {

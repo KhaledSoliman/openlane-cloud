@@ -2,7 +2,7 @@ const redis = require('redis');
 const logger = require('../log/logger')('Scheduler');
 const Queue = require('bee-queue');
 const db = require('../models');
-const uuid = require('uuid/v4');
+const { v4: uuidv4 } = require('uuid');
 
 
 class Scheduler {
@@ -50,7 +50,7 @@ class Scheduler {
         //jobDescription.designName = `${uuid}-${jobDescription.repoURL.split('/').pop()}`;
         jobDescription.user_uuid = user_uuid;
         const job = this.queue.createJob(jobDescription);
-        await job.setId(uuid()).retries(0).timeout(86400000).save();
+        await job.setId(uuidv4()).retries(0).timeout(86400000).save();
         //db['job'].update({status: 'scheduled', jobId: job.id}, {where: {id: jobDbId}});
         if (jobDescription.notificationsEnabled) {
             this.notification.sendPushNotification('Job Scheduler', 'Your Job is now scheduled', jobDescription.regToken);
@@ -58,7 +58,7 @@ class Scheduler {
         }
         await db['job'].create({
             jobId: job.id,
-            user_uuid: jobDescription.uid,
+            user_uuid: jobDescription.user_uuid,
             designName: jobDescription.designName,
             repoURL: jobDescription.repoURL,
             type: jobDescription.type,

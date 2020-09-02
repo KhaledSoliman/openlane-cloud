@@ -3,7 +3,7 @@ const shell = require('shelljs');
 
 class Git {
     constructor() {
-        this.reposPath = './openlane_working_dir/openlane/designs/';
+        this.reposPath = './openlane_working_dir/openlane/designs';
         logger.info("Git service initialized");
     }
 

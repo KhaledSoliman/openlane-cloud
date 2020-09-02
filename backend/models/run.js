@@ -17,22 +17,27 @@ module.exports = (sequelize, DataTypes) => {
             });
         }
     }
+
     run.init({
-        name: DataTypes.STRING,
-        status: DataTypes.ENUM(
-            'running',
-            'running-synthesis',
-            'running-floorplan',
-            'running-placement',
-            'running-cts',
-            'running-routing',
-            'running-lvs',
-            'running-magic',
-            'completed',
-            'stopping',
-            'stopped',
-            'failed'
-        ),
+        name: {
+            type: DataTypes.STRING
+        },
+        status: {
+            type: DataTypes.ENUM(
+                'running',
+                'running-synthesis',
+                'running-floorplan',
+                'running-placement',
+                'running-cts',
+                'running-routing',
+                'running-lvs',
+                'running-magic',
+                'completed',
+                'stopping',
+                'stopped',
+                'failed'
+            ),
+        },
         completedAt: {
             type: DataTypes.DATE,
             defaultValue: null

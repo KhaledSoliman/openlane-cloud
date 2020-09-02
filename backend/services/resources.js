@@ -90,6 +90,7 @@ class ResourceService {
             //Scan for runs
             if (data.includes('running')) {
                 const keywords = data.split('] ')[1].split(' ');
+                console.log(jobId);
                 db['run'].create({
                     jobId: jobId,
                     name: keywords[1],
@@ -101,7 +102,19 @@ class ResourceService {
                     self.jobs.set(jobId, job);
                 })
             } else if (data.includes('finished')) {
-                
+                const keywords = data.split('] ')[1].split(' ');
+                db['run'].update({
+                    status: 'completed'
+                }, {
+                    where: {
+                        jobId: jobId,
+                        name: keywords[1],
+                    }
+                }).then((result) => {
+                    const job = self.jobs.get(jobId);
+                    job.runs.push(result);
+                    self.jobs.set(jobId, job);
+                })
             }
         });
         childProcess.stdout.on('data', (data) => {

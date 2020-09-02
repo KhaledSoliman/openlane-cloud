@@ -18,18 +18,16 @@ class Scheduler {
             logger.error('Error ' + err)
         });
         const self = this;
-        this.queue.process(process.env.JOB_CONCURRENCY || 10, async function (job, done) {
+        this.queue.process(process.env.JOB_CONCURRENCY || 10, async function (job) {
             /**
              * Stage: Cloning
              */
             logger.info(`Stage: Cloning | Job: ${job.id}`);
-            db['job'].update({status: 'cloning'}, {where: {jobId: job.id}});
+            await db['job'].update({status: 'cloning'}, {where: {jobId: job.id}});
             if (job.data.notificationsEnabled) {
-                this.notification.sendPushNotification('Job Scheduler', 'Your job repository is currently being cloned', job.data.regToken);
+                self.notification.sendPushNotification('Job Scheduler', 'Your job repository is currently being cloned', job.data.regToken);
             }
-            await this.git.cloneRepo(job.data.repoURL, job.id, job.data.designName).catch((error) => {
-                throw new Error(error);
-            });
+            await self.git.cloneRepo(job.data.repoURL, job.id, job.data.designName);
 
             /**
              * Stage: Running

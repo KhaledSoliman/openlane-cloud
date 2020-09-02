@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             models['run'].belongsTo(models['job'], {
                 as: 'job',
+                foreignKey: 'jobId',
                 targetKey: 'jobId'
             });
         }

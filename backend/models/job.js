@@ -14,9 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             models['job'].hasMany(models['run'], {
                 as: 'runs',
-                foreignKey: {
-                    allowNull: false
-                },
+                foreignKey: 'jobId',
                 sourceKey: 'jobId'
             });
             // define association here

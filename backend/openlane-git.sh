@@ -1,7 +1,5 @@
 cd openlane_working_dir
-eval "$(ssh-agent -s)"
-ssh-add -K ./efabless
-git clone git@github.com:efabless/openlane --branch rc2
+git clone git@github.com:efabless/openlane --branch develop
 cd openlane/docker_build
 make merge
 cd ..
@@ -13,7 +11,7 @@ git checkout 4e5e318e0cc578090e1ae7d6f2cb1ec99f363120
 git submodule update --init libraries/sky130_fd_sc_hd/latest
 make sky130_fd_sc_hd
 cd $PDK_ROOT
-git clone git@github.com:efabless/open_pdks.git -b rc2
+git clone git@github.com:efabless/open_pdks.git -b develop
 cd open_pdks
 make
 make install-local

@@ -1,5 +1,6 @@
 const logger = require('../log/logger')('Git');
 const shell = require('shelljs');
+const fs = require('fs');
 
 class Git {
     constructor() {
@@ -10,6 +11,9 @@ class Git {
     async cloneRepo(repoURL, jobId, designName) {
         logger.info(`Cloning repository: ${repoURL}`);
         await shell.exec(`git clone ${repoURL} ${this.reposPath}/${jobId}-${designName}`);
+        const data = fs.readFileSync(`${this.reposPath}/${jobId}-${designName}/config.tcl`, 'utf-8');
+        const newValue = data.replace(/^(set ::env\(DESIGN_NAME\) ").+(")/gm, `$1${jobId}-${designName}$2`);
+        fs.writeFileSync(`${this.reposPath}/${jobId}-${designName}/config.tcl`, newValue, 'utf-8');
     }
 
     async deleteRepo(jobId, designName) {

@@ -45,7 +45,7 @@ class ResourceService {
         switch (jobData.type) {
             case 'normal':
                 logger.info("Executing openlane regular shell script...");
-                childProcess = shell.exec(`sudo ./openlane-run.sh ${jobData.type}  ${jobData.jobId}-${jobData.designName} ${tag}`, {
+                childProcess = shell.exec(`sudo ./openlane-run.sh ${jobData.type}  ${jobId}-${jobData.designName} ${tag}`, {
                     silent: true,
                     async: true
                 });
@@ -69,7 +69,7 @@ class ResourceService {
                 logger.info("Creating Regression Script...");
                 fs.writeFileSync(`openlane_working_dir/openlane/scripts/${regressionScriptName}`, regressionScript);
                 logger.info("Executing openlane exploratory shell script...");
-                childProcess = shell.exec(`sudo ./openlane-run.sh ${jobData.type} ${jobData.jobId}-${jobData.designName} ${tag} ./scripts/${regressionScriptName}`, {
+                childProcess = shell.exec(`sudo ./openlane-run.sh ${jobData.type} ${jobId}-${jobData.designName} ${tag} ./scripts/${regressionScriptName}`, {
                     silent: true,
                     async: true
                 });
@@ -119,6 +119,7 @@ class ResourceService {
             }
         });
         childProcess.stdout.on('data', (data) => {
+            logger.info(data);
             //Stream
             self.jobMonitoring.send(jobData.user_uuid, data);
         });

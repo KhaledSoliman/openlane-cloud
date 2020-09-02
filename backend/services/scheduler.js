@@ -72,7 +72,7 @@ class Scheduler {
              * Stage: Completed
              */
             logger.info(`Success result for job ${job.id}: stopped=${stopped}`);
-            await this.git.deleteRepo(job.id, jobDescription.designName);
+            //await this.git.deleteRepo(job.id, jobDescription.designName);
             if (stopped) {
                 await db['run'].update({status: 'stopped'}, {where: {jobId: job.id}});
             } else {

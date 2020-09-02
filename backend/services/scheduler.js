@@ -23,7 +23,7 @@ class Scheduler {
              * Stage: Cloning
              */
             logger.info(`Stage: Cloning | Job: ${job.id}`);
-            db['job'].update({status: 'cloning'}, {where: {id: job.id}});
+            db['job'].update({status: 'cloning'}, {where: {jobId: job.id}});
             if (job.data.notificationsEnabled) {
                 this.notification.sendPushNotification('Job Scheduler', 'Your job repository is currently being cloned', job.data.regToken);
             }

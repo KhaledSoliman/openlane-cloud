@@ -136,8 +136,8 @@ class ResourceService {
                     }
                 }).then(() => {
                     for (let i = 0; i < job.runs.length; i++) {
-                        self.storage.zip(`openlane_working_dir/openlane/designs/${jobData.designName}/runs/${job.runs[i].name}`, `./downloads/${jobData.user_uuid}-${jobId}-${job.runs[i].name}.zip`);
-                        shell.rm('-rf', `openlane_working_dir/openlane/designs/${jobData.designName}/runs/${job.runs[i].name}`);
+                        self.storage.zip(`openlane_working_dir/openlane/designs/${jobId}-${jobData.designName}/runs/${job.runs[i].name}`, `./downloads/${jobData.user_uuid}-${jobId}-${job.runs[i].name}.zip`);
+                        shell.rm('-rf', `openlane_working_dir/openlane/designs/${jobId}-${jobData.designName}/runs/${job.runs[i].name}`);
                     }
                 });
                 shell.mv(`openlane_working_dir/openlane/regression_results/${tag}.csv`, `~/openlane-cloud/backend/reports/${jobId}.csv`);
@@ -174,7 +174,7 @@ class ResourceService {
             if (job.runs[i].currentStage === (this.stageNames.length - 1))
                 return;
             if (job.runs[i].currentStage === -1) {
-                fs.readdir(`openlane_working_dir/openlane/designs/${designName}/runs/${job.runs[i].name}/logs/`, function (err, items) {
+                fs.readdir(`openlane_working_dir/openlane/designs/${jobId}-${designName}/runs/${job.runs[i].name}/logs/`, function (err, items) {
                     if (err) {
                         //No directory yet
                         logger.error(err);
@@ -196,7 +196,7 @@ class ResourceService {
                     }
                 });
             } else {
-                fs.readdir(`openlane_working_dir/openlane/designs/${designName}/runs/${job.runs[i].name}/logs/${this.stageNames[job.runs[i].currentStage]}`, function (err, items) {
+                fs.readdir(`openlane_working_dir/openlane/designs/${jobId}-${designName}/runs/${job.runs[i].name}/logs/${this.stageNames[job.runs[i].currentStage]}`, function (err, items) {
                     if (err) {
                         //No directory yet
                         logger.error(err);

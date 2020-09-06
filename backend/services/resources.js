@@ -187,14 +187,14 @@ class ResourceService {
                 db['job'].update({status: 'archiving'}, {where: {jobId: jobId}}).then(() => {
                     for (let i = 0; i < job.runs.length; i++) {
                         self.storage.zip(
-                            `${this.openlanePath}/${this.designsDir}/${jobId}-${jobData.designName}/${this.runsDir}/${job.runs[i].name}`,
+                            `./${this.openlanePath}/${this.designsDir}/${jobId}-${jobData.designName}/${this.runsDir}/${job.runs[i].name}`,
                             `./downloads/${jobData.user_uuid}-${jobId}-${job.runs[i].name}.zip`
                         );
                         shell.exec(`sudo rm -rf ${this.openlanePath}/${this.designsDir}/${jobId}-${jobData.designName}/${this.runsDir}/${job.runs[i].name}`);
                     }
                     if (jobData.type === 'exploratory')
                         shell.exec(`sudo rm -rf ${this.openlanePath}/${this.scriptsDir}/${tag}-regression.config`);
-                    shell.mv(`./${this.openlanePath}/${this.regressionResultsDir}/${tag}/${tag}.csv`, `~/openlane-cloud/backend/${this.reportsDir}/${jobId}.csv`);
+                    shell.exec(`sudo mv ./${this.openlanePath}/${this.regressionResultsDir}/${tag}/${tag}.csv`, `./${this.reportsDir}/${jobId}.csv`);
                     resolve(c);
                 });
             });

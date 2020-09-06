@@ -75,7 +75,7 @@ class ResourceService {
         }
         const regressionScriptName = `${tag}-regression.config`;
         logger.info("Creating Regression Script...");
-        fs.writeFileSync(`${this.scriptsDir}/${regressionScriptName}`, regressionScript);
+        fs.writeFileSync(`./${this.openlanePath}/${this.scriptsDir}/${regressionScriptName}`, regressionScript);
         return regressionScriptName;
     }
 

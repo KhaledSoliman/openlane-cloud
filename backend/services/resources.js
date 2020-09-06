@@ -97,14 +97,17 @@ class ResourceService {
         switch (jobData.type) {
             case 'normal':
                 args['type'] = jobData.type;
-                args['design-name'] = `${jobId}-${jobData.designName}`;
+                args['design-dir'] = `./${this.openlanePath}/${this.designsDir}/${jobId}-${jobData.designName}`;
+                args['design-name'] = `${jobData.designName}`;
                 args['tag'] = tag;
                 args['cpus'] = 1;
                 args['memory'] = '4G';
                 break;
             case 'exploratory':
                 args['type'] = jobData.type;
-                args['design-name'] = `${jobId}-${jobData.designName}`;
+                args['design-dir'] = `./${this.openlanePath}/${this.designsDir}/${jobId}-${jobData.designName}`;
+                args['design-name'] = `${jobData.designName}`;
+                args['threads'] = 4;
                 args['tag'] = tag;
                 args['cpus'] = 4;
                 args['memory'] = '16G';

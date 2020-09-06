@@ -43,7 +43,7 @@ regular)
   sudo docker exec "$DOCKER_ID" ./scripts/report/report.sh "$design_dir/$tag" "$design_name"
   ;;
 exploratory)
-  sudo docker exec "$DOCKER_ID" python3 run_designs.py --designs "$design_dir" --disable_timestamp --tag "$tag" --regression "$regression_script" --threads "$threads" --clean
+  sudo docker exec "$DOCKER_ID" python3 run_designs.py --designs "$design_dir"--tag "$tag" --regression "$regression_script" --threads "$threads" --disable_timestamp --clean
   ;;
 *)
   printf "***************************\n"

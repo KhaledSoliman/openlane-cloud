@@ -97,7 +97,7 @@ class ResourceService {
         // Construct arguments for job type
         logger.info("Constructing args for shell script...");
         let args = {};
-        const dirPath = path.join(process.cwd(), `/${this.openlanePath}/${this.designsDir}/${jobId}-${jobData.designName}`);
+        const dirPath = `./${this.designsDir}/${jobId}-${jobData.designName}`;
         switch (jobData.type) {
             case 'normal':
                 args['type'] = 'regular';

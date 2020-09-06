@@ -53,7 +53,7 @@ class ResourceService {
     getRunCommand(args) {
         let runCommand = this.runCommand;
         for (const arg in args)
-            if(args.hasOwnProperty(arg))
+            if (args.hasOwnProperty(arg))
                 runCommand += ` --${arg}=${args[arg]}`;
         return runCommand;
     }
@@ -67,10 +67,10 @@ class ResourceService {
     createRegressionScript(regressionScriptFields, tag) {
         let regressionScript = '';
         for (const property in regressionScriptFields) {
-            if(regressionScriptFields.hasOwnProperty(property))
+            if (regressionScriptFields.hasOwnProperty(property))
                 if (property !== 'extra')
                     regressionScript += `${property}=(${regressionScriptFields[property]})\n`;
-                else if (jobData.regressionScript[property] !== '')
+                else if (regressionScriptFields[property] !== '')
                     regressionScript += `\n${property}="${regressionScriptFields[property]}\n"\n`;
         }
         const regressionScriptName = `${tag}-regression.config`;

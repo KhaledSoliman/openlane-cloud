@@ -37,9 +37,10 @@ DOCKER_ID=$(sudo docker run --rm --cpus="$cpus" --memory="$memory" --name="$tag"
 
 case "$type" in
 regular)
-  echo "docker exec "$DOCKER_ID" ./flow.tcl -design "$design_dir" -tag "$tag""
-  sudo docker exec "$DOCKER_ID" ./flow.tcl -design "$design_dir" -tag "$tag"
-  sudo docker exec "$DOCKER_ID" ./scripts/report/report.sh "$design_dir/$tag" "$design_name"
+  sudo docker exec "$DOCKER_ID" python3 run_designs.py --designs "$design_dir" --tag "$tag" --regression --threads "$threads" --disable_timestamp --clean
+#  echo "docker exec "$DOCKER_ID" ./flow.tcl -design "$design_dir" -tag "$tag""
+#  sudo docker exec "$DOCKER_ID" ./flow.tcl -design "$design_dir" -tag "$tag"
+#  sudo docker exec "$DOCKER_ID" ./scripts/report/report.sh "$design_dir/$tag" "$design_name"
   ;;
 exploratory)
   sudo docker exec "$DOCKER_ID" python3 run_designs.py --designs "$design_dir" --tag "$tag" --regression "$regression_script" --threads "$threads" --disable_timestamp --clean

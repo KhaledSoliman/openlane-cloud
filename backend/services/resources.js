@@ -104,6 +104,7 @@ class ResourceService {
                 args['design-dir'] = dirPath;
                 args['design-name'] = `${jobData.designName}`;
                 args['tag'] = tag;
+                args['threads'] = 1;
                 args['cpus'] = 1;
                 args['memory'] = '4G';
                 break;

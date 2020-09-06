@@ -193,11 +193,11 @@ class ResourceService {
                             `${this.openlanePath}/${this.designsDir}/${jobId}-${jobData.designName}/${this.runsDir}/${job.runs[i].name}`,
                             `./downloads/${jobData.user_uuid}-${jobId}-${job.runs[i].name}.zip`
                         );
-                        shell.rm('-rf', `${this.openlanePath}/${this.designsDir}/${jobId}-${jobData.designName}/${this.runsDir}/${job.runs[i].name}`);
+                        shell.exec(`sudo rm -rf ${this.openlanePath}/${this.designsDir}/${jobId}-${jobData.designName}/${this.runsDir}/${job.runs[i].name}`);
                     }
                     if (jobData.type === 'exploratory')
-                        shell.rm('-rf', `${this.openlanePath}/${this.scriptsDir}/${tag}-regression.config`);
-                    shell.mv(`${this.openlanePath}/${this.regressionResultsDir}/${tag}.csv`, `~/openlane-cloud/backend/${this.reportsDir}/${jobId}.csv`);
+                        shell.exec(`sudo rm -rf ${this.openlanePath}/${this.scriptsDir}/${tag}-regression.config`);
+                    shell.mv(`${this.openlanePath}/${this.regressionResultsDir}/${tag}/${tag}.csv`, `~/openlane-cloud/backend/${this.reportsDir}/${jobId}.csv`);
                     resolve(c);
                 });
             });

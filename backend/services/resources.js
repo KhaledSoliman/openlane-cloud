@@ -194,7 +194,7 @@ class ResourceService {
                     }
                     if (jobData.type === 'exploratory')
                         shell.exec(`sudo rm -rf ${this.openlanePath}/${this.scriptsDir}/${tag}-regression.config`);
-                    shell.exec(`sudo mv ./${this.openlanePath}/${this.regressionResultsDir}/${tag}/${tag}.csv`, `./${this.reportsDir}/${jobId}.csv`);
+                    shell.exec(`sudo mv ./${this.openlanePath}/${this.regressionResultsDir}/${tag}/${tag}.csv ./${this.reportsDir}/${jobId}.csv`);
                     resolve(c);
                 });
             });

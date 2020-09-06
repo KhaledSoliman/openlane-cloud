@@ -4,6 +4,7 @@ const shell = require('shelljs');
 const os = require('os');
 const fs = require('fs');
 const db = require('../models');
+const path = require('path');
 const {v4: uuidv4} = require('uuid');
 
 /**
@@ -96,10 +97,11 @@ class ResourceService {
         // Construct arguments for job type
         logger.info("Constructing args for shell script...");
         let args = {};
+        const dirPath = path.join(process.cwd(), `/${this.openlanePath}/${this.designsDir}/${jobId}-${jobData.designName}`);
         switch (jobData.type) {
             case 'normal':
                 args['type'] = 'regular';
-                args['design-dir'] = `./${this.openlanePath}/${this.designsDir}/${jobId}-${jobData.designName}`;
+                args['design-dir'] = dirPath;
                 args['design-name'] = `${jobData.designName}`;
                 args['tag'] = tag;
                 args['cpus'] = 1;
@@ -107,7 +109,7 @@ class ResourceService {
                 break;
             case 'exploratory':
                 args['type'] = jobData.type;
-                args['design-dir'] = `./${this.openlanePath}/${this.designsDir}/${jobId}-${jobData.designName}`;
+                args['design-dir'] = dirPath;
                 args['design-name'] = `${jobData.designName}`;
                 args['threads'] = 4;
                 args['tag'] = tag;
@@ -118,7 +120,6 @@ class ResourceService {
                 break;
             default:
         }
-
         // Execute Child Process
         const commandString = this.getRunCommand(args);
         logger.info(`Command string: ${commandString}`);

@@ -194,12 +194,13 @@ class ResourceService {
                     if (jobData.type === 'exploratory')
                         shell.rm('-rf', `${this.openlanePath}/${this.scriptsDir}/${tag}-regression.config`);
                     shell.mv(`${this.openlanePath}/${this.regressionResultsDir}/${tag}.csv`, `~/openlane-cloud/backend/${this.reportsDir}/${jobId}.csv`);
-                    this.jobs.delete(jobId);
                     resolve(c);
                 });
             });
         }).then(() => {
-            return this.jobs.get(jobId).stopped;
+            const stopped = this.jobs.get(jobId).stopped;
+            this.jobs.delete(jobId);
+            return stopped;
         });
     }
 

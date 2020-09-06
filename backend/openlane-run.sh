@@ -25,9 +25,7 @@ while [ $# -gt 0 ]; do
       memory="${1#*=}"
       ;;
     *)
-      printf "***************************\n"
-      printf "* Invalid argument Passed *\n"
-      printf "***************************\n"
+      printf "* Invalid argument Passed *"
       exit 1
   esac
   shift
@@ -46,9 +44,7 @@ exploratory)
   sudo docker exec "$DOCKER_ID" python3 run_designs.py --designs "$design_dir"--tag "$tag" --regression "$regression_script" --threads "$threads" --disable_timestamp --clean
   ;;
 *)
-  printf "***************************\n"
-  printf "*     Invalid run type    *\n"
-  printf "***************************\n"
+  printf "*     Invalid run type    *"
   exit 1
   ;;
 esac

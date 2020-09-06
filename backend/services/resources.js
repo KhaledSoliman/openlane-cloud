@@ -98,7 +98,7 @@ class ResourceService {
         let args = {};
         switch (jobData.type) {
             case 'normal':
-                args['type'] = jobData.type;
+                args['type'] = 'regular';
                 args['design-dir'] = `./${this.openlanePath}/${this.designsDir}/${jobId}-${jobData.designName}`;
                 args['design-name'] = `${jobData.designName}`;
                 args['tag'] = tag;

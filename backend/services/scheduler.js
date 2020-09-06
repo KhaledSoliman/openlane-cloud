@@ -39,7 +39,7 @@ class Scheduler {
                 self.notification.sendPushNotification('Job Scheduler', 'Your job is now running', job.data.regToken);
                 self.notification.sendMail(job.data.email, `No-reply: Job #${job.id} processed`, `Job #${job.id} processed with repo url: ${job.data.repoURL}`);
             }
-            return await self.resourceService.runJob(job.id, job.data);
+            return self.resourceService.runJob(job.id, job.data);
 
         });
         logger.info('Scheduler Initialized');

@@ -118,8 +118,10 @@ class ResourceService {
         }
 
         // Execute Child Process
+        const commandString = this.getRunCommand(args);
+        logger.info(`Command string: ${commandString}`);
         logger.info(`Executing openlane ${jobData.type} shell script...`);
-        const childProcess = shell.exec(this.getRunCommand(args), {silent: true, async: true});
+        const childProcess = shell.exec(commandString, {silent: true, async: true});
 
         // Status Update Polling
         logger.info(`Starting run status update polling...`);

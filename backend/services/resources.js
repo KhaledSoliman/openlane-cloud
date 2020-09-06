@@ -175,9 +175,6 @@ class ResourceService {
                         name: keywords[1],
                     }
                 }).then((result) => {
-                    const job = self.jobs.get(jobId);
-                    job.runs.push(result);
-                    self.jobs.set(jobId, job);
                 })
             }
         });
@@ -197,7 +194,7 @@ class ResourceService {
                     }
                     if (jobData.type === 'exploratory')
                         shell.exec(`sudo rm -rf ${this.openlanePath}/${this.scriptsDir}/${tag}-regression.config`);
-                    shell.mv(`${this.openlanePath}/${this.regressionResultsDir}/${tag}/${tag}.csv`, `~/openlane-cloud/backend/${this.reportsDir}/${jobId}.csv`);
+                    shell.mv(`./${this.openlanePath}/${this.regressionResultsDir}/${tag}/${tag}.csv`, `~/openlane-cloud/backend/${this.reportsDir}/${jobId}.csv`);
                     resolve(c);
                 });
             });

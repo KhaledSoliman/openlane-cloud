@@ -59,14 +59,18 @@ router.get('/job-monitoring', function (req, res, next) {
 
 router.get('/report', function (req, res, next) {
     if (req.query.jobId) {
-        let results = [];
-        fs.createReadStream(`./reports/${req.query.jobId}.csv`)
-            .pipe(csv())
-            .on('data', (data) => results.push(data))
-            .on('end', () => {
-                console.log(results);
-                res.json(results);
-            });
+        try {
+            let results = [];
+            fs.createReadStream(`./reports/${req.query.jobId}.csv`)
+                .pipe(csv())
+                .on('data', (data) => results.push(data))
+                .on('end', () => {
+                    console.log(results);
+                    res.json(results);
+                });
+        } catch (e) {
+            console.log(e);
+        }
     }
 });
 

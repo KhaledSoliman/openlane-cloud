@@ -1,8 +1,9 @@
+'use strict';
 const redis = require('redis');
 const logger = require('../log/logger')('Scheduler');
 const Queue = require('bee-queue');
 const db = require('../models');
-const { v4: uuidv4 } = require('uuid');
+const {v4: uuidv4} = require('uuid');
 
 
 class Scheduler {

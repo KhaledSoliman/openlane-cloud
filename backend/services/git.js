@@ -1,3 +1,4 @@
+'use strict';
 const logger = require('../log/logger')('Git');
 const shell = require('shelljs');
 const fs = require('fs');

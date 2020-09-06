@@ -4,10 +4,24 @@ const shell = require('shelljs');
 const os = require('os');
 const fs = require('fs');
 const db = require('../models');
+const {v4: uuidv4} = require('uuid');
 
+/**
+ * @class ResourceService
+ * @classdesc Resource service responsible for running and managing already running jobs
+ */
 class ResourceService {
     constructor(monitoring, storage, notification) {
         //Services
+        this.openlanePath = 'openlane_working_dir/openlane';
+        this.scriptsDir = 'scripts';
+        this.designsDir = 'designs';
+        this.runsDir = 'runs';
+        this.reportsDir = 'reports';
+        this.regressionResultsDir = 'regression_results';
+        this.logsDir = 'logs';
+        this.runCommand = 'sudo ./openlane-run.sh';
+
         this.jobMonitoring = monitoring;
         this.notfication = notification;
         this.storage = storage;
@@ -31,59 +45,102 @@ class ResourceService {
     }
 
     /**
-     *
+     * Create the command string for running the openlane shell script
+     * @param args
+     * @returns {string}
+     */
+    getRunCommand(args) {
+        let runCommand = this.runCommand;
+        for (const arg in Object.getOwnPropertyNames(args))
+            runCommand += ` --${arg}=${args[arg]}`;
+        return runCommand;
+    }
+
+    /**
+     * Creates a regression configuration file in the scripts directory of openlane
+     * @param regressionScriptFields
+     * @param tag
+     * @returns {string}
+     */
+    createRegressionScript(regressionScriptFields, tag) {
+        let regressionScript = '';
+        for (const property in Object.getOwnPropertyNames(regressionScriptFields)) {
+            if (property !== 'extra')
+                regressionScript += `${property}=(${regressionScriptFields[property]})\n`;
+            else if (jobData.regressionScript[property] !== '')
+                regressionScript += `\n${property}="${regressionScriptFields[property]}\n"\n`;
+        }
+        const regressionScriptName = `${tag}-regression.config`;
+        logger.info("Creating Regression Script...");
+        fs.writeFileSync(`${this.scriptsDir}/${regressionScriptName}`, regressionScript);
+        return regressionScriptName;
+    }
+
+    /**
+     * Run a job and setup event listeners on the child process
      * @param jobId
      * @param jobData
      * @returns {Promise<boolean>}
      */
     async runJob(jobId, jobData) {
-        //this.notfication.sendPushNotification("jobs", "Your Job is now running", "");
-        const tag = `${new Date().getTime()}`;
-
-        let childProcess;
+        if (jobData.notificationsEnabled)
+            this.notfication.sendPushNotification("jobs", "Your Job is now running", "");
         const self = this;
+
+        // Generate a uuid tag for this run
+        const tag = uuidv4();
+        logger.info(`Generated tag for job run: ${tag}`);
+
+        // Construct arguments for job type
+        logger.info("Constructing args for shell script...");
+        let args = {};
         switch (jobData.type) {
             case 'normal':
-                logger.info("Executing openlane regular shell script...");
-                childProcess = shell.exec(`sudo ./openlane-run.sh ${jobData.type}  ${jobId}-${jobData.designName} ${tag}`, {
-                    silent: true,
-                    async: true
-                });
-                childProcess.stdout.on('data', (data) => {
-                    if (!self.jobs.get(jobId).stopped)
-                        self.statusUpdate(jobId, jobData.designName, tag);
-                    self.jobMonitoring.send(jobData.user_uuid, data);
-                });
+                args['type'] = jobData.type;
+                args['design-name'] = `${jobId}-${jobData.designName}`;
+                args['tag'] = tag;
+                args['cpus'] = 1;
+                args['memory'] = '4G';
                 break;
             case 'exploratory':
-                let regressionScript = '';
-                for (const property in jobData.regressionScript) {
-                    if (jobData.regressionScript.hasOwnProperty(property)) {
-                        if (property !== 'extra')
-                            regressionScript += `${property}=(${jobData.regressionScript[property]})\n`;
-                        else if (jobData.regressionScript[property] !== '')
-                            regressionScript += `\n${property}="${jobData.regressionScript[property]}\n"\n`;
-                    }
-                }
-                const regressionScriptName = `${jobData.user_uuid}-${tag}-regression.config`;
-                logger.info("Creating Regression Script...");
-                fs.writeFileSync(`openlane_working_dir/openlane/scripts/${regressionScriptName}`, regressionScript);
-                logger.info("Executing openlane exploratory shell script...");
-                childProcess = shell.exec(`sudo ./openlane-run.sh ${jobData.type} ${jobId}-${jobData.designName} ${tag} ./scripts/${regressionScriptName}`, {
-                    silent: true,
-                    async: true
-                });
+                args['type'] = jobData.type;
+                args['design-name'] = `${jobId}-${jobData.designName}`;
+                args['tag'] = tag;
+                args['cpus'] = 4;
+                args['memory'] = '16G';
+                const regressionScriptName = this.createRegressionScript(jobData.regressionScript, tag);
+                args['regression-script'] = `./${this.scriptsDir}/${regressionScriptName}`;
                 break;
             default:
         }
+
+        // Execute Child Process
+        logger.info(`Executing openlane ${jobData.type} shell script...`);
+        const childProcess = shell.exec(this.getRunCommand(args), {silent: true, async: true});
+
+        // Status Update Polling
+        logger.info(`Starting run status update polling...`);
         const intervalId = setInterval(() => {
             self.statusUpdate(jobId, jobData.designName);
         }, 1000);
-        logger.info(`Saving Job #${jobId}`);
+
+        // Save job to map
+        logger.info(`Saving Job: ${jobId} to map`);
         this.jobs.set(jobId, {process: childProcess, tag: tag, stopped: false, runs: [], intervalId: intervalId});
 
-        logger.info(`Registering event listeners for Job #${jobId}`);
+        // Register event listeners on both err and out pipes
+        logger.info(`Registering event listeners for Job: ${jobId}`);
+        // Out Pipe
+        childProcess.stdout.on('data', (data) => {
+            //Log
+            logger.info(data);
+            //Stream
+            self.jobMonitoring.send(jobData.user_uuid, data);
+        });
+
+        // Err Pipe
         childProcess.stderr.on('data', function (data) {
+            //Log
             logger.info(data);
             //Stream
             self.jobMonitoring.send(jobData.user_uuid, data);
@@ -103,9 +160,7 @@ class ResourceService {
                 })
             } else if (data.includes('finished')) {
                 const keywords = data.split('] ')[1].split(' ');
-                db['run'].update({
-                    status: 'completed'
-                }, {
+                db['run'].update({status: 'completed'}, {
                     where: {
                         jobId: jobId,
                         name: keywords[1],
@@ -114,49 +169,43 @@ class ResourceService {
                     const job = self.jobs.get(jobId);
                     job.runs.push(result);
                     self.jobs.set(jobId, job);
-                    shell.rm('-rf', `openlane_working_dir/openlane/scripts/${jobData.user_uuid}-${tag}-regression.config`);
                 })
             }
         });
-        childProcess.stdout.on('data', (data) => {
-            logger.info(data);
-            //Stream
-            self.jobMonitoring.send(jobData.user_uuid, data);
-        });
 
+        // Exit Listener
         return new Promise(resolve => {
             childProcess.on('exit', (c) => {
                 const job = self.jobs.get(jobId);
                 clearInterval(job.intervalId);
-                db['job'].update({
-                    status: 'archiving'
-                }, {
-                    where: {
-                        jobId: jobId
-                    }
-                }).then(() => {
+                db['job'].update({status: 'archiving'}, {where: {jobId: jobId}}).then(() => {
                     for (let i = 0; i < job.runs.length; i++) {
-                        self.storage.zip(`openlane_working_dir/openlane/designs/${jobId}-${jobData.designName}/runs/${job.runs[i].name}`, `./downloads/${jobData.user_uuid}-${jobId}-${job.runs[i].name}.zip`);
-                        shell.rm('-rf', `openlane_working_dir/openlane/designs/${jobId}-${jobData.designName}/runs/${job.runs[i].name}`);
+                        self.storage.zip(
+                            `${this.openlanePath}/${this.designsDir}/${jobId}-${jobData.designName}/${this.runsDir}/${job.runs[i].name}`,
+                            `./downloads/${jobData.user_uuid}-${jobId}-${job.runs[i].name}.zip`
+                        );
+                        shell.rm('-rf', `${this.openlanePath}/${this.designsDir}/${jobId}-${jobData.designName}/${this.runsDir}/${job.runs[i].name}`);
                     }
+                    if (jobData.type === 'exploratory')
+                        shell.rm('-rf', `${this.openlanePath}/${this.scriptsDir}/${tag}-regression.config`);
+                    shell.mv(`${this.openlanePath}/${this.regressionResultsDir}/${tag}.csv`, `~/openlane-cloud/backend/${this.reportsDir}/${jobId}.csv`);
+                    this.jobs.delete(jobId);
+                    resolve(c);
                 });
-                shell.mv(`openlane_working_dir/openlane/regression_results/${tag}.csv`, `~/openlane-cloud/backend/reports/${jobId}.csv`);
-                resolve(c);
             });
         }).then(() => {
             return this.jobs.get(jobId).stopped;
         });
     }
 
+    /**
+     * Quits the job process
+     * @param jobId
+     * @returns {Promise<void>}
+     */
     async quitProcess(jobId) {
         const job = this.jobs.get(jobId.toString());
-        await db['job'].update({
-            status: 'stopping'
-        }, {
-            where: {
-                jobId: jobId
-            }
-        }).then((result) => {
+        await db['job'].update({status: 'stopping'}, {where: {jobId: jobId}}).then((result) => {
             logger.info(`Stopping Job #${jobId}`);
             job.stopped = true;
             this.jobs.set(jobId, job);
@@ -164,23 +213,32 @@ class ResourceService {
                 silent: true,
                 async: true
             });
+            childProcess.on('exit', (c) => {
+                //Send Notification
+            });
         });
     }
 
+    /**
+     * Checks for stage changes for each run in this job
+     * @param jobId
+     * @param designName
+     */
     statusUpdate(jobId, designName) {
         const self = this;
         const job = self.jobs.get(jobId);
         for (let i = 0; i < job.runs.length; i++) {
             if (job.runs[i].currentStage === (this.stageNames.length - 1))
-                return;
-            if (job.runs[i].currentStage === -1) {
-                fs.readdir(`openlane_working_dir/openlane/designs/${jobId}-${designName}/runs/${job.runs[i].name}/logs/`, function (err, items) {
+                continue;
+            fs.readdir(job.runs[i].currentStage === -1 ?
+                `${this.openlanePath}/${this.designsDir}/${jobId}-${designName}/${this.runsDir}/${job.runs[i].name}/${this.logsDir}/` :
+                `${this.openlanePath}/${this.designsDir}/${jobId}-${designName}/${this.runsDir}/${job.runs[i].name}/${this.logsDir}/${this.stageNames[job.runs[i].currentStage]}`,
+                function (err, items) {
                     if (err) {
                         //No directory yet
                         logger.error(err);
                         return;
                     }
-
                     //First Stage
                     if (items.length !== 0) {
                         job.runs[i].currentStage++;
@@ -195,41 +253,13 @@ class ResourceService {
                         });
                     }
                 });
-            } else {
-                fs.readdir(`openlane_working_dir/openlane/designs/${jobId}-${designName}/runs/${job.runs[i].name}/logs/${this.stageNames[job.runs[i].currentStage]}`, function (err, items) {
-                    if (err) {
-                        //No directory yet
-                        logger.error(err);
-                        return;
-                    }
-
-                    if (items.length !== 0) {
-                        job.runs[i].currentStage++;
-                        db['run'].update({
-                            status: `running-${self.stageNames[job.runs[i].currentStage]}`
-                        }, {
-                            where: {
-                                id: job.runs[i].id
-                            }
-                        }).then(() => {
-                            self.jobs.set(jobId, job);
-                        });
-                    }
-                });
-            }
         }
 
-    }
-
-    async cleanup() {
-        await shell.rm('-rf', `${this.reposPath}/${jobId}-${designName}`);
     }
 
     hookSocket(jobId, user_uuid) {
     }
 
-
 }
-
 
 module.exports = ResourceService;

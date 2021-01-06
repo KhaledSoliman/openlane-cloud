@@ -34,7 +34,7 @@
     "@testing-library/user-event": "^7.2.1",
     "auth0-js": "^9.13.4",
     "autosuggest-highlight": "3.1.1",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "chart.js": "^2.8.0",
     "classnames": "^2.2.6",
     "clsx": "^1.0.4",

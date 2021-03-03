@@ -21,7 +21,7 @@
     "mime": "^2.4.6",
     "morgan": "~1.9.1",
     "nodemailer": "^6.4.10",
-    "pug": "^3.0.0",
+    "pug": "^3.0.1",
     "redis": "^3.0.2",
     "sequelize": "^6.3.3",
     "sequelize-cli": "^6.2.0",
